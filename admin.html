@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Viaje Europa 2026</title>
+  <style>
+    :root {
+      --bg:#F5F5F5;--white:#FFF;--ink:#1A1A1A;--ink-mid:#444;--muted:#888;
+      --border:#DDD;--accent:#2563EB;--accent-hover:#1D4ED8;
+      --danger:#DC2626;--danger-hover:#B91C1C;--success:#16A34A;
+      --radius:8px;--font:'Segoe UI',system-ui,sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5}
+
+    /* Layout */
+    .page-header{background:var(--ink);color:white;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .page-header h1{font-size:18px;font-weight:700}
+    .page-header a{color:#93C5FD;font-size:14px;text-decoration:none}
+    .page-header a:hover{text-decoration:underline}
+    .container{max-width:940px;margin:0 auto;padding:24px 16px}
+
+    /* Password gate */
+    #passwordGate{max-width:400px;margin:80px auto;background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:32px;text-align:center}
+    #passwordGate h2{font-size:22px;margin-bottom:8px}
+    #passwordGate p{color:var(--muted);margin-bottom:24px}
+    #passwordError{color:var(--danger);font-size:14px;margin-top:8px;display:none}
+
+    /* Forms */
+    .form-group{margin-bottom:14px}
+    label{display:block;font-size:13px;font-weight:600;color:var(--ink-mid);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+    input[type=text],input[type=number],input[type=password],select,textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:var(--font);font-size:15px;background:var(--white);color:var(--ink);transition:border-color .15s}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    textarea{resize:vertical;min-height:100px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:500px){.form-row{grid-template-columns:1fr}}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--radius);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:background .15s,transform .1s}
+    .btn:active{transform:scale(.97)}
+    .btn-primary{background:var(--accent);color:white}
+    .btn-primary:hover{background:var(--accent-hover)}
+    .btn-danger{background:var(--danger);color:white}
+    .btn-danger:hover{background:var(--danger-hover)}
+    .btn-secondary{background:var(--white);color:var(--ink-mid);border:1px solid var(--border)}
+    .btn-secondary:hover{background:var(--bg)}
+    .btn-success{background:#15803D;color:white}
+    .btn-success:hover{background:#166534}
+    .btn-small{padding:5px 12px;font-size:13px}
+
+    /* Section boxes */
+    .section-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:24px;overflow:hidden}
+    .section-box-header{padding:14px 18px;background:#F9FAFB;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .section-box-header h2{font-size:16px;font-weight:700}
+    .section-box-body{padding:18px}
+
+    /* PDF picker */
+    .pdf-picker{display:flex;flex-direction:column;gap:8px}
+    .pdf-picker-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .pdf-status{font-size:13px;color:var(--ink-mid);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .pdf-status.success{color:var(--success);font-weight:600}
+    .pdf-status.error{color:var(--danger);font-weight:600}
+    .progress-wrap{display:flex;align-items:center;gap:10px}
+    .progress-bar{flex:1;height:6px;background:#E5E7EB;border-radius:999px;overflow:hidden}
+    .progress-fill{height:100%;background:var(--accent);border-radius:999px;width:0%;transition:width .2s ease}
+    .progress-pct{font-size:13px;font-weight:600;color:var(--accent);min-width:36px;text-align:right}
+    .pdf-current{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:var(--radius);font-size:13px}
+    .pdf-current a{color:var(--accent);word-break:break-all}
+    .pdf-current .remove-pdf{margin-left:auto;flex-shrink:0;background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px;padding:2px 6px}
+    .pdf-current .remove-pdf:hover{text-decoration:underline}
+
+    /* Table */
+    .activity-table{width:100%;border-collapse:collapse;font-size:14px}
+    .activity-table th{text-align:left;padding:8px 12px;background:#F9FAFB;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+    .activity-table td{padding:10px 12px;border-bottom:1px solid #F0F0F0;vertical-align:middle}
+    .activity-table tr:last-child td{border-bottom:none}
+    .activity-table tr:hover td{background:#FAFAFA}
+    .activity-table tr.row-done td{background:#F8F8F8;color:#999}
+    .activity-table tr.row-done .cell-title{text-decoration:line-through;color:#bbb}
+    .td-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .type-pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:#F3F4F6;color:#444}
+    .day-badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;background:var(--ink);color:white;font-size:12px;font-weight:700}
+    .done-pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;background:#DCFCE7;color:#166534}
+
+    /* Filter bar */
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+    .filter-bar select,.filter-bar input{width:auto;flex:1;min-width:120px;max-width:200px}
+    .filter-bar label{margin:0;text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;white-space:nowrap;color:var(--ink-mid)}
+
+    /* Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.hidden{display:none}
+    .modal-box{background:var(--white);border-radius:var(--radius);width:100%;max-width:600px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    .modal-box-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1}
+    .modal-box-header h3{font-size:17px;font-weight:700}
+    .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:4px}
+    .modal-close:hover{background:var(--bg);color:var(--ink)}
+    .modal-box-body{padding:20px}
+    .modal-box-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;position:sticky;bottom:0;background:white}
+
+    /* Notices */
+    .notice{padding:12px 16px;border-radius:var(--radius);font-size:14px;margin-bottom:16px;border:1px solid transparent}
+    .notice-warning{background:#FFFBEB;border-color:#FCD34D;color:#92400E}
+    .notice-success{background:#F0FDF4;border-color:#86EFAC;color:#14532D}
+    #saveNotice{display:none}
+
+    /* Stats */
+    .stats-bar{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+    .stat-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;min-width:90px;flex:1;text-align:center}
+    .stat-item .stat-number{font-size:26px;font-weight:700;color:var(--ink);line-height:1}
+    .stat-item .stat-label{font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+
+    /* Danger zone */
+    .danger-zone{border:1px solid #FECACA;background:#FFF5F5;border-radius:var(--radius);padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .danger-zone p{font-size:14px;color:#7F1D1D}
+    .danger-zone strong{display:block;font-size:15px;color:#991B1B;margin-bottom:4px}
+
+    /* Seed section */
+    .seed-box{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:var(--radius);padding:16px;margin-bottom:20px;display:none}
+    .seed-box h3{font-size:15px;font-weight:700;color:#1E40AF;margin-bottom:6px}
+    .seed-box p{font-size:14px;color:#1D4ED8;margin-bottom:12px}
+    .seed-progress{margin-top:10px;font-size:13px;color:#1D4ED8;display:none}
+
+    /* Done checkbox in form */
+    .done-check-label{display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:15px;font-weight:600;color:var(--ink-mid)}
+    .done-check-label input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:var(--success)}
+  </style>
+</head>
+<body>
+
+<!-- ── Password Gate ─────────────────────────────────────── -->
+<div id="passwordGate">
+  <div style="font-size:40px;margin-bottom:16px">🔒</div>
+  <h2>Panel de Administración</h2>
+  <p>Viaje Europa 2026</p>
+  <div class="form-group">
+    <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="current-password" />
+  </div>
+  <button class="btn btn-primary" id="loginBtn" style="width:100%">Entrar</button>
+  <p id="passwordError">Contraseña incorrecta. Inténtalo de nuevo.</p>
+</div>
+
+<!-- ── Admin Panel ─────────────────────────────────────────── -->
+<div id="adminPanel" style="display:none">
+
+  <div class="page-header">
+    <h1>🛠 Admin — Viaje Europa 2026</h1>
+    <a href="index.html">← Ver itinerario</a>
+  </div>
+
+  <div class="container">
+
+    <div class="notice notice-success" id="saveNotice">✅ Cambios guardados en Firestore.</div>
+
+    <!-- Seed section (shown only when collection is empty) -->
+    <div class="seed-box" id="seedBox">
+      <h3>📦 Base de datos vacía</h3>
+      <p>Firestore todavía no tiene actividades. Carga los datos del viaje con un clic.</p>
+      <button class="btn btn-success" id="seedBtn">🚀 Cargar datos iniciales</button>
+      <div class="seed-progress" id="seedProgress"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar"></div>
+
+    <!-- ── Add Activity ──────────────────────────────────── -->
+    <div class="section-box">
+      <div class="section-box-header">
+        <h2>➕ Añadir nueva actividad</h2>
+        <button class="btn btn-secondary btn-small" id="toggleAddBtn">Mostrar / Ocultar</button>
+      </div>
+      <div class="section-box-body" id="addFormWrapper" style="display:none">
+        <form id="addForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Día * (1–14)</label>
+              <input type="number" id="add-day" min="1" max="14" required placeholder="1–14" />
+            </div>
+            <div class="form-group">
+              <label>Orden dentro del día</label>
+              <input type="number" id="add-order" min="0" placeholder="auto" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Hora</label>
+              <input type="text" id="add-time" placeholder="ej. 10:00" />
+            </div>
+            <div class="form-group">
+              <label>Tipo *</label>
+              <select id="add-type" required>
+                <option value="transporte">Transporte</option>
+                <option value="visita">Visita</option>
+                <option value="almuerzo">Almuerzo</option>
+                <option value="cena">Cena</option>
+                <option value="hotel">Hotel</option>
+                <option value="tour">Tour</option>
+                <option value="libre">Libre</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Fecha *</label>
+              <input type="text" id="add-date" required placeholder="ej. 9 abril, jueves" />
+            </div>
+            <div class="form-group">
+              <label>Ciudad *</label>
+              <input type="text" id="add-city" required placeholder="ej. París" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Título *</label>
+            <input type="text" id="add-title" required placeholder="Título de la actividad" />
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea id="add-description" placeholder="Descripción (línea en blanco entre párrafos)"></textarea>
+          </div>
+          <div class="form-group">
+            <label>URL de Google Maps</label>
+            <input type="text" id="add-maps" placeholder="https://maps.app.goo.gl/..." />
+          </div>
+          <!-- PDF Upload -->
+          <div class="form-group">
+            <label>Documento PDF</label>
+            <div class="pdf-picker">
+              <div class="pdf-picker-row">
+                <input type="file" id="add-pdf-file" accept="application/pdf" style="display:none" />
+                <button type="button" class="btn btn-secondary btn-small" id="add-pdf-btn">📎 Adjuntar PDF</button>
+                <span class="pdf-status" id="add-pdf-status">Sin documento</span>
+                <input type="hidden" id="add-pdfUrl" />
+              </div>
+              <div class="progress-wrap" id="add-pdf-progress" style="display:none">
+                <div class="progress-bar"><div class="progress-fill" id="add-pdf-fill"></div></div>
+                <span class="progress-pct" id="add-pdf-pct">0%</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+            <button type="submit" class="btn btn-primary">Añadir actividad</button>
+            <button type="button" class="btn btn-secondary" id="resetAddBtn">Limpiar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Activity List ─────────────────────────────────── -->
+    <div class="section-box">
+      <div class="section-box-header">
+        <h2>📋 Todas las actividades</h2>
+        <span id="activityCount" style="font-size:13px;color:#888"></span>
+      </div>
+      <div class="section-box-body">
+        <div class="filter-bar">
+          <label>Filtrar:</label>
+          <select id="filterDay"><option value="">Todos los días</option></select>
+          <select id="filterType">
+            <option value="">Todos los tipos</option>
+            <option value="transporte">Transporte</option>
+            <option value="visita">Visita</option>
+            <option value="almuerzo">Almuerzo</option>
+            <option value="cena">Cena</option>
+            <option value="hotel">Hotel</option>
+            <option value="tour">Tour</option>
+            <option value="libre">Libre</option>
+          </select>
+          <select id="filterDone">
+            <option value="">Todos</option>
+            <option value="pending">Pendientes</option>
+            <option value="done">Hechos</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="activity-table">
+            <thead>
+              <tr>
+                <th>Día</th><th>Orden</th><th>Hora</th><th>Ciudad</th>
+                <th>Título</th><th>Tipo</th><th>Estado</th><th>PDF</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="activityTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Danger Zone ───────────────────────────────────── -->
+    <div class="section-box">
+      <div class="section-box-header"><h2>⚠️ Zona de peligro</h2></div>
+      <div class="section-box-body">
+        <div class="danger-zone" style="margin-bottom:12px">
+          <div>
+            <strong>Limpiar y recargar datos</strong>
+            <p>Elimina TODOS los documentos existentes y vuelve a cargar los datos originales desde cero.<br>
+               Útil para corregir una carga parcial o resetear el estado completamente.</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <button class="btn btn-danger" id="clearReseedBtn">🗑 Limpiar y recargar</button>
+            <span id="clearReseedProgress" style="font-size:13px;color:#991B1B;display:none"></span>
+          </div>
+        </div>
+        <div class="danger-zone">
+          <div>
+            <strong>Re-sembrar datos iniciales</strong>
+            <p>Sobrescribe todos los documentos en Firestore con los datos originales del viaje.<br>
+               El estado "hecho" se restablecerá a false. Los PDFs en Storage no se eliminan.</p>
+          </div>
+          <button class="btn btn-danger" id="reseedBtn">🔄 Re-sembrar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Edit Modal ────────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="editModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3>✏️ Editar actividad</h3>
+      <button class="modal-close" id="editModalClose">✕</button>
+    </div>
+    <div class="modal-box-body">
+      <form id="editForm">
+        <input type="hidden" id="edit-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Día * (1–14)</label>
+            <input type="number" id="edit-day" min="1" max="14" required />
+          </div>
+          <div class="form-group">
+            <label>Orden dentro del día</label>
+            <input type="number" id="edit-order" min="0" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hora</label>
+            <input type="text" id="edit-time" />
+          </div>
+          <div class="form-group">
+            <label>Tipo *</label>
+            <select id="edit-type" required>
+              <option value="transporte">Transporte</option>
+              <option value="visita">Visita</option>
+              <option value="almuerzo">Almuerzo</option>
+              <option value="cena">Cena</option>
+              <option value="hotel">Hotel</option>
+              <option value="tour">Tour</option>
+              <option value="libre">Libre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha *</label>
+            <input type="text" id="edit-date" required />
+          </div>
+          <div class="form-group">
+            <label>Ciudad *</label>
+            <input type="text" id="edit-city" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Título *</label>
+          <input type="text" id="edit-title" required />
+        </div>
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea id="edit-description" style="min-height:120px"></textarea>
+        </div>
+        <div class="form-group">
+          <label>URL de Google Maps</label>
+          <input type="text" id="edit-maps" />
+        </div>
+        <!-- PDF Upload -->
+        <div class="form-group">
+          <label>Documento PDF</label>
+          <div class="pdf-picker">
+            <div id="edit-pdf-current" style="display:none" class="pdf-current">
+              <span>📎</span>
+              <a id="edit-pdf-link" href="#" target="_blank" rel="noopener noreferrer">Ver documento actual</a>
+              <button type="button" class="remove-pdf" id="edit-pdf-remove">✕ Quitar</button>
+            </div>
+            <div class="pdf-picker-row">
+              <input type="file" id="edit-pdf-file" accept="application/pdf" style="display:none" />
+              <button type="button" class="btn btn-secondary btn-small" id="edit-pdf-btn">📎 Adjuntar PDF</button>
+              <span class="pdf-status" id="edit-pdf-status"></span>
+              <input type="hidden" id="edit-pdfUrl" />
+            </div>
+            <div class="progress-wrap" id="edit-pdf-progress" style="display:none">
+              <div class="progress-bar"><div class="progress-fill" id="edit-pdf-fill"></div></div>
+              <span class="progress-pct" id="edit-pdf-pct">0%</span>
+            </div>
+          </div>
+        </div>
+        <!-- Done state -->
+        <div class="form-group" style="margin-top:16px;padding-top:16px;border-top:1px solid #EEE">
+          <label class="done-check-label">
+            <input type="checkbox" id="edit-done" />
+            Marcar como hecho
+          </label>
+        </div>
+      </form>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn btn-secondary" id="editCancelBtn">Cancelar</button>
+      <button class="btn btn-primary" id="editSaveBtn">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── App (ES Module) ───────────────────────────────────── -->
+<script type="module">
+  import firebaseConfig        from './firebase-config.js';
+  import { TRIP_DATA, TYPE_LABELS } from './data.js';
+  import { seedDatabase, clearActivities, isActivitiesEmpty } from './seed.js';
+  import { initializeApp }     from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import {
+    getFirestore, collection, onSnapshot, addDoc, updateDoc,
+    deleteDoc, doc, setDoc, query, orderBy
+  } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+  import {
+    getStorage, ref, uploadBytesResumable, getDownloadURL
+  } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+  import {
+    getAuth, signInAnonymously
+  } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+  // ── Password ──────────────────────────────────────────────
+  const ADMIN_PASSWORD = "Kakaeslaley9"; // ← change before publishing
+
+  let isLoggedIn = false;
+  let db, storage;
+  let activities = [];
+  let addActivityId = null; // generated when picking file for new activity
+
+  document.getElementById('loginBtn').addEventListener('click', login);
+  document.getElementById('passwordInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') login();
+  });
+
+  async function login() {
+    const val = document.getElementById('passwordInput').value;
+    if (val === ADMIN_PASSWORD) {
+      document.getElementById('passwordGate').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      document.getElementById('passwordError').style.display = 'none';
+      await initFirebase();
+    } else {
+      document.getElementById('passwordError').style.display = 'block';
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordInput').focus();
+    }
+  }
+
+  // ── Firebase init ─────────────────────────────────────────
+  async function initFirebase() {
+    const app = initializeApp(firebaseConfig);
+    db      = getFirestore(app);
+    storage = getStorage(app);
+
+    // Anonymous sign-in so Firestore/Storage rules can require request.auth != null.
+    // This does NOT identify the user as "the admin" — it just means writes can
+    // only come from someone who has run this authenticated client, not from a
+    // bare API call using the public firebaseConfig. Requires "Anonymous" enabled
+    // under Firebase Console → Authentication → Sign-in method.
+    try {
+      await signInAnonymously(getAuth(app));
+    } catch (err) {
+      alert('No se pudo autenticar con Firebase: ' + err.message +
+        '\n\nComprueba que el proveedor "Anonymous" esté habilitado en Firebase Console → Authentication → Sign-in method.');
+      return;
+    }
+
+    attachListeners();
+    startSnapshot();
+  }
+
+  // ── Firestore real-time listener ──────────────────────────
+  function startSnapshot() {
+    const q = query(collection(db, 'activities'), orderBy('day'), orderBy('order'));
+    onSnapshot(q, (snap) => {
+      activities = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderList();
+      renderStats();
+      populateFilters();
+      // Show seed box only when collection is empty
+      document.getElementById('seedBox').style.display =
+        activities.length === 0 ? 'block' : 'none';
+    }, (err) => {
+      console.error('Firestore error:', err);
+      // If order fields don't exist yet, fall back without orderBy
+      onSnapshot(collection(db, 'activities'), (snap) => {
+        activities = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        activities.sort((a,b) => a.day !== b.day ? a.day - b.day : (a.order??99)-(b.order??99));
+        renderList();
+        renderStats();
+        populateFilters();
+        document.getElementById('seedBox').style.display =
+          activities.length === 0 ? 'block' : 'none';
+      });
+    });
+  }
+
+  // ── Stats ──────────────────────────────────────────────────
+  function renderStats() {
+    const done  = activities.filter(a => a.done).length;
+    const pdfs  = activities.filter(a => a.pdfUrl).length;
+    const maps  = activities.filter(a => a.mapsUrl).length;
+    document.getElementById('statsBar').innerHTML =
+      stat(activities.length, 'Actividades') +
+      stat(14, 'Días') +
+      stat(done, 'Hechas') +
+      stat(pdfs, 'PDFs') +
+      stat(maps, 'Mapas');
+  }
+  function stat(n,l){return`<div class="stat-item"><div class="stat-number">${n}</div><div class="stat-label">${l}</div></div>`}
+
+  // ── Filters ───────────────────────────────────────────────
+  function populateFilters() {
+    const dayFilter = document.getElementById('filterDay');
+    const currentDay = dayFilter.value;
+    dayFilter.innerHTML = '<option value="">Todos los días</option>';
+    [...new Set(activities.map(a => a.day))].sort((a,b)=>a-b).forEach(d => {
+      const o = document.createElement('option');
+      o.value = d; o.textContent = 'Día ' + d;
+      if (String(d) === currentDay) o.selected = true;
+      dayFilter.appendChild(o);
+    });
+  }
+
+  // ── Activity list ─────────────────────────────────────────
+  function renderList() {
+    const dayVal  = document.getElementById('filterDay').value;
+    const typeVal = document.getElementById('filterType').value;
+    const doneVal = document.getElementById('filterDone').value;
+
+    let filtered = activities.filter(a => {
+      if (dayVal  && String(a.day) !== dayVal) return false;
+      if (typeVal && a.type !== typeVal)        return false;
+      if (doneVal === 'done'    && !a.done)     return false;
+      if (doneVal === 'pending' && a.done)      return false;
+      return true;
+    });
+
+    document.getElementById('activityCount').textContent = filtered.length + ' actividades';
+    const tbody = document.getElementById('activityTableBody');
+    tbody.innerHTML = '';
+
+    filtered.forEach(act => {
+      const tr = document.createElement('tr');
+      if (act.done) tr.className = 'row-done';
+      tr.innerHTML =
+        `<td><span class="day-badge">${act.day}</span></td>` +
+        `<td>${act.order ?? '—'}</td>` +
+        `<td>${esc(act.time || '—')}</td>` +
+        `<td>${esc(act.city)}</td>` +
+        `<td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" class="cell-title">${esc(act.title)}</td>` +
+        `<td><span class="type-pill">${esc(act.type)}</span></td>` +
+        `<td>${act.done ? '<span class="done-pill">✓ Hecho</span>' : '—'}</td>` +
+        `<td>${act.pdfUrl ? `<a href="${esc(act.pdfUrl)}" target="_blank" rel="noopener noreferrer" style="color:#2563EB">📄 Ver</a>` : '—'}</td>` +
+        `<td><div class="td-actions">` +
+          `<button class="btn btn-secondary btn-small" data-edit="${esc(act.id)}">✏️ Editar</button>` +
+          `<button class="btn btn-${act.done?'secondary':'success'} btn-small" data-toggle="${esc(act.id)}">${act.done ? '↩ Pendiente' : '✓ Hecho'}</button>` +
+          `<button class="btn btn-danger btn-small" data-delete="${esc(act.id)}">🗑</button>` +
+        `</div></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ── Add form ──────────────────────────────────────────────
+  document.getElementById('toggleAddBtn').addEventListener('click', () => {
+    const w = document.getElementById('addFormWrapper');
+    w.style.display = w.style.display === 'none' ? 'block' : 'none';
+  });
+
+  document.getElementById('resetAddBtn').addEventListener('click', resetAddForm);
+
+  function resetAddForm() {
+    document.getElementById('addForm').reset();
+    document.getElementById('add-pdfUrl').value = '';
+    document.getElementById('add-pdf-status').textContent = 'Sin documento';
+    document.getElementById('add-pdf-status').className = 'pdf-status';
+    document.getElementById('add-pdf-progress').style.display = 'none';
+    addActivityId = null;
+  }
+
+  document.getElementById('addForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const day = parseInt(document.getElementById('add-day').value, 10);
+    const orderVal = document.getElementById('add-order').value;
+    const autoOrder = activities.filter(a => a.day === day).length;
+
+    const newAct = {
+      day,
+      order:       orderVal !== '' ? parseInt(orderVal, 10) : autoOrder,
+      done:        false,
+      date:        document.getElementById('add-date').value.trim(),
+      city:        document.getElementById('add-city').value.trim(),
+      time:        document.getElementById('add-time').value.trim(),
+      title:       document.getElementById('add-title').value.trim(),
+      description: document.getElementById('add-description').value.trim(),
+      type:        document.getElementById('add-type').value,
+      pdfUrl:      document.getElementById('add-pdfUrl').value.trim() || null,
+      mapsUrl:     document.getElementById('add-maps').value.trim() || null
+    };
+
+    try {
+      await addDoc(collection(db, 'activities'), newAct);
+      showSaveNotice();
+      resetAddForm();
+      document.getElementById('addFormWrapper').style.display = 'none';
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+
+  // ── Edit modal ────────────────────────────────────────────
+  function openEditModal(id) {
+    const act = activities.find(a => a.id === id);
+    if (!act) return;
+
+    document.getElementById('edit-id').value          = act.id;
+    document.getElementById('edit-day').value         = act.day;
+    document.getElementById('edit-order').value       = act.order ?? 0;
+    document.getElementById('edit-time').value        = act.time || '';
+    document.getElementById('edit-date').value        = act.date || '';
+    document.getElementById('edit-city').value        = act.city || '';
+    document.getElementById('edit-title').value       = act.title || '';
+    document.getElementById('edit-description').value = act.description || '';
+    document.getElementById('edit-type').value        = act.type || 'visita';
+    document.getElementById('edit-maps').value        = act.mapsUrl || '';
+    document.getElementById('edit-done').checked      = !!act.done;
+
+    // PDF state
+    document.getElementById('edit-pdfUrl').value = act.pdfUrl || '';
+    document.getElementById('edit-pdf-status').textContent = '';
+    document.getElementById('edit-pdf-status').className = 'pdf-status';
+    document.getElementById('edit-pdf-progress').style.display = 'none';
+    document.getElementById('edit-pdf-file').value = '';
+
+    const currentDiv  = document.getElementById('edit-pdf-current');
+    const currentLink = document.getElementById('edit-pdf-link');
+    if (act.pdfUrl) {
+      try {
+        const parts = act.pdfUrl.split('?')[0].split('/');
+        currentLink.textContent = decodeURIComponent(parts[parts.length - 1]);
+      } catch { currentLink.textContent = 'Ver documento actual'; }
+      currentLink.href = act.pdfUrl;
+      currentDiv.style.display = 'flex';
+      document.getElementById('edit-pdf-btn').textContent = '📎 Reemplazar PDF';
+    } else {
+      currentDiv.style.display = 'none';
+      document.getElementById('edit-pdf-btn').textContent = '📎 Adjuntar PDF';
+    }
+
+    document.getElementById('editModal').classList.remove('hidden');
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').classList.add('hidden');
+  }
+
+  document.getElementById('editModalClose').addEventListener('click', closeEditModal);
+  document.getElementById('editCancelBtn').addEventListener('click', closeEditModal);
+  document.getElementById('editModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('editModal')) closeEditModal();
+  });
+
+  document.getElementById('edit-pdf-remove').addEventListener('click', () => {
+    document.getElementById('edit-pdfUrl').value = '';
+    document.getElementById('edit-pdf-current').style.display = 'none';
+    document.getElementById('edit-pdf-btn').textContent = '📎 Adjuntar PDF';
+    document.getElementById('edit-pdf-status').textContent = 'Documento eliminado';
+    document.getElementById('edit-pdf-status').className = 'pdf-status';
+  });
+
+  document.getElementById('editSaveBtn').addEventListener('click', async () => {
+    if (!document.getElementById('editForm').reportValidity()) return;
+    const id = document.getElementById('edit-id').value;
+    const updated = {
+      day:         parseInt(document.getElementById('edit-day').value, 10),
+      order:       parseInt(document.getElementById('edit-order').value, 10) || 0,
+      date:        document.getElementById('edit-date').value.trim(),
+      city:        document.getElementById('edit-city').value.trim(),
+      time:        document.getElementById('edit-time').value.trim(),
+      title:       document.getElementById('edit-title').value.trim(),
+      description: document.getElementById('edit-description').value.trim(),
+      type:        document.getElementById('edit-type').value,
+      pdfUrl:      document.getElementById('edit-pdfUrl').value.trim() || null,
+      mapsUrl:     document.getElementById('edit-maps').value.trim() || null,
+      done:        document.getElementById('edit-done').checked
+    };
+    try {
+      await updateDoc(doc(db, 'activities', id), updated);
+      showSaveNotice();
+      closeEditModal();
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+
+  // ── Delete ────────────────────────────────────────────────
+  async function deleteActivity(id) {
+    const act = activities.find(a => a.id === id);
+    if (!act) return;
+    if (!confirm(`¿Eliminar "${act.title}"?\n\nNota: el PDF en Firebase Storage (si existe) no se elimina automáticamente.`)) return;
+    try {
+      await deleteDoc(doc(db, 'activities', id));
+      showSaveNotice();
+    } catch (err) { alert('Error: ' + err.message); }
+  }
+
+  // ── Toggle done (quick from table) ────────────────────────
+  async function toggleDoneById(id) {
+    const act = activities.find(a => a.id === id);
+    if (!act) return;
+    try {
+      await updateDoc(doc(db, 'activities', id), { done: !act.done });
+      showSaveNotice();
+    } catch (err) { alert('Error: ' + err.message); }
+  }
+
+  // ── Table delegated click handler ─────────────────────────
+  document.getElementById('activityTableBody').addEventListener('click', e => {
+    const editBtn   = e.target.closest('[data-edit]');
+    const deleteBtn = e.target.closest('[data-delete]');
+    const toggleBtn = e.target.closest('[data-toggle]');
+    if (editBtn)   openEditModal(editBtn.dataset.edit);
+    if (deleteBtn) deleteActivity(deleteBtn.dataset.delete);
+    if (toggleBtn) toggleDoneById(toggleBtn.dataset.toggle);
+  });
+
+  // Filter changes
+  ['filterDay','filterType','filterDone'].forEach(id =>
+    document.getElementById(id).addEventListener('change', renderList)
+  );
+
+  // ── PDF Upload ────────────────────────────────────────────
+  document.getElementById('add-pdf-btn').addEventListener('click', () => {
+    if (!addActivityId) addActivityId = 'custom-' + Date.now();
+    document.getElementById('add-pdf-file').click();
+  });
+  document.getElementById('add-pdf-file').addEventListener('change', () =>
+    handleUpload('add', addActivityId)
+  );
+
+  document.getElementById('edit-pdf-btn').addEventListener('click', () =>
+    document.getElementById('edit-pdf-file').click()
+  );
+  document.getElementById('edit-pdf-file').addEventListener('change', () =>
+    handleUpload('edit', document.getElementById('edit-id').value)
+  );
+
+  function handleUpload(ctx, actId) {
+    const fileInput  = document.getElementById(`${ctx}-pdf-file`);
+    const statusEl   = document.getElementById(`${ctx}-pdf-status`);
+    const progressEl = document.getElementById(`${ctx}-pdf-progress`);
+    const fillEl     = document.getElementById(`${ctx}-pdf-fill`);
+    const pctEl      = document.getElementById(`${ctx}-pdf-pct`);
+    const urlInput   = document.getElementById(`${ctx}-pdfUrl`);
+
+    const file = fileInput.files[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      statusEl.textContent = '❌ Solo se admiten archivos PDF.';
+      statusEl.className = 'pdf-status error'; return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      statusEl.textContent = '❌ Máximo 20 MB.';
+      statusEl.className = 'pdf-status error'; return;
+    }
+
+    const storageRef = ref(storage, `docs/${actId}/${file.name}`);
+    const task = uploadBytesResumable(storageRef, file);
+
+    statusEl.textContent = 'Subiendo…';
+    statusEl.className = 'pdf-status';
+    progressEl.style.display = 'flex';
+    fillEl.style.width = '0%';
+
+    task.on('state_changed',
+      snap => {
+        const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+        fillEl.style.width = pct + '%';
+        pctEl.textContent  = pct + '%';
+      },
+      err => {
+        statusEl.textContent = '❌ Error: ' + err.message;
+        statusEl.className = 'pdf-status error';
+        progressEl.style.display = 'none';
+      },
+      async () => {
+        const url = await getDownloadURL(task.snapshot.ref);
+        urlInput.value = url;
+        statusEl.textContent = '✅ ' + file.name;
+        statusEl.className = 'pdf-status success';
+        progressEl.style.display = 'none';
+        if (ctx === 'edit') {
+          const link = document.getElementById('edit-pdf-link');
+          link.href = url; link.textContent = file.name;
+          document.getElementById('edit-pdf-current').style.display = 'flex';
+        }
+      }
+    );
+  }
+
+  // ── Seed ──────────────────────────────────────────────────
+  document.getElementById('seedBtn').addEventListener('click', async () => {
+    if (!confirm(`Esto cargará ${TRIP_DATA.length} actividades en Firestore.\n¿Continuar?`)) return;
+    const btn      = document.getElementById('seedBtn');
+    const progress = document.getElementById('seedProgress');
+    btn.disabled = true;
+    btn.textContent = 'Cargando…';
+    progress.style.display = 'block';
+
+    try {
+      await seedDatabase(db, (done, total) => {
+        progress.textContent = `${done} / ${total} actividades cargadas…`;
+      });
+      progress.textContent = `✅ ¡Listo! ${TRIP_DATA.length} actividades cargadas.`;
+      showSaveNotice();
+    } catch (err) {
+      progress.textContent = '❌ Error: ' + err.message;
+      btn.disabled = false;
+      btn.textContent = '🚀 Cargar datos iniciales';
+    }
+  });
+
+  document.getElementById('reseedBtn').addEventListener('click', async () => {
+    if (!confirm(`¿Re-sembrar todos los datos originales?\n\nSe sobrescribirán TODAS las actividades existentes y el estado "hecho" se perderá. Los PDFs en Storage no se tocan.`)) return;
+    try {
+      await seedDatabase(db);
+      showSaveNotice();
+    } catch (err) { alert('Error: ' + err.message); }
+  });
+
+  document.getElementById('clearReseedBtn').addEventListener('click', async () => {
+    if (!confirm(`¿Limpiar y recargar datos?\n\nSe eliminarán TODOS los documentos existentes y se volverán a cargar los ${TRIP_DATA.length} originales desde cero.\n\nEsta acción no se puede deshacer.`)) return;
+    const btn      = document.getElementById('clearReseedBtn');
+    const progress = document.getElementById('clearReseedProgress');
+    btn.disabled = true;
+    progress.style.display = 'inline';
+    try {
+      progress.textContent = 'Limpiando…';
+      await clearActivities(db);
+      progress.textContent = `Cargando ${TRIP_DATA.length} actividades…`;
+      await seedDatabase(db, (done, total) => {
+        progress.textContent = `Cargando ${TRIP_DATA.length} actividades… (${done}/${total})`;
+      });
+      progress.textContent = `✅ ¡Listo! ${TRIP_DATA.length} actividades cargadas.`;
+      showSaveNotice();
+    } catch (err) {
+      progress.textContent = '❌ Error: ' + err.message;
+      btn.disabled = false;
+    }
+  });
+
+  // ── Helpers ───────────────────────────────────────────────
+  function showSaveNotice() {
+    const n = document.getElementById('saveNotice');
+    n.style.display = 'block';
+    clearTimeout(n._t);
+    n._t = setTimeout(() => n.style.display = 'none', 3000);
+  }
+
+  function esc(str) {
+    return String(str ?? '')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Attach static listeners ───────────────────────────────
+  function attachListeners() {
+    // (all listeners use addEventListener, no onclick attributes)
+  }
+</script>
+
+</body>
+</html>

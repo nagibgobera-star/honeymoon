@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Itinerario del Viaje por Europa 2026 — París, Zúrich, Múnich, Viena, Praga" />
+  <title>Viaje por Europa 2026</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── App Header ──────────────────────────────────────── -->
+  <header class="app-header">
+    <div class="header-eyebrow">✈ Itinerario de viaje</div>
+    <h1 class="header-title">Viaje por <em>Europa</em></h1>
+    <p class="header-dates">9 – 22 de abril, 2026 · 14 días</p>
+    <div class="header-cities">
+      <span>🗼 París</span>
+      <span>🏔️ Zúrich</span>
+      <span>🍺 Múnich</span>
+      <span>🎼 Viena</span>
+      <span>🏰 Praga</span>
+    </div>
+  </header>
+
+  <!-- ── Day Navigation ──────────────────────────────────── -->
+  <nav class="day-nav" aria-label="Navegación por ciudad">
+    <div class="day-nav-inner" id="dayNavInner"></div>
+  </nav>
+
+  <!-- ── Main Content ────────────────────────────────────── -->
+  <main class="main-content" id="mainContent">
+    <div class="loading">Cargando itinerario…</div>
+  </main>
+
+  <!-- ── App Footer ──────────────────────────────────────── -->
+  <footer class="app-footer">
+    <p>¡Buen viaje! 🌍<span class="footer-divider">·</span>Abril 2026</p>
+  </footer>
+
+  <!-- ── Modal ───────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card" id="modalCard">
+      <div class="modal-header">
+        <div class="modal-title-area">
+          <div class="modal-type-badge" id="modalTypeBadge"></div>
+          <h2 class="modal-title" id="modalTitle"></h2>
+          <div class="modal-time-city" id="modalTimecity"></div>
+        </div>
+        <button class="modal-close-btn" id="modalClose" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-description" id="modalDescription"></div>
+      </div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <!-- ── App (ES Module) ─────────────────────────────────── -->
+  <script type="module">
+    import firebaseConfig          from './firebase-config.js';
+    import { CITY_INFO, TYPE_LABELS } from './data.js';
+    import { initializeApp }       from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import {
+      getFirestore, collection, onSnapshot, updateDoc, doc
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    // ── Init Firebase ───────────────────────────────────────
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // ── State ───────────────────────────────────────────────
+    let currentActivities = [];
+    let currentOpenId     = null;
+    let navReady          = false;
+
+    // ── Firestore real-time listener ────────────────────────
+    onSnapshot(
+      collection(db, 'activities'),
+      (snapshot) => {
+        const fresh = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        fresh.sort((a, b) =>
+          a.day !== b.day
+            ? a.day - b.day
+            : (a.order ?? 99) - (b.order ?? 99)
+        );
+
+        currentActivities = fresh;
+
+        if (fresh.length === 0) {
+          document.getElementById('mainContent').innerHTML =
+            '<p style="text-align:center;padding:48px 20px;color:#888;font-size:18px">' +
+            'El itinerario aún no ha sido cargado.<br>Abre el panel de administración para añadir las actividades.</p>';
+          return;
+        }
+
+        renderItinerary(fresh);
+
+        if (!navReady) {
+          buildNav();
+          initScrollSpy();
+          navReady = true;
+          setActiveNav(Object.keys(CITY_INFO)[0]);
+        }
+
+        // If modal is open, refresh its done button
+        if (currentOpenId) {
+          const act = fresh.find(a => a.id === currentOpenId);
+          if (act) refreshModalDoneBtn(act);
+        }
+      },
+      (error) => {
+        console.error('Firestore error:', error);
+        document.getElementById('mainContent').innerHTML =
+          '<p style="text-align:center;padding:48px 20px;color:#888;font-size:18px">' +
+          'Error al cargar el itinerario. Comprueba tu conexión y recarga la página.</p>';
+      }
+    );
+
+    // ── City helper ─────────────────────────────────────────
+    function getCityForDay(day) {
+      for (const [name, info] of Object.entries(CITY_INFO)) {
+        if (info.days.includes(day)) return { name, info };
+      }
+      return { name: 'Europa', info: { emoji: '🌍', color: '#6B7280', days: [] } };
+    }
+
+    // ── Build navigation ────────────────────────────────────
+    function buildNav() {
+      const nav = document.getElementById('dayNavInner');
+      nav.innerHTML = '';
+      Object.entries(CITY_INFO).forEach(([cityName, cityInfo], idx) => {
+        if (idx > 0) {
+          const sep = document.createElement('div');
+          sep.className = 'day-nav-separator';
+          nav.appendChild(sep);
+        }
+        const btn = document.createElement('a');
+        btn.className = 'day-nav-city';
+        btn.href = '#day-' + cityInfo.days[0];
+        btn.dataset.city = cityName;
+        btn.textContent = cityInfo.emoji + ' ' + cityName;
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const dayEl = document.getElementById('day-' + cityInfo.days[0]);
+          if (dayEl) {
+            const navH = document.querySelector('.day-nav').offsetHeight;
+            window.scrollTo({ top: dayEl.getBoundingClientRect().top + window.scrollY - navH - 12, behavior: 'smooth' });
+          }
+          setActiveNav(cityName);
+        });
+        nav.appendChild(btn);
+      });
+    }
+
+    function setActiveNav(cityName) {
+      document.querySelectorAll('.day-nav-city').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.city === cityName);
+      });
+    }
+
+    function initScrollSpy() {
+      const sections = document.querySelectorAll('.day-section');
+      const navH = document.querySelector('.day-nav').offsetHeight;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const city = getCityForDay(parseInt(entry.target.dataset.day, 10)).name;
+            setActiveNav(city);
+          }
+        });
+      }, { rootMargin: `-${navH + 20}px 0px -55% 0px` });
+      sections.forEach(s => io.observe(s));
+    }
+
+    // ── Render itinerary ────────────────────────────────────
+    function renderItinerary(activities) {
+      const main = document.getElementById('mainContent');
+      main.innerHTML = '';
+
+      const grouped = {};
+      activities.forEach(act => {
+        if (!grouped[act.day]) grouped[act.day] = [];
+        grouped[act.day].push(act);
+      });
+
+      Object.keys(grouped)
+        .map(Number)
+        .sort((a, b) => a - b)
+        .forEach(day => {
+          const acts     = grouped[day];
+          const city     = getCityForDay(day);
+          const firstAct = acts[0];
+
+          const section = document.createElement('section');
+          section.className = 'day-section';
+          section.id = 'day-' + day;
+          section.dataset.day = day;
+
+          // Day header
+          const header = document.createElement('div');
+          header.className = 'day-header';
+          header.innerHTML =
+            `<div class="day-number-badge" style="background:${city.info.color}">` +
+              `<span class="day-num">${day}</span><span class="day-word">día</span>` +
+            `</div>` +
+            `<div class="day-header-info">` +
+              `<div class="day-city-name"><span class="city-emoji">${city.info.emoji}</span>${escHtml(city.name)}</div>` +
+              `<div class="day-date-text">${escHtml(firstAct.date)}</div>` +
+            `</div>`;
+          section.appendChild(header);
+
+          // Cards
+          const list = document.createElement('div');
+          list.className = 'cards-list';
+          acts.forEach(act => list.appendChild(renderCard(act)));
+          section.appendChild(list);
+          main.appendChild(section);
+        });
+    }
+
+    // ── Render a single card ────────────────────────────────
+    function renderCard(act) {
+      const card = document.createElement('div');
+      card.className = 'activity-card' + (act.done ? ' is-done' : '');
+      card.dataset.id = act.id;
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', act.title);
+
+      const pdfIcon  = act.pdfUrl  ? '<span class="card-icon" title="Documento adjunto">📎</span>' : '';
+      const mapsIcon = act.mapsUrl ? '<span class="card-icon" title="Ver en mapa">📍</span>' : '';
+      const doneIcon = act.done    ? '<span class="done-badge" title="Hecho">✓</span>' : '';
+      const time     = act.time || '—';
+
+      card.innerHTML =
+        `<div class="card-left-accent accent-${act.type}"></div>` +
+        `<div class="card-inner">` +
+          `<div class="card-time-col">` +
+            `<div class="card-time">${escHtml(time)}</div>` +
+            `<div class="card-time-dot"></div>` +
+          `</div>` +
+          `<div class="card-body">` +
+            `<div class="card-title">${escHtml(act.title)}</div>` +
+            `<div class="card-meta">` +
+              `<span class="type-badge badge-${act.type}">${TYPE_LABELS[act.type] || act.type}</span>` +
+            `</div>` +
+          `</div>` +
+          `<div class="card-icons">${mapsIcon}${pdfIcon}${doneIcon}<span class="card-arrow">›</span></div>` +
+        `</div>`;
+
+      card.addEventListener('click', () => openModal(act.id));
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(act.id); }
+      });
+
+      return card;
+    }
+
+    // ── Modal ───────────────────────────────────────────────
+    const overlay = document.getElementById('modalOverlay');
+
+    function openModal(id) {
+      const act = currentActivities.find(a => a.id === id);
+      if (!act) return;
+      currentOpenId = id;
+
+      // Type badge
+      document.getElementById('modalTypeBadge').innerHTML =
+        `<span class="type-badge badge-${act.type}">${TYPE_LABELS[act.type] || act.type}</span>`;
+
+      // Title
+      document.getElementById('modalTitle').textContent = act.title;
+
+      // Time + city
+      const parts = [];
+      if (act.time) parts.push(act.time + 'h');
+      if (act.city) parts.push(act.city);
+      document.getElementById('modalTimecity').innerHTML =
+        parts.map((p, i) => (i > 0 ? '<span class="divider"></span>' : '') + escHtml(p)).join('');
+
+      // Description
+      document.getElementById('modalDescription').innerHTML = fmtDesc(act.description || '');
+
+      // Footer
+      buildModalFooter(act);
+
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => document.getElementById('modalClose').focus(), 50);
+    }
+
+    function buildModalFooter(act) {
+      const footer = document.getElementById('modalFooter');
+      footer.innerHTML = '';
+
+      // Done toggle (full width, first)
+      const doneBtn = document.createElement('button');
+      doneBtn.className = 'btn-done-toggle' + (act.done ? ' is-done' : '');
+      doneBtn.id = 'modalDoneBtn';
+      doneBtn.innerHTML = act.done
+        ? '↩ Marcar como pendiente'
+        : '✓ Marcar como hecho';
+      doneBtn.addEventListener('click', () => toggleDone(act.id));
+      footer.appendChild(doneBtn);
+
+      // Separator (only if there are action buttons below)
+      if (act.mapsUrl || act.pdfUrl) {
+        const sep = document.createElement('div');
+        sep.className = 'modal-footer-sep';
+        footer.appendChild(sep);
+      }
+
+      // Maps button
+      if (act.mapsUrl) {
+        const a = document.createElement('a');
+        a.className = 'btn btn-maps';
+        a.href = act.mapsUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.innerHTML = '📍 Ver en Google Maps';
+        footer.appendChild(a);
+      }
+
+      // PDF button
+      if (act.pdfUrl) {
+        const a = document.createElement('a');
+        a.className = 'btn btn-pdf';
+        a.href = act.pdfUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.innerHTML = '📄 Ver documento';
+        footer.appendChild(a);
+      }
+    }
+
+    function refreshModalDoneBtn(act) {
+      const btn = document.getElementById('modalDoneBtn');
+      if (!btn) return;
+      btn.className = 'btn-done-toggle' + (act.done ? ' is-done' : '');
+      btn.innerHTML = act.done ? '↩ Marcar como pendiente' : '✓ Marcar como hecho';
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      currentOpenId = null;
+    }
+
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    // ── Toggle done ─────────────────────────────────────────
+    async function toggleDone(id) {
+      const act = currentActivities.find(a => a.id === id);
+      if (!act) return;
+      const newDone = !act.done;
+
+      // Optimistic update — instant UI response
+      act.done = newDone;
+
+      const cardEl = document.querySelector(`.activity-card[data-id="${id}"]`);
+      if (cardEl) {
+        cardEl.classList.toggle('is-done', newDone);
+        const titleEl = cardEl.querySelector('.card-title');
+        if (titleEl) titleEl.style.textDecoration = newDone ? 'line-through' : '';
+        const iconsEl = cardEl.querySelector('.card-icons');
+        if (iconsEl) {
+          // Update done badge in card icons
+          const existingBadge = iconsEl.querySelector('.done-badge');
+          if (newDone && !existingBadge) {
+            const badge = document.createElement('span');
+            badge.className = 'done-badge';
+            badge.title = 'Hecho';
+            badge.textContent = '✓';
+            iconsEl.insertBefore(badge, iconsEl.querySelector('.card-arrow'));
+          } else if (!newDone && existingBadge) {
+            existingBadge.remove();
+          }
+        }
+      }
+
+      // Update modal button
+      refreshModalDoneBtn(act);
+
+      // Persist to Firestore
+      try {
+        await updateDoc(doc(db, 'activities', id), { done: newDone });
+      } catch (err) {
+        console.error('Error updating done state:', err);
+        // Revert optimistic update on failure
+        act.done = !newDone;
+        if (cardEl) cardEl.classList.toggle('is-done', !newDone);
+        refreshModalDoneBtn(act);
+      }
+    }
+
+    // ── Helpers ─────────────────────────────────────────────
+    function escHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function fmtDesc(text) {
+      return text.split('\n\n').map(para =>
+        '<p>' + escHtml(para).replace(/\n/g, '<br>') + '</p>'
+      ).join('');
+    }
+  </script>
+
+</body>
+</html>
