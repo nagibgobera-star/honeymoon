@@ -3,7 +3,9 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
 
-    match /docs/{activityId}/{fileName} {
+    // docs/{collection}/{itemId}/{fileName} — collection is one of
+    // activities | flights | accommodations | tours.
+    match /docs/{collection}/{itemId}/{fileName} {
       // Public itinerary needs to open/download attached PDFs without login.
       allow read: if true;
 

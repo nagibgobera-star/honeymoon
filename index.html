@@ -3,39 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Itinerario del Viaje por Europa 2026 — París, Zúrich, Múnich, Viena, Praga" />
-  <title>Viaje por Europa 2026</title>
+  <meta name="description" content="Honeymoon Indonesia 2026 — Java, Bali, Komodo + ruta a Tokio" />
+  <title>Honeymoon Indonesia 2026</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- PWA: manifest + icons + platform meta tags -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1C1917" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Mi Viaje" />
+  <meta name="mobile-web-app-capable" content="yes" />
 </head>
 <body>
 
+  <!-- ── Offline banner ──────────────────────────────────── -->
+  <div class="offline-banner" id="offlineBanner" style="display:none">
+    📡 Sin conexión — mostrando datos guardados
+  </div>
+
   <!-- ── App Header ──────────────────────────────────────── -->
   <header class="app-header">
-    <div class="header-eyebrow">✈ Itinerario de viaje</div>
-    <h1 class="header-title">Viaje por <em>Europa</em></h1>
-    <p class="header-dates">9 – 22 de abril, 2026 · 14 días</p>
-    <div class="header-cities">
-      <span>🗼 París</span>
-      <span>🏔️ Zúrich</span>
-      <span>🍺 Múnich</span>
-      <span>🎼 Viena</span>
-      <span>🏰 Praga</span>
+    <div class="header-eyebrow" id="headerEyebrow">💍 Honeymoon</div>
+    <h1 class="header-title" id="headerTitle">Honeymoon <em>Indonesia</em></h1>
+    <p class="header-dates" id="headerDates" style="display:none"></p>
+    <div class="header-cities" id="headerCities">
+      <span>🌆 CDMX</span>
+      <span>🏔️ Vancouver</span>
+      <span>🌃 Hong Kong</span>
+      <span>🌋 Java</span>
+      <span>🌴 Bali</span>
+      <span>🐉 Komodo</span>
+      <span>🦁 Singapur</span>
+      <span>🗼 Tokio</span>
     </div>
   </header>
 
-  <!-- ── Day Navigation ──────────────────────────────────── -->
-  <nav class="day-nav" aria-label="Navegación por ciudad">
-    <div class="day-nav-inner" id="dayNavInner"></div>
+  <!-- ── Trip Switcher ─────────────────────────────────────── -->
+  <nav class="trip-switcher" aria-label="Selector de viaje">
+    <div class="trip-switcher-inner" id="tripSwitcherInner"></div>
   </nav>
 
-  <!-- ── Main Content ────────────────────────────────────── -->
-  <main class="main-content" id="mainContent">
+  <!-- ── Destination Tabs ─────────────────────────────────── -->
+  <nav class="dest-tabs" aria-label="Navegación por destino">
+    <div class="dest-tabs-inner" id="destTabsInner"></div>
+  </nav>
+
+  <!-- ── Tab panels (one per destination + Resumen) ────────── -->
+  <div id="tabPanels">
     <div class="loading">Cargando itinerario…</div>
-  </main>
+  </div>
 
   <!-- ── App Footer ──────────────────────────────────────── -->
   <footer class="app-footer">
-    <p>¡Buen viaje! 🌍<span class="footer-divider">·</span>Abril 2026</p>
+    <p>¡Feliz luna de miel! 💍<span class="footer-divider">·</span>Agosto 2026</p>
   </footer>
 
   <!-- ── Modal ───────────────────────────────────────────── -->
@@ -56,54 +79,346 @@
     </div>
   </div>
 
+  <!-- ── PDF viewer overlay ──────────────────────────────────
+       Renders fetched PDFs inline via an iframe instead of a new
+       browser tab — modern Chrome blocks navigating a separate
+       tab/window to a blob: URL created in another context, so a
+       same-document iframe is the reliable way to show a fetched
+       PDF (and it works the same whether served fresh or from the
+       service worker's offline cache). -->
+  <div class="modal-overlay" id="pdfViewerOverlay" role="dialog" aria-modal="true" aria-label="Documento PDF">
+    <div class="modal-card pdf-viewer-card">
+      <div class="modal-header">
+        <div class="modal-title-area">
+          <h2 class="modal-title">📄 Documento</h2>
+        </div>
+        <button class="modal-close-btn" id="pdfViewerClose" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="pdf-viewer-body">
+        <iframe id="pdfViewerFrame" title="Documento PDF"></iframe>
+      </div>
+    </div>
+  </div>
+
   <!-- ── App (ES Module) ─────────────────────────────────── -->
   <script type="module">
-    import firebaseConfig          from './firebase-config.js';
-    import { CITY_INFO, TYPE_LABELS } from './data.js';
-    import { initializeApp }       from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import firebaseConfig from './firebase-config.js';
     import {
-      getFirestore, collection, onSnapshot, updateDoc, doc
+      TYPE_LABELS, DESTINATIONS_BY_TRIP, ACCOM_CITY_MAP_BY_TRIP, TOUR_CITY_MAP_BY_TRIP,
+      JAPAN_CATEGORIES, JAPAN_SUBCATEGORY_ORDER, TOKYO_DISTRICT_SUMMARIES, JAPAN_SUBCATEGORY_NOTES
+    } from './data.js';
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import {
+      initializeFirestore, persistentLocalCache, persistentSingleTabManager,
+      collection, onSnapshot, updateDoc, doc
     } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
     // ── Init Firebase ───────────────────────────────────────
+    // persistentLocalCache turns on Firestore's built-in IndexedDB
+    // offline persistence: every doc read while online is cached
+    // locally, onSnapshot listeners keep serving that cache (no error
+    // state) when offline, and writes/reads resync automatically once
+    // connectivity returns. This is what makes activities/flights/
+    // accommodations/tours/dayNotes/japanItems available offline —
+    // no manual caching of Firestore traffic needed in sw.js.
     const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
+    const db = initializeFirestore(app, {
+      localCache: persistentLocalCache({ tabManager: persistentSingleTabManager({}) })
+    });
+
+    // ── PWA: service worker + offline banner ─────────────────
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch((err) => {
+          console.warn('Service worker registration failed:', err);
+        });
+      });
+    }
+
+    function updateOfflineBanner() {
+      const banner = document.getElementById('offlineBanner');
+      if (banner) banner.style.display = navigator.onLine ? 'none' : 'block';
+    }
+    window.addEventListener('online', updateOfflineBanner);
+    window.addEventListener('offline', updateOfflineBanner);
+    updateOfflineBanner();
+
+    // Storage PDF links are intercepted (rather than navigated to
+    // directly) so the fetch goes through the service worker, which
+    // caches the response on first view — making a ticket once opened
+    // available offline afterward. Maps/TikTok links are untouched.
+    let activePdfBlobUrl = null;
+    async function openPdf(url) {
+      const pdfOverlay = document.getElementById('pdfViewerOverlay');
+      const pdfFrame = document.getElementById('pdfViewerFrame');
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error('PDF fetch failed: ' + resp.status);
+        const blob = await resp.blob();
+        if (activePdfBlobUrl) URL.revokeObjectURL(activePdfBlobUrl);
+        activePdfBlobUrl = URL.createObjectURL(blob);
+        pdfFrame.src = activePdfBlobUrl;
+        pdfOverlay.classList.add('open');
+      } catch (err) {
+        alert('No se pudo abrir el documento. Si no tienes conexión, ábrelo primero con internet para guardarlo sin conexión.');
+      }
+    }
+    document.getElementById('pdfViewerClose').addEventListener('click', () => {
+      document.getElementById('pdfViewerOverlay').classList.remove('open');
+      document.getElementById('pdfViewerFrame').src = 'about:blank';
+    });
+    document.getElementById('pdfViewerOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'pdfViewerOverlay') {
+        e.currentTarget.classList.remove('open');
+        document.getElementById('pdfViewerFrame').src = 'about:blank';
+      }
+    });
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href*="firebasestorage.googleapis.com"]');
+      if (!link) return;
+      e.preventDefault();
+      openPdf(link.href);
+    });
 
     // ── State ───────────────────────────────────────────────
     let currentActivities = [];
-    let currentOpenId     = null;
-    let navReady          = false;
+    let currentFlights = [];
+    let currentAccommodations = [];
+    let currentTours = [];
+    let currentDayNotesRaw = [];
+    let currentJapanItems = [];
+    let trips = [];
+    let selectedTripId = 'honeymoon-indonesia';
+    let currentOpenId = null;
+    let tabsBuiltForTrip = null;
+    let currentTabKeys = ['overview'];
+    const topRatedFilterByCategory = {}; // category name -> bool, "Solo 5★" toggle
+    let tokioSubView = 'resumen'; // "Tokio por Distrito" sub-tab: 'resumen' | 'mapa'
+    let regionsSubView = 'lista'; // "Fuera de Tokio (Japón)" sub-tab: 'lista' | 'mapa'
 
-    // ── Firestore real-time listener ────────────────────────
+    // Japan-wide map regions — same simplified, non-cartographic illustrated
+    // style as the Tokyo map. `target` is the subcategory each shape jumps
+    // to (it doesn't always match the shape's display name 1:1, since
+    // thematic subcats like "Esquí"/"Buceo" cut across several regions).
+    const JAPAN_MAP_REGIONS = [
+      { name: 'Hokkaido',      target: 'Hokkaido',                  emoji: '🦑', x: 150, y: 20,  w: 120, h: 60, travel: '~1.5h vuelo / 4h tren+ferry', teaser: 'Sapporo, Niseko (esquí) y Hakodate están aquí.' },
+      { name: 'Tohoku',        target: 'Fuera de lo común',         emoji: '🏔️', x: 150, y: 100, w: 120, h: 55, travel: '~1.5h shinkansen (Sendai)', teaser: 'Región menos visitada — Matsushima Bay, Ginzan Onsen.' },
+      { name: 'Alpes/Chubu',   target: 'Kanazawa-Toyama-Nagano-Matsumoto', emoji: '⛩️', x: 150, y: 175, w: 120, h: 55, travel: '~2.5h shinkansen (Nagano)', teaser: 'Kanazawa, Matsumoto, y esquí en Hakuba/Nozawa/Myoko.' },
+      { name: 'Kanto (cerca de Tokio)', target: 'Cerca de Tokio',   emoji: '🏞️', x: 280, y: 175, w: 110, h: 55, travel: '0-2h (día)', teaser: 'Nikko, Kamakura, Hakone, Kawagoe — day trips desde Tokio.' },
+      { name: 'Monte Fuji',    target: 'Monte Fuji',                emoji: '🗻', x: 280, y: 250, w: 110, h: 50, travel: '~2h bus/tren', teaser: 'El Monte Fuji y sus pueblos del lago.' },
+      { name: 'Izu Peninsula', target: 'Buceo',                     emoji: '🤿', x: 280, y: 320, w: 110, h: 50, travel: '~2-3h tren', teaser: 'La opción de buceo más cercana a Tokio.' },
+      { name: 'Kobe/Himeji/Okayama', target: 'Kobe-Himeji-Okayama', emoji: '🏯', x: 20,  y: 320, w: 100, h: 50, travel: '~3h shinkansen', teaser: 'Kobe beef, Himeji Castle, Kurashiki.' },
+      { name: 'Kioto',         target: 'Kioto',                     emoji: '🏯', x: 130, y: 320, w: 100, h: 50, travel: '~2h15 shinkansen', teaser: 'Templos, Fushimi Inari, Arashiyama.' },
+      { name: 'Koyasan/Nara',  target: 'Koyasan-Nara',              emoji: '🛕', x: 130, y: 390, w: 100, h: 50, travel: '~3h shinkansen+tren', teaser: 'Todaiji, Okunoin, ciervos de Nara.' },
+      { name: 'Osaka',         target: 'Osaka',                     emoji: '🐙', x: 20,  y: 390, w: 100, h: 50, travel: '~2h30 shinkansen', teaser: 'Dotonbori, takoyaki, vida nocturna.' },
+      { name: 'Naoshima',      target: 'Fuera de lo común',         emoji: '🎨', x: 20,  y: 460, w: 90,  h: 45, travel: '~4h shinkansen+ferry', teaser: '"Isla del Arte" — Kusama, Tadao Ando.' },
+      { name: 'Hiroshima/Miyajima', target: 'Hiroshima-Miyajima',   emoji: '⛩️', x: 130, y: 460, w: 100, h: 50, travel: '~4h shinkansen', teaser: 'Memorial de la Paz, santuario flotante de Miyajima.' },
+      { name: 'Shikoku',       target: 'Fuera de lo común',         emoji: '🌉', x: 130, y: 530, w: 100, h: 55, travel: '~4-5h (tren+bus, requiere auto en Iya)', teaser: 'Valle de Iya — puente de enredaderas, remoto.' },
+      { name: 'Kyushu',        target: 'Kyushu',                    emoji: '🍜', x: 20,  y: 530, w: 100, h: 60, travel: '~5h shinkansen / 2h vuelo', teaser: 'Fukuoka, onsen de Beppu/Kurokawa, Yakushima.' },
+      { name: 'Okinawa',       target: 'Okinawa',                   emoji: '🏖️', x: 150, y: 650, w: 120, h: 55, travel: '~3h vuelo', teaser: 'Playas, Shuri Castle, y buceo con mantarrayas en Ishigaki.' }
+    ];
+    const JAPAN_MAP_COLORS = {
+      'Hokkaido': '#BAE6FD', 'Tohoku': '#A7F3D0', 'Alpes/Chubu': '#FED7AA',
+      'Kanto (cerca de Tokio)': '#FCA5A5', 'Monte Fuji': '#DDD6FE', 'Izu Peninsula': '#7DD3FC',
+      'Kobe/Himeji/Okayama': '#99F6E4', 'Kioto': '#FBCFE8', 'Koyasan/Nara': '#FDE68A',
+      'Osaka': '#FEF08A', 'Naoshima': '#F0ABFC', 'Hiroshima/Miyajima': '#C4B5FD',
+      'Shikoku': '#86EFAC', 'Kyushu': '#FDA4AF', 'Okinawa': '#93C5FD'
+    };
+
+    // Rough relative-position layout for the illustrated Tokyo map — not
+    // cartographically accurate, just clear compass-ish placement for a
+    // quick-glance navigational aid. Names must match item.subcategory
+    // values (for click-to-navigate) and TOKYO_DISTRICT_SUMMARIES.name
+    // (for the hover/tap teaser).
+    const TOKIO_MAP_SHAPES = [
+      { name: 'Ikebukuro',     x: 130, y: 20,  w: 95,  h: 55 },
+      { name: 'Yanaka',        x: 235, y: 10,  w: 80,  h: 50 },
+      { name: 'Ueno',          x: 325, y: 12,  w: 85,  h: 50 },
+      { name: 'Asakusa',       x: 420, y: 50,  w: 85,  h: 55 },
+      { name: 'Kichijoji',     x: 10,  y: 70,  w: 85,  h: 50 },
+      { name: 'Akihabara',     x: 370, y: 122, w: 90,  h: 50 },
+      { name: 'Shimokitazawa', x: 10,  y: 150, w: 100, h: 50 },
+      { name: 'Shinjuku',      x: 130, y: 140, w: 100, h: 55 },
+      { name: 'Chiyoda',       x: 260, y: 185, w: 100, h: 55 },
+      { name: 'Ginza',         x: 400, y: 205, w: 90,  h: 55 },
+      { name: 'Harajuku',      x: 150, y: 232, w: 95,  h: 50 },
+      { name: 'Daikanyama',    x: 40,  y: 240, w: 85,  h: 50 },
+      { name: 'Shiba',         x: 280, y: 300, w: 90,  h: 50 },
+      { name: 'Sangenjaya',    x: 30,  y: 310, w: 85,  h: 50 },
+      { name: 'Shibuya',       x: 160, y: 295, w: 95,  h: 55 },
+      { name: 'Odaiba',        x: 400, y: 345, w: 95,  h: 55 },
+      { name: 'Mita',          x: 200, y: 365, w: 85,  h: 50 },
+      { name: 'Nakameguro',    x: 40,  y: 375, w: 85,  h: 50 },
+      { name: 'Jiyugaoka',     x: 40,  y: 445, w: 85,  h: 50 }
+    ];
+    const TOKIO_MAP_COLORS = {
+      Ikebukuro: '#FDE68A', Ueno: '#BAE6FD', Asakusa: '#FBCFE8', Akihabara: '#DDD6FE',
+      Shinjuku: '#FCA5A5', Chiyoda: '#FED7AA', Ginza: '#FEF08A', Harajuku: '#A7F3D0',
+      Shibuya: '#99F6E4', Odaiba: '#93C5FD',
+      Yanaka: '#E5E0D8', Shimokitazawa: '#F0ABFC', Kichijoji: '#86EFAC',
+      Daikanyama: '#A5B4FC', Nakameguro: '#F9A8D4', Sangenjaya: '#D4D4D8',
+      Jiyugaoka: '#FDA4AF', Shiba: '#FCD34D', Mita: '#C4B5FD'
+    };
+
+    function starsHtml(rating) {
+      if (!rating) return '';
+      const r = Math.max(1, Math.min(5, rating));
+      return `<span class="japan-item-stars">${'⭐'.repeat(r)}${'☆'.repeat(5 - r)}</span>`;
+    }
+
+    function slugify(str) {
+      return str.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+    function tabSlug(key) { return key === 'overview' ? 'overview' : slugify(key); }
+
+    const CATEGORY_ICONS = {
+      "Tokio por Distrito": "🗼",
+      "Fuera de Tokio (Japón)": "🚄",
+      "Restaurantes y Comida": "🍜",
+      "Naturaleza": "🌲",
+      "Hidden Gems": "💎",
+      "Actividades y Experiencias": "🎟️",
+      "Eventos Estacionales": "🎏",
+      "Otros Países (Asia)": "🌏"
+    };
+
+    function isCategoriesTrip(tripId) {
+      const trip = trips.find(t => t.id === tripId);
+      return !!trip && trip.viewMode === 'categories';
+    }
+
+    // Trips with viewMode "categories" (e.g. Japón) get one tab per
+    // category, no Resumen tab. Trips with a destinations mapping
+    // (itinerary-mode trips that have real content, like honeymoon/boda)
+    // get a per-destination tab breakdown. Anything else (empty, or
+    // categories-mode before "trips" has loaded) gets a single Resumen tab.
+    function tabKeysForTrip(tripId) {
+      if (isCategoriesTrip(tripId)) return [...JAPAN_CATEGORIES];
+      const destinations = DESTINATIONS_BY_TRIP[tripId];
+      return destinations ? ['overview', ...Object.keys(destinations)] : ['overview'];
+    }
+
+    // ── Build tab bar (re-run whenever the selected trip changes) ──
+    function buildTabs(tripId) {
+      currentTabKeys = tabKeysForTrip(tripId);
+      const categories = isCategoriesTrip(tripId);
+      const destinations = DESTINATIONS_BY_TRIP[tripId] || {};
+      const nav = document.getElementById('destTabsInner');
+      nav.innerHTML = '';
+      currentTabKeys.forEach(key => {
+        const btn = document.createElement('button');
+        btn.className = 'day-nav-city';
+        btn.dataset.tabKey = key;
+        if (categories) {
+          btn.textContent = (CATEGORY_ICONS[key] || '📌') + ' ' + key;
+        } else if (key === 'overview') {
+          btn.textContent = '📋 Resumen';
+        } else {
+          btn.textContent = destinations[key].emoji + ' ' + key;
+        }
+        btn.addEventListener('click', () => setActiveTab(key));
+        nav.appendChild(btn);
+      });
+
+      const panels = document.getElementById('tabPanels');
+      panels.innerHTML = '';
+      currentTabKeys.forEach(key => {
+        const panel = document.createElement('div');
+        panel.className = 'dest-tab-panel';
+        panel.id = 'tabPanel-' + tabSlug(key);
+        panel.style.display = 'none';
+        panels.appendChild(panel);
+      });
+      tabsBuiltForTrip = tripId;
+    }
+
+    function setActiveTab(key) {
+      document.querySelectorAll('.day-nav-city').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.tabKey === key)
+      );
+      currentTabKeys.forEach(k => {
+        const panel = document.getElementById('tabPanel-' + tabSlug(k));
+        if (panel) panel.style.display = (k === key) ? 'block' : 'none';
+      });
+      window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    // ── Trip switcher ─────────────────────────────────────────
+    const TRIP_TYPE_ICONS = { honeymoon: '💍', wedding: '💒', ideas: '🎌' };
+    const TRIP_ORDER = { 'honeymoon-indonesia': 0, 'boda-mexico': 1, 'japon': 2 };
+
+    function buildTripSwitcher() {
+      const nav = document.getElementById('tripSwitcherInner');
+      nav.innerHTML = '';
+      const sorted = [...trips].sort((a, b) => (TRIP_ORDER[a.id] ?? 99) - (TRIP_ORDER[b.id] ?? 99));
+      sorted.forEach(trip => {
+        const btn = document.createElement('button');
+        btn.className = 'trip-switcher-btn' + (trip.id === selectedTripId ? ' active' : '');
+        btn.dataset.tripId = trip.id;
+        btn.textContent = (TRIP_TYPE_ICONS[trip.type] || '🧳') + ' ' + trip.name;
+        btn.addEventListener('click', () => selectTrip(trip.id));
+        nav.appendChild(btn);
+      });
+    }
+
+    function selectTrip(tripId) {
+      if (tripId === selectedTripId) return;
+      selectedTripId = tripId;
+      document.querySelectorAll('.trip-switcher-btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.tripId === tripId)
+      );
+      const trip = trips.find(t => t.id === tripId);
+      if (trip) updateHeaderForTrip(trip);
+      renderAll();
+    }
+
+    function updateHeaderForTrip(trip) {
+      const eyebrowLabels = { honeymoon: '💍 Honeymoon', wedding: '💒 Boda', ideas: '🎌 Ideas' };
+      document.getElementById('headerEyebrow').textContent =
+        eyebrowLabels[trip.type] || ((TRIP_TYPE_ICONS[trip.type] || '🧳') + ' ' + trip.name);
+
+      const titleEl = document.getElementById('headerTitle');
+      if (trip.id === 'honeymoon-indonesia') {
+        titleEl.innerHTML = 'Honeymoon <em>Indonesia</em>';
+      } else {
+        titleEl.textContent = trip.name;
+      }
+
+      const datesEl = document.getElementById('headerDates');
+      if (trip.startDate && trip.endDate) {
+        datesEl.textContent = formatDateRange(trip.startDate, trip.endDate);
+        datesEl.style.display = '';
+      } else {
+        datesEl.style.display = 'none';
+      }
+
+      document.getElementById('headerCities').style.display = trip.id === 'honeymoon-indonesia' ? '' : 'none';
+    }
+
+    function formatDateRange(start, end) {
+      try {
+        const s = new Date(start + 'T00:00:00');
+        const e = new Date(end + 'T00:00:00');
+        const days = Math.round((e - s) / 86400000) + 1;
+        const fmt = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+        return `${fmt(s)} – ${fmt(e)}, ${e.getFullYear()} · ${days} días`;
+      } catch {
+        return '';
+      }
+    }
+
+    // ── Firestore real-time listeners ────────────────────────
     onSnapshot(
       collection(db, 'activities'),
       (snapshot) => {
         const fresh = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
         fresh.sort((a, b) =>
-          a.day !== b.day
-            ? a.day - b.day
-            : (a.order ?? 99) - (b.order ?? 99)
+          a.day !== b.day ? a.day - b.day : (a.order ?? 99) - (b.order ?? 99)
         );
-
         currentActivities = fresh;
-
-        if (fresh.length === 0) {
-          document.getElementById('mainContent').innerHTML =
-            '<p style="text-align:center;padding:48px 20px;color:#888;font-size:18px">' +
-            'El itinerario aún no ha sido cargado.<br>Abre el panel de administración para añadir las actividades.</p>';
-          return;
-        }
-
-        renderItinerary(fresh);
-
-        if (!navReady) {
-          buildNav();
-          initScrollSpy();
-          navReady = true;
-          setActiveNav(Object.keys(CITY_INFO)[0]);
-        }
-
-        // If modal is open, refresh its done button
+        renderAll();
         if (currentOpenId) {
           const act = fresh.find(a => a.id === currentOpenId);
           if (act) refreshModalDoneBtn(act);
@@ -111,115 +426,605 @@
       },
       (error) => {
         console.error('Firestore error:', error);
-        document.getElementById('mainContent').innerHTML =
+        document.getElementById('tabPanels').innerHTML =
           '<p style="text-align:center;padding:48px 20px;color:#888;font-size:18px">' +
           'Error al cargar el itinerario. Comprueba tu conexión y recarga la página.</p>';
       }
     );
 
+    onSnapshot(collection(db, 'flights'), (snapshot) => {
+      currentFlights = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      currentFlights.sort((a, b) => (a.departureDate||'').localeCompare(b.departureDate||'') || (a.departureTime||'').localeCompare(b.departureTime||''));
+      renderAll();
+    }, (error) => console.error('Firestore error (flights):', error));
+
+    onSnapshot(collection(db, 'accommodations'), (snapshot) => {
+      currentAccommodations = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll();
+    }, (error) => console.error('Firestore error (accommodations):', error));
+
+    onSnapshot(collection(db, 'tours'), (snapshot) => {
+      currentTours = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll();
+    }, (error) => console.error('Firestore error (tours):', error));
+
+    onSnapshot(collection(db, 'dayNotes'), (snapshot) => {
+      currentDayNotesRaw = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll();
+    }, (error) => console.error('Firestore error (dayNotes):', error));
+
+    onSnapshot(collection(db, 'trips'), (snapshot) => {
+      trips = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      buildTripSwitcher();
+      const trip = trips.find(t => t.id === selectedTripId);
+      if (trip) updateHeaderForTrip(trip);
+      // viewMode (itinerary vs categories) is only known once trips has
+      // loaded — force a tab rebuild in case an earlier renderAll() ran
+      // before this and guessed wrong.
+      tabsBuiltForTrip = null;
+      renderAll();
+    }, (error) => console.error('Firestore error (trips):', error));
+
+    onSnapshot(collection(db, 'japanItems'), (snapshot) => {
+      currentJapanItems = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll();
+    }, (error) => console.error('Firestore error (japanItems):', error));
+
     // ── City helper ─────────────────────────────────────────
-    function getCityForDay(day) {
-      for (const [name, info] of Object.entries(CITY_INFO)) {
+    function getCityForDay(day, destinations) {
+      for (const [name, info] of Object.entries(destinations)) {
         if (info.days.includes(day)) return { name, info };
       }
-      return { name: 'Europa', info: { emoji: '🌍', color: '#6B7280', days: [] } };
+      return { name: 'Otro destino', info: { emoji: '🌍', color: '#6B7280', days: [] } };
     }
 
-    // ── Build navigation ────────────────────────────────────
-    function buildNav() {
-      const nav = document.getElementById('dayNavInner');
-      nav.innerHTML = '';
-      Object.entries(CITY_INFO).forEach(([cityName, cityInfo], idx) => {
-        if (idx > 0) {
-          const sep = document.createElement('div');
-          sep.className = 'day-nav-separator';
-          nav.appendChild(sep);
+    // ── Render everything into tab panels ────────────────────
+    function renderAll() {
+      if (tabsBuiltForTrip !== selectedTripId) {
+        buildTabs(selectedTripId);
+        setActiveTab(currentTabKeys[0]);
+      }
+
+      if (isCategoriesTrip(selectedTripId)) {
+        renderCategoriesView();
+        return;
+      }
+
+      const tripActivities = currentActivities.filter(a => a.tripId === selectedTripId);
+      const tripFlights = currentFlights.filter(f => f.tripId === selectedTripId);
+      const tripAccommodations = currentAccommodations.filter(a => a.tripId === selectedTripId);
+      const tripTours = currentTours.filter(t => t.tripId === selectedTripId);
+      const tripDayNotes = {};
+      currentDayNotesRaw.filter(n => n.tripId === selectedTripId).forEach(n => { tripDayNotes[n.day] = n; });
+
+      const totalDocs = tripActivities.length + tripFlights.length + tripAccommodations.length + tripTours.length;
+      if (totalDocs === 0) {
+        const overviewPanel = document.getElementById('tabPanel-overview');
+        if (overviewPanel) {
+          overviewPanel.innerHTML =
+            '<p class="trip-empty-state">Este viaje todavía no tiene contenido.<br>Agrégalo desde el panel de administración.</p>';
         }
-        const btn = document.createElement('a');
-        btn.className = 'day-nav-city';
-        btn.href = '#day-' + cityInfo.days[0];
-        btn.dataset.city = cityName;
-        btn.textContent = cityInfo.emoji + ' ' + cityName;
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          const dayEl = document.getElementById('day-' + cityInfo.days[0]);
-          if (dayEl) {
-            const navH = document.querySelector('.day-nav').offsetHeight;
-            window.scrollTo({ top: dayEl.getBoundingClientRect().top + window.scrollY - navH - 12, behavior: 'smooth' });
-          }
-          setActiveNav(cityName);
-        });
-        nav.appendChild(btn);
-      });
-    }
+        return;
+      }
 
-    function setActiveNav(cityName) {
-      document.querySelectorAll('.day-nav-city').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.city === cityName);
-      });
-    }
+      renderOverviewTab(tripFlights);
 
-    function initScrollSpy() {
-      const sections = document.querySelectorAll('.day-section');
-      const navH = document.querySelector('.day-nav').offsetHeight;
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const city = getCityForDay(parseInt(entry.target.dataset.day, 10)).name;
-            setActiveNav(city);
-          }
-        });
-      }, { rootMargin: `-${navH + 20}px 0px -55% 0px` });
-      sections.forEach(s => io.observe(s));
-    }
+      const destinations = DESTINATIONS_BY_TRIP[selectedTripId];
+      if (!destinations) return; // categories-mode / no breakdown yet: overview only
 
-    // ── Render itinerary ────────────────────────────────────
-    function renderItinerary(activities) {
-      const main = document.getElementById('mainContent');
-      main.innerHTML = '';
+      const accomCityMap = ACCOM_CITY_MAP_BY_TRIP[selectedTripId] || {};
+      const tourCityMap = TOUR_CITY_MAP_BY_TRIP[selectedTripId] || {};
 
       const grouped = {};
-      activities.forEach(act => {
-        if (!grouped[act.day]) grouped[act.day] = [];
-        grouped[act.day].push(act);
-      });
+      tripActivities.forEach(act => { (grouped[act.day] ||= []).push(act); });
 
-      Object.keys(grouped)
-        .map(Number)
-        .sort((a, b) => a - b)
-        .forEach(day => {
-          const acts     = grouped[day];
-          const city     = getCityForDay(day);
-          const firstAct = acts[0];
+      Object.keys(destinations).forEach(cityName => {
+        const panel = document.getElementById('tabPanel-' + tabSlug(cityName));
+        if (!panel) return;
+        panel.innerHTML = '';
 
-          const section = document.createElement('section');
-          section.className = 'day-section';
-          section.id = 'day-' + day;
-          section.dataset.day = day;
-
-          // Day header
-          const header = document.createElement('div');
-          header.className = 'day-header';
-          header.innerHTML =
-            `<div class="day-number-badge" style="background:${city.info.color}">` +
-              `<span class="day-num">${day}</span><span class="day-word">día</span>` +
-            `</div>` +
-            `<div class="day-header-info">` +
-              `<div class="day-city-name"><span class="city-emoji">${city.info.emoji}</span>${escHtml(city.name)}</div>` +
-              `<div class="day-date-text">${escHtml(firstAct.date)}</div>` +
-            `</div>`;
-          section.appendChild(header);
-
-          // Cards
-          const list = document.createElement('div');
-          list.className = 'cards-list';
-          acts.forEach(act => list.appendChild(renderCard(act)));
-          section.appendChild(list);
-          main.appendChild(section);
+        destinations[cityName].days.forEach(day => {
+          if (!grouped[day]) return;
+          panel.appendChild(renderDaySection(day, grouped[day], destinations, tripDayNotes));
         });
+
+        appendCityExtras(panel, cityName, tripAccommodations, tripTours, accomCityMap, tourCityMap);
+      });
     }
 
-    // ── Render a single card ────────────────────────────────
+    // ── Categories view (viewMode "categories", e.g. Japón) ──
+    function renderCategoriesView() {
+      const items = currentJapanItems.filter(i => i.tripId === selectedTripId);
+      JAPAN_CATEGORIES.forEach(category => {
+        const panel = document.getElementById('tabPanel-' + tabSlug(category));
+        if (!panel) return;
+        panel.innerHTML = '';
+
+        if (category === 'Tokio por Distrito') {
+          panel.appendChild(renderDistrictSubTabs());
+          panel.appendChild(tokioSubView === 'mapa' ? renderDistrictMap(panel) : renderDistrictSummaries());
+        }
+
+        if (category === 'Fuera de Tokio (Japón)') {
+          panel.appendChild(renderRegionsSubTabs());
+          if (regionsSubView === 'mapa') panel.appendChild(renderJapanMap(panel));
+        }
+
+        const allCatItems = items.filter(i => i.category === category);
+        if (!allCatItems.length) {
+          panel.insertAdjacentHTML('beforeend', '<p class="category-tabs-empty">Esta categoría todavía no tiene contenido.<br>Agrégalo desde el panel de administración.</p>');
+          return;
+        }
+
+        panel.appendChild(renderTopFilterToggle(category, panel));
+
+        const showOnlyTop = !!topRatedFilterByCategory[category];
+        const catItems = showOnlyTop ? allCatItems.filter(i => i.rating === 5) : allCatItems;
+        if (!catItems.length) {
+          panel.insertAdjacentHTML('beforeend', '<p class="category-tabs-empty">Ningún elemento 5★ en esta categoría todavía.</p>');
+          return;
+        }
+
+        const bySubcat = {};
+        const noSubcat = [];
+        catItems.forEach(item => {
+          if (item.subcategory) (bySubcat[item.subcategory] ||= []).push(item);
+          else noSubcat.push(item);
+        });
+
+        if (noSubcat.length) {
+          const wrap = document.createElement('div');
+          wrap.className = 'japan-subcat-items';
+          wrap.style.marginBottom = 'var(--space-4)';
+          sortByPriority(noSubcat).forEach(item => wrap.appendChild(renderJapanItemCard(item)));
+          panel.appendChild(wrap);
+        }
+
+        const order = JAPAN_SUBCATEGORY_ORDER[category];
+        const subcatKeys = Object.keys(bySubcat).sort((a, b) => {
+          if (!order) return a.localeCompare(b);
+          const ia = order.indexOf(a), ib = order.indexOf(b);
+          if (ia === -1 && ib === -1) return a.localeCompare(b);
+          if (ia === -1) return 1;
+          if (ib === -1) return -1;
+          return ia - ib;
+        });
+        subcatKeys.forEach(subcat => panel.appendChild(renderSubcatBlock(subcat, bySubcat[subcat])));
+      });
+    }
+
+    // Lower priority number = shown first; items without a priority sort last (by title).
+    function sortByPriority(items) {
+      return items.sort((a, b) => {
+        const pa = a.priority ?? Infinity, pb = b.priority ?? Infinity;
+        if (pa !== pb) return pa - pb;
+        return a.title.localeCompare(b.title);
+      });
+    }
+
+    function renderTopFilterToggle(category, panel) {
+      const bar = document.createElement('div');
+      bar.className = 'japan-top-filter-bar';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'japan-top-filter-btn' + (topRatedFilterByCategory[category] ? ' is-active' : '');
+      btn.textContent = topRatedFilterByCategory[category] ? '⭐ Solo 5★ (activo)' : '⭐ Solo 5★ / Top recomendado';
+      btn.addEventListener('click', () => {
+        topRatedFilterByCategory[category] = !topRatedFilterByCategory[category];
+        renderCategoriesView();
+      });
+      bar.appendChild(btn);
+      return bar;
+    }
+
+    function renderDistrictSubTabs() {
+      const bar = document.createElement('div');
+      bar.className = 'tokio-subtabs';
+      [['resumen', '📋 Resumen'], ['mapa', '🗺️ Mapa']].forEach(([key, label]) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tokio-subtab-btn' + (tokioSubView === key ? ' active' : '');
+        btn.textContent = label;
+        btn.addEventListener('click', () => {
+          if (tokioSubView === key) return;
+          tokioSubView = key;
+          renderCategoriesView();
+        });
+        bar.appendChild(btn);
+      });
+      return bar;
+    }
+
+    function renderDistrictMap(panel) {
+      const wrap = document.createElement('div');
+      wrap.className = 'tokio-map-wrap';
+
+      const summaryByName = {};
+      TOKYO_DISTRICT_SUMMARIES.forEach(d => { summaryByName[d.name] = d; });
+
+      const shapesHtml = TOKIO_MAP_SHAPES.map(s => {
+        const cx = s.x + s.w / 2, cy = s.y + s.h / 2;
+        const d = summaryByName[s.name];
+        return `
+          <g class="tokio-map-shape" data-subcat="${escHtml(s.name)}" tabindex="0" role="button" aria-label="${escHtml(s.name)}">
+            <rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" rx="14" fill="${TOKIO_MAP_COLORS[s.name] || '#E5E7EB'}" stroke="#fff" stroke-width="2"></rect>
+            <text x="${cx}" y="${cy - 5}" text-anchor="middle" class="tokio-map-emoji">${d ? d.emoji : ''}</text>
+            <text x="${cx}" y="${cy + 15}" text-anchor="middle" class="tokio-map-label">${escHtml(s.name)}</text>
+          </g>`;
+      }).join('');
+
+      wrap.innerHTML =
+        `<svg class="tokio-map-svg" viewBox="0 0 560 620" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa ilustrado de Tokio por distrito">` +
+          `<rect x="5" y="5" width="535" height="500" rx="46" fill="#FAF3E8"></rect>` +
+          `<path d="M370 330 Q460 330 540 395 L560 620 L340 620 Q325 470 370 330 Z" fill="#BFDBFE"></path>` +
+          shapesHtml +
+          `<line x1="82" y1="495" x2="76" y2="568" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,5"></line>` +
+          `<text x="92" y="535" class="tokio-map-commute-label">🚃 ~25 min</text>` +
+          `<g class="tokio-map-pin" data-pin="hiyoshi">` +
+            `<circle cx="75" cy="582" r="14" fill="#7C3AED" stroke="#fff" stroke-width="2"></circle>` +
+            `<text x="75" y="587" text-anchor="middle" class="tokio-map-pin-emoji">🎓</text>` +
+            `<text x="75" y="606" text-anchor="middle" class="tokio-map-pin-label">Keio Hiyoshi</text>` +
+          `</g>` +
+        `</svg>` +
+        `<div class="tokio-map-info" id="tokioMapInfo"><span class="tokio-map-info-placeholder">👆 Toca un distrito para ver más</span></div>`;
+
+      const infoEl = wrap.querySelector('#tokioMapInfo');
+
+      function showTeaser(name) {
+        const d = summaryByName[name];
+        if (!d) return;
+        infoEl.innerHTML =
+          `<div class="tokio-map-info-title">${d.emoji} ${escHtml(name)}</div>` +
+          `<div class="tokio-map-info-teaser">${escHtml(d.description)}</div>`;
+      }
+
+      function navigateToSubcat(name) {
+        const block = panel.querySelector(`.japan-subcat-block[data-subcat="${name}"]`);
+        if (!block) return;
+        const header = block.querySelector('.japan-subcat-header');
+        const itemsWrap = block.querySelector('.japan-subcat-items');
+        if (itemsWrap && itemsWrap.style.display === 'none') header.click();
+        block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      wrap.querySelectorAll('.tokio-map-shape').forEach(shape => {
+        const name = shape.dataset.subcat;
+        shape.addEventListener('mouseenter', () => showTeaser(name));
+        shape.addEventListener('click', () => { showTeaser(name); navigateToSubcat(name); });
+        shape.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showTeaser(name); navigateToSubcat(name); }
+        });
+      });
+
+      wrap.querySelector('[data-pin="hiyoshi"]')?.addEventListener('click', () => {
+        infoEl.innerHTML =
+          '<div class="tokio-map-info-title">🎓 Keio Hiyoshi Campus</div>' +
+          '<div class="tokio-map-info-teaser">Fuera del cluster principal de distritos — conectado por la línea Tokyu Toyoko desde Shibuya, ~25 min de viaje (no caminable).</div>';
+      });
+
+      return wrap;
+    }
+
+    function renderRegionsSubTabs() {
+      const bar = document.createElement('div');
+      bar.className = 'tokio-subtabs';
+      [['lista', '📋 Lista de regiones'], ['mapa', '🗺️ Mapa de Japón']].forEach(([key, label]) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tokio-subtab-btn' + (regionsSubView === key ? ' active' : '');
+        btn.textContent = label;
+        btn.addEventListener('click', () => {
+          if (regionsSubView === key) return;
+          regionsSubView = key;
+          renderCategoriesView();
+        });
+        bar.appendChild(btn);
+      });
+      return bar;
+    }
+
+    function renderJapanMap(panel) {
+      const wrap = document.createElement('div');
+      wrap.className = 'tokio-map-wrap';
+
+      const shapesHtml = JAPAN_MAP_REGIONS.filter(r => r.name !== 'Okinawa').map(r => {
+        const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+        const fontSize = r.name.length > 13 ? 10 : 12;
+        return `
+          <g class="tokio-map-shape" data-region="${escHtml(r.name)}" tabindex="0" role="button" aria-label="${escHtml(r.name)}">
+            <rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="14" fill="${JAPAN_MAP_COLORS[r.name] || '#E5E7EB'}" stroke="#fff" stroke-width="2"></rect>
+            <text x="${cx}" y="${cy - 5}" text-anchor="middle" class="tokio-map-emoji">${r.emoji}</text>
+            <text x="${cx}" y="${cy + 15}" text-anchor="middle" class="tokio-map-label" style="font-size:${fontSize}px">${escHtml(r.name)}</text>
+          </g>`;
+      }).join('');
+
+      const okinawa = JAPAN_MAP_REGIONS.find(r => r.name === 'Okinawa');
+      const ocx = okinawa.x + okinawa.w / 2, ocy = okinawa.y + okinawa.h / 2;
+
+      wrap.innerHTML =
+        `<svg class="tokio-map-svg" viewBox="0 0 420 780" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa ilustrado de Japón por región">` +
+          `<rect x="5" y="10" width="405" height="605" rx="50" fill="#FAF3E8"></rect>` +
+          shapesHtml +
+          `<line x1="170" y1="600" x2="180" y2="648" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,5"></line>` +
+          `<text x="190" y="635" class="tokio-map-commute-label">✈️ ~3h vuelo</text>` +
+          `<g class="tokio-map-shape" data-region="Okinawa" tabindex="0" role="button" aria-label="Okinawa">` +
+            `<rect x="${okinawa.x}" y="${okinawa.y}" width="${okinawa.w}" height="${okinawa.h}" rx="14" fill="${JAPAN_MAP_COLORS['Okinawa']}" stroke="#fff" stroke-width="2"></rect>` +
+            `<text x="${ocx}" y="${ocy - 5}" text-anchor="middle" class="tokio-map-emoji">${okinawa.emoji}</text>` +
+            `<text x="${ocx}" y="${ocy + 15}" text-anchor="middle" class="tokio-map-label">${escHtml(okinawa.name)}</text>` +
+          `</g>` +
+        `</svg>` +
+        `<div class="tokio-map-info" id="japanMapInfo"><span class="tokio-map-info-placeholder">👆 Toca una región para ver más</span></div>`;
+
+      const infoEl = wrap.querySelector('#japanMapInfo');
+      const regionByName = {};
+      JAPAN_MAP_REGIONS.forEach(r => { regionByName[r.name] = r; });
+
+      function showTeaser(name) {
+        const r = regionByName[name];
+        if (!r) return;
+        infoEl.innerHTML =
+          `<div class="tokio-map-info-title">${r.emoji} ${escHtml(name)} <span class="tokio-map-travel-badge">${escHtml(r.travel)}</span></div>` +
+          `<div class="tokio-map-info-teaser">${escHtml(r.teaser)}</div>`;
+      }
+
+      function navigateToSubcat(name) {
+        const r = regionByName[name];
+        if (!r) return;
+        const block = panel.querySelector(`.japan-subcat-block[data-subcat="${r.target}"]`);
+        if (!block) return;
+        const header = block.querySelector('.japan-subcat-header');
+        const itemsWrap = block.querySelector('.japan-subcat-items');
+        if (itemsWrap && itemsWrap.style.display === 'none') header.click();
+        block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      wrap.querySelectorAll('.tokio-map-shape').forEach(shape => {
+        const name = shape.dataset.region;
+        shape.addEventListener('mouseenter', () => showTeaser(name));
+        shape.addEventListener('click', () => { showTeaser(name); navigateToSubcat(name); });
+        shape.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showTeaser(name); navigateToSubcat(name); }
+        });
+      });
+
+      return wrap;
+    }
+
+    function renderDistrictSummaries() {
+      const wrap = document.createElement('div');
+      wrap.className = 'district-summaries';
+      const grid = document.createElement('div');
+      grid.className = 'district-summaries-grid';
+      TOKYO_DISTRICT_SUMMARIES.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'district-summary-card';
+        card.innerHTML =
+          `<div class="district-summary-title">${d.emoji} ${escHtml(d.name)}</div>` +
+          `<div class="district-summary-theme">${escHtml(d.theme)}</div>` +
+          `<div class="district-summary-desc">${escHtml(d.description)}</div>` +
+          `<div class="district-summary-tags">` +
+            `<span class="district-summary-tag">💰 ${escHtml(d.budget)}</span>` +
+            `<span class="district-summary-tag">✨ ${escHtml(d.bestFor)}</span>` +
+          `</div>`;
+        grid.appendChild(card);
+      });
+      wrap.innerHTML = '<div class="district-summaries-title">📋 Resumen por distrito</div>';
+      wrap.appendChild(grid);
+      return wrap;
+    }
+
+    function renderSubcatBlock(subcat, items) {
+      const block = document.createElement('div');
+      block.className = 'japan-subcat-block';
+      block.dataset.subcat = subcat;
+
+      const header = document.createElement('button');
+      header.className = 'japan-subcat-header';
+      header.type = 'button';
+      header.innerHTML =
+        `<span>${escHtml(subcat)}</span>` +
+        `<span class="japan-subcat-count">${items.length}</span>` +
+        `<span class="japan-subcat-chevron">›</span>`;
+      block.appendChild(header);
+
+      const itemsWrap = document.createElement('div');
+      itemsWrap.className = 'japan-subcat-items';
+      itemsWrap.style.display = 'none';
+
+      const note = JAPAN_SUBCATEGORY_NOTES[subcat];
+      if (note) {
+        const noteEl = document.createElement('div');
+        noteEl.className = 'japan-subcat-note';
+        noteEl.textContent = note;
+        itemsWrap.appendChild(noteEl);
+      }
+
+      sortByPriority(items).forEach(item => itemsWrap.appendChild(renderJapanItemCard(item)));
+      block.appendChild(itemsWrap);
+
+      header.addEventListener('click', () => {
+        const open = itemsWrap.style.display !== 'none';
+        itemsWrap.style.display = open ? 'none' : 'flex';
+        header.classList.toggle('open', !open);
+      });
+
+      return block;
+    }
+
+    function renderJapanItemCard(item) {
+      const card = document.createElement('div');
+      card.className = 'japan-item-card' + (item.done ? ' is-done' : '');
+      card.dataset.id = item.id;
+
+      const maps = item.mapsUrl
+        ? `<a class="overview-pdf-link" href="${escHtml(item.mapsUrl)}" target="_blank" rel="noopener noreferrer">📍 Ver en Maps</a>`
+        : '';
+      const tiktok = item.tiktokUrl
+        ? `<a class="tiktok-link" href="${escHtml(item.tiktokUrl)}" target="_blank" rel="noopener noreferrer">🎵 TikTok</a>`
+        : '';
+
+      card.innerHTML =
+        `<div class="japan-item-title">${item.emoji ? escHtml(item.emoji) + ' ' : ''}${escHtml(item.title)}${starsHtml(item.rating)}</div>` +
+        (item.description ? `<div class="japan-item-description">${escHtml(item.description)}</div>` : '') +
+        `<div class="japan-item-meta">${maps}${tiktok}</div>`;
+
+      const metaEl = card.querySelector('.japan-item-meta');
+
+      if (item.contacto?.contactName) {
+        metaEl.appendChild(contactElement(item.contacto));
+      }
+
+      const toggleBtn = document.createElement('button');
+      toggleBtn.className = 'visto-toggle-btn' + (item.done ? ' is-done' : '');
+      toggleBtn.type = 'button';
+      toggleBtn.innerHTML = item.done ? '↩' : '✓ Visto';
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleJapanItemDone(item.id);
+      });
+      metaEl.appendChild(toggleBtn);
+
+      return card;
+    }
+
+    async function toggleJapanItemDone(id) {
+      const item = currentJapanItems.find(i => i.id === id);
+      if (!item) return;
+      const newDone = !item.done;
+      item.done = newDone;
+
+      const cardEl = document.querySelector(`.japan-item-card[data-id="${id}"]`);
+      if (cardEl) {
+        cardEl.classList.toggle('is-done', newDone);
+        const btn = cardEl.querySelector('.visto-toggle-btn');
+        if (btn) {
+          btn.classList.toggle('is-done', newDone);
+          btn.innerHTML = newDone ? '↩' : '✓ Visto';
+        }
+      }
+
+      try {
+        await updateDoc(doc(db, 'japanItems', id), { done: newDone });
+      } catch (err) {
+        console.error('Error updating japanItem done state:', err);
+        item.done = !newDone;
+        if (cardEl) cardEl.classList.toggle('is-done', !newDone);
+      }
+    }
+
+    // ── Overview tab: flights only ───────────────────────────
+    function renderOverviewTab(flights) {
+      const panel = document.getElementById('tabPanel-overview');
+      if (!panel) return;
+      if (!flights.length) {
+        panel.innerHTML = '';
+        return;
+      }
+      panel.innerHTML = '<h2 class="overview-title">✈️ Vuelos</h2>' +
+        '<div class="flight-list" id="flightsList"></div>';
+      renderFlights(flights, document.getElementById('flightsList'));
+    }
+
+    // ── Accommodations / tours that belong to a given city tab ──
+    function appendCityExtras(panel, cityName, accommodations, tours, accomCityMap, tourCityMap) {
+      const accs = accommodations.filter(a => accomCityMap[a.id] === cityName);
+      if (accs.length) {
+        const block = document.createElement('div');
+        block.className = 'overview-block';
+        block.innerHTML = '<h2 class="overview-title">🏨 Alojamiento</h2><div class="accom-list" id="accomList-' + tabSlug(cityName) + '"></div>';
+        panel.appendChild(block);
+        renderAccommodations(accs, block.querySelector('.accom-list'));
+      }
+
+      const cityTours = tours.filter(t => tourCityMap[t.id] === cityName);
+      if (cityTours.length) {
+        const block = document.createElement('div');
+        block.className = 'overview-block';
+        block.innerHTML = '<h2 class="overview-title">🗺️ Tours y excursiones</h2><div class="tour-list" id="tourList-' + tabSlug(cityName) + '"></div>';
+        panel.appendChild(block);
+        renderTours(cityTours, block.querySelector('.tour-list'));
+      }
+    }
+
+    // ── Render one day section (with day-overview toggle) ────
+    function renderDaySection(day, acts, destinations, dayNotesMap) {
+      const city = getCityForDay(day, destinations);
+      const firstAct = acts[0];
+
+      const section = document.createElement('section');
+      section.className = 'day-section';
+      section.id = 'day-' + day;
+      section.dataset.day = day;
+
+      const header = document.createElement('div');
+      header.className = 'day-header';
+      header.innerHTML =
+        `<div class="day-number-badge" style="background:${city.info.color}">` +
+          `<span class="day-num">${day}</span><span class="day-word">día</span>` +
+        `</div>` +
+        `<div class="day-header-info">` +
+          `<div class="day-city-name"><span class="city-emoji">${city.info.emoji}</span>${escHtml(city.name)}</div>` +
+          `<div class="day-date-text">${escHtml(firstAct.date)}</div>` +
+        `</div>`;
+      section.appendChild(header);
+
+      section.appendChild(renderDayOverview(day, dayNotesMap));
+
+      const list = document.createElement('div');
+      list.className = 'cards-list';
+      acts.forEach(act => list.appendChild(renderCard(act)));
+      section.appendChild(list);
+
+      return section;
+    }
+
+    // ── Day overview toggle + panel ──────────────────────────
+    function renderDayOverview(day, dayNotesMap) {
+      const wrap = document.createElement('div');
+      const note = dayNotesMap[day];
+
+      const toggle = document.createElement('button');
+      toggle.className = 'day-overview-toggle';
+      toggle.type = 'button';
+      toggle.innerHTML = 'ℹ️ Resumen del día';
+      wrap.appendChild(toggle);
+
+      const panel = document.createElement('div');
+      panel.className = 'day-overview-panel';
+      panel.style.display = 'none';
+
+      const summary = note?.summary || '';
+      const criticalNote = note?.criticalNote || '';
+      const recommendations = note?.recommendations || '';
+
+      let html = '';
+      if (summary) {
+        html += `<p><span class="day-overview-section-label">Resumen</span>${escHtml(summary)}</p>`;
+      }
+      if (criticalNote) {
+        html += `<p class="day-overview-critical"><span class="day-overview-section-label">⚠️ Recordatorio clave</span>${escHtml(criticalNote)}</p>`;
+      }
+      if (recommendations) {
+        html += `<p><span class="day-overview-section-label">💡 Recomendaciones</span>${escHtml(recommendations)}</p>`;
+      } else {
+        html += `<p class="day-overview-placeholder">Sin recomendaciones todavía — añádelas desde el panel de administración.</p>`;
+      }
+      if (!summary && !criticalNote) {
+        html = `<p class="day-overview-placeholder">Sin resumen registrado para este día todavía.</p>` + html;
+      }
+      panel.innerHTML = html;
+
+      toggle.addEventListener('click', () => {
+        const open = panel.style.display !== 'none';
+        panel.style.display = open ? 'none' : 'block';
+        toggle.classList.toggle('open', !open);
+      });
+
+      wrap.appendChild(panel);
+      return wrap;
+    }
+
+    // ── Render a single activity card ────────────────────────
     function renderCard(act) {
       const card = document.createElement('div');
       card.className = 'activity-card' + (act.done ? ' is-done' : '');
@@ -230,6 +1035,7 @@
 
       const pdfIcon  = act.pdfUrl  ? '<span class="card-icon" title="Documento adjunto">📎</span>' : '';
       const mapsIcon = act.mapsUrl ? '<span class="card-icon" title="Ver en mapa">📍</span>' : '';
+      const contactIcon = act.contacto?.contactPhone ? '<span class="card-icon" title="Contacto disponible">📞</span>' : '';
       const doneIcon = act.done    ? '<span class="done-badge" title="Hecho">✓</span>' : '';
       const time     = act.time || '—';
 
@@ -244,9 +1050,10 @@
             `<div class="card-title">${escHtml(act.title)}</div>` +
             `<div class="card-meta">` +
               `<span class="type-badge badge-${act.type}">${TYPE_LABELS[act.type] || act.type}</span>` +
+              (act.isSuggestion ? `<span class="suggestion-badge">💡 Sugerencia</span>` : '') +
             `</div>` +
           `</div>` +
-          `<div class="card-icons">${mapsIcon}${pdfIcon}${doneIcon}<span class="card-arrow">›</span></div>` +
+          `<div class="card-icons">${mapsIcon}${pdfIcon}${contactIcon}${doneIcon}<span class="card-arrow">›</span></div>` +
         `</div>`;
 
       card.addEventListener('click', () => openModal(act.id));
@@ -265,24 +1072,19 @@
       if (!act) return;
       currentOpenId = id;
 
-      // Type badge
       document.getElementById('modalTypeBadge').innerHTML =
-        `<span class="type-badge badge-${act.type}">${TYPE_LABELS[act.type] || act.type}</span>`;
-
-      // Title
+        `<span class="type-badge badge-${act.type}">${TYPE_LABELS[act.type] || act.type}</span>` +
+        (act.isSuggestion ? `<span class="suggestion-badge">💡 Sugerencia</span>` : '');
       document.getElementById('modalTitle').textContent = act.title;
 
-      // Time + city
       const parts = [];
       if (act.time) parts.push(act.time + 'h');
       if (act.city) parts.push(act.city);
       document.getElementById('modalTimecity').innerHTML =
         parts.map((p, i) => (i > 0 ? '<span class="divider"></span>' : '') + escHtml(p)).join('');
 
-      // Description
       document.getElementById('modalDescription').innerHTML = fmtDesc(act.description || '');
 
-      // Footer
       buildModalFooter(act);
 
       overlay.classList.add('open');
@@ -294,24 +1096,19 @@
       const footer = document.getElementById('modalFooter');
       footer.innerHTML = '';
 
-      // Done toggle (full width, first)
       const doneBtn = document.createElement('button');
       doneBtn.className = 'btn-done-toggle' + (act.done ? ' is-done' : '');
       doneBtn.id = 'modalDoneBtn';
-      doneBtn.innerHTML = act.done
-        ? '↩ Marcar como pendiente'
-        : '✓ Marcar como hecho';
+      doneBtn.innerHTML = act.done ? '↩ Marcar como pendiente' : '✓ Marcar como hecho';
       doneBtn.addEventListener('click', () => toggleDone(act.id));
       footer.appendChild(doneBtn);
 
-      // Separator (only if there are action buttons below)
-      if (act.mapsUrl || act.pdfUrl) {
+      if (act.mapsUrl || act.pdfUrl || act.contacto?.contactName) {
         const sep = document.createElement('div');
         sep.className = 'modal-footer-sep';
         footer.appendChild(sep);
       }
 
-      // Maps button
       if (act.mapsUrl) {
         const a = document.createElement('a');
         a.className = 'btn btn-maps';
@@ -322,7 +1119,6 @@
         footer.appendChild(a);
       }
 
-      // PDF button
       if (act.pdfUrl) {
         const a = document.createElement('a');
         a.className = 'btn btn-pdf';
@@ -331,6 +1127,13 @@
         a.rel = 'noopener noreferrer';
         a.innerHTML = '📄 Ver documento';
         footer.appendChild(a);
+      }
+
+      if (act.contacto?.contactName) {
+        const wrap = document.createElement('div');
+        wrap.style.flex = '0 0 100%';
+        wrap.appendChild(contactElement(act.contacto));
+        footer.appendChild(wrap);
       }
     }
 
@@ -356,8 +1159,6 @@
       const act = currentActivities.find(a => a.id === id);
       if (!act) return;
       const newDone = !act.done;
-
-      // Optimistic update — instant UI response
       act.done = newDone;
 
       const cardEl = document.querySelector(`.activity-card[data-id="${id}"]`);
@@ -367,7 +1168,6 @@
         if (titleEl) titleEl.style.textDecoration = newDone ? 'line-through' : '';
         const iconsEl = cardEl.querySelector('.card-icons');
         if (iconsEl) {
-          // Update done badge in card icons
           const existingBadge = iconsEl.querySelector('.done-badge');
           if (newDone && !existingBadge) {
             const badge = document.createElement('span');
@@ -381,19 +1181,165 @@
         }
       }
 
-      // Update modal button
       refreshModalDoneBtn(act);
 
-      // Persist to Firestore
       try {
         await updateDoc(doc(db, 'activities', id), { done: newDone });
       } catch (err) {
         console.error('Error updating done state:', err);
-        // Revert optimistic update on failure
         act.done = !newDone;
         if (cardEl) cardEl.classList.toggle('is-done', !newDone);
         refreshModalDoneBtn(act);
       }
+    }
+
+    // ── Status pill helper (flights / accommodations / tours) ──
+    function statusPillClass(status) {
+      const s = String(status || '').toLowerCase();
+      if (s.startsWith('confirmed')) return 'status-confirmed';
+      if (s.startsWith('pending') || s.includes('awaiting')) return 'status-pending';
+      return 'status-default';
+    }
+
+    // ── Contact / WhatsApp element ───────────────────────────
+    function contactElement(contacto) {
+      if (contacto.contactPhone) {
+        const digits = contacto.contactPhone.replace(/[^0-9]/g, '');
+        const a = document.createElement('a');
+        a.className = 'contact-link';
+        a.href = `https://wa.me/${digits}`;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.innerHTML = `📞 ${escHtml(contacto.contactName || 'Contacto')} · WhatsApp`;
+        return a;
+      }
+      const span = document.createElement('span');
+      span.className = 'contact-name-only';
+      span.innerHTML = `📞 ${escHtml(contacto.contactName)}`;
+      return span;
+    }
+
+    // ── Render: Flights ──────────────────────────────────────
+    function renderFlights(items, list) {
+      if (!list) return;
+      list.innerHTML = '';
+      items.forEach(f => {
+        const card = document.createElement('div');
+        card.className = 'flight-card';
+        const pdf = f.pdfUrl
+          ? `<a class="overview-pdf-link" href="${escHtml(f.pdfUrl)}" target="_blank" rel="noopener noreferrer">📄 Boleto</a>`
+          : '';
+        card.innerHTML =
+          `<div class="flight-card-route">` +
+            `<span class="flight-card-city">${escHtml(f.from?.city || f.from?.code || '?')}</span>` +
+            `<span class="flight-card-arrow">✈ →</span>` +
+            `<span class="flight-card-city">${escHtml(f.to?.city || f.to?.code || '?')}</span>` +
+          `</div>` +
+          `<div class="flight-card-meta">` +
+            `<span><strong>${escHtml(f.departureDate || '')}</strong> ${escHtml(f.departureTime || '')}</span>` +
+            (f.airline ? `<span>${escHtml(f.airline)}${f.flightNumber ? ' · ' + escHtml(f.flightNumber) : ''}</span>` : '') +
+            (f.duration ? `<span>${escHtml(f.duration)}</span>` : '') +
+          `</div>` +
+          `<div class="flight-card-footer">` +
+            `<span class="status-pill ${statusPillClass(f.status)}">${escHtml(f.status || '')}</span>` +
+            pdf +
+          `</div>`;
+        list.appendChild(card);
+      });
+    }
+
+    // ── Render: Accommodations ───────────────────────────────
+    function renderAccommodations(items, list) {
+      if (!list) return;
+      list.innerHTML = '';
+      items.forEach(a => {
+        const card = document.createElement('div');
+        card.className = 'accom-card';
+        const dates = [a.checkInDate, a.checkOutDate].filter(Boolean).join(' → ');
+        const cost = a.cost === 0 ? 'Sin costo' : (a.cost != null ? `${a.cost} ${escHtml(a.costCurrency || '')}` : '');
+        const pdf = a.pdfUrl
+          ? `<a class="overview-pdf-link" href="${escHtml(a.pdfUrl)}" target="_blank" rel="noopener noreferrer">📄 Comprobante</a>`
+          : '';
+        const maps = a.mapsUrl
+          ? `<a class="overview-pdf-link" href="${escHtml(a.mapsUrl)}" target="_blank" rel="noopener noreferrer">📍 Ver en Maps</a>`
+          : '';
+        card.innerHTML =
+          `<div class="accom-card-name">${escHtml(a.name)}</div>` +
+          (a.region ? `<div class="accom-card-region">${escHtml(a.region)}</div>` : '') +
+          (a.note ? `<div class="accom-card-note">${escHtml(a.note)}</div>` : '') +
+          `<div class="accom-card-meta">` +
+            (dates ? `<span>${escHtml(dates)}</span>` : '') +
+            (cost ? `<span>${escHtml(cost)}</span>` : '') +
+            `<span class="status-pill ${statusPillClass(a.status)}">${escHtml(a.status || '')}</span>` +
+            maps + pdf +
+          `</div>`;
+        if (a.contacto?.contactName) {
+          const contactWrap = document.createElement('div');
+          contactWrap.style.marginTop = '8px';
+          contactWrap.appendChild(contactElement(a.contacto));
+          card.appendChild(contactWrap);
+        }
+        list.appendChild(card);
+      });
+    }
+
+    // ── Render: Tours ─────────────────────────────────────────
+    function renderTours(items, list) {
+      if (!list) return;
+      list.innerHTML = '';
+      items.forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'tour-card';
+        const dateLabel = t.date || [t.startDate, t.endDate].filter(Boolean).join(' → ') || '';
+        const pdf = t.pdfUrl
+          ? `<a class="overview-pdf-link" href="${escHtml(t.pdfUrl)}" target="_blank" rel="noopener noreferrer">📄 Comprobante</a>`
+          : '';
+        const maps = t.mapsUrl
+          ? `<a class="overview-pdf-link" href="${escHtml(t.mapsUrl)}" target="_blank" rel="noopener noreferrer">📍 Ver en Maps</a>`
+          : '';
+
+        let itineraryHtml = '';
+        if (Array.isArray(t.customItinerary) || Array.isArray(t.itinerary)) {
+          const rows = t.customItinerary || t.itinerary;
+          itineraryHtml = '<div class="tour-itinerary">' +
+            rows.map(r =>
+              `<div class="tour-itinerary-row">` +
+                `<span class="tour-itinerary-time">${escHtml(r.time || '')}</span>` +
+                `<span class="tour-itinerary-activity">${escHtml(r.activity || '')}</span>` +
+              `</div>`
+            ).join('') +
+            '</div>';
+        } else if (Array.isArray(t.itineraryByDay)) {
+          itineraryHtml = '<div class="tour-itinerary">' +
+            t.itineraryByDay.map(d =>
+              `<div class="tour-day-label">Día ${escHtml(d.day)}${d.date ? ' · ' + escHtml(d.date) : ''}</div>` +
+              (d.spots || []).map(spot =>
+                `<div class="tour-itinerary-row"><span class="tour-itinerary-activity">• ${escHtml(spot)}</span></div>`
+              ).join('')
+            ).join('') +
+            '</div>';
+        }
+
+        card.innerHTML =
+          `<div class="tour-card-name">${escHtml(t.name)}</div>` +
+          (t.operator ? `<div class="tour-card-operator">${escHtml(t.operator)}</div>` : '') +
+          `<div class="tour-card-meta">` +
+            (dateLabel ? `<span>${escHtml(dateLabel)}</span>` : '') +
+            (t.duration ? `<span>${escHtml(t.duration)}</span>` : '') +
+            `<span class="status-pill ${statusPillClass(t.status)}">${escHtml(t.status || '')}</span>` +
+            maps + pdf +
+          `</div>` +
+          itineraryHtml;
+
+        if (t.contacto?.contactName) {
+          const contactWrap = document.createElement('div');
+          contactWrap.style.marginTop = '10px';
+          contactWrap.appendChild(contactElement(t.contacto));
+          card.appendChild(contactWrap);
+        }
+
+        list.appendChild(card);
+      });
     }
 
     // ── Helpers ─────────────────────────────────────────────

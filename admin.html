@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — Viaje Europa 2026</title>
+  <title>Admin — Honeymoon Indonesia 2026</title>
   <style>
     :root {
       --bg:#F5F5F5;--white:#FFF;--ink:#1A1A1A;--ink-mid:#444;--muted:#888;
@@ -122,6 +122,18 @@
     .seed-box p{font-size:14px;color:#1D4ED8;margin-bottom:12px}
     .seed-progress{margin-top:10px;font-size:13px;color:#1D4ED8;display:none}
 
+    /* Trip selector bar */
+    .trip-selector-bar{background:#111827;padding:12px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .trip-selector-bar label{margin:0;text-transform:none;letter-spacing:0;font-size:14px;font-weight:600;color:#D1D5DB}
+    .trip-selector-bar select{width:auto;min-width:200px;background:#1F2937;color:white;border-color:#374151}
+    .trip-selector-bar select:focus{border-color:var(--accent)}
+
+    /* Section tabs */
+    .section-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:0}
+    .section-tab{background:none;border:none;padding:10px 16px;font-family:var(--font);font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+    .section-tab:hover{color:var(--ink)}
+    .section-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
     /* Done checkbox in form */
     .done-check-label{display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:15px;font-weight:600;color:var(--ink-mid)}
     .done-check-label input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:var(--success)}
@@ -133,7 +145,7 @@
 <div id="passwordGate">
   <div style="font-size:40px;margin-bottom:16px">🔒</div>
   <h2>Panel de Administración</h2>
-  <p>Viaje Europa 2026</p>
+  <p>Honeymoon Indonesia 2026</p>
   <div class="form-group">
     <input type="password" id="passwordInput" placeholder="Contraseña" autocomplete="current-password" />
   </div>
@@ -145,18 +157,23 @@
 <div id="adminPanel" style="display:none">
 
   <div class="page-header">
-    <h1>🛠 Admin — Viaje Europa 2026</h1>
+    <h1>🛠 Admin — Honeymoon Indonesia 2026</h1>
     <a href="index.html">← Ver itinerario</a>
+  </div>
+
+  <div class="trip-selector-bar">
+    <label for="tripSelector">Viaje:</label>
+    <select id="tripSelector"></select>
   </div>
 
   <div class="container">
 
     <div class="notice notice-success" id="saveNotice">✅ Cambios guardados en Firestore.</div>
 
-    <!-- Seed section (shown only when collection is empty) -->
+    <!-- Seed section (shown only when all collections are empty) -->
     <div class="seed-box" id="seedBox">
       <h3>📦 Base de datos vacía</h3>
-      <p>Firestore todavía no tiene actividades. Carga los datos del viaje con un clic.</p>
+      <p>Firestore todavía no tiene datos. Carga actividades, vuelos, alojamientos y tours con un clic.</p>
       <button class="btn btn-success" id="seedBtn">🚀 Cargar datos iniciales</button>
       <div class="seed-progress" id="seedProgress"></div>
     </div>
@@ -164,8 +181,19 @@
     <!-- Stats -->
     <div class="stats-bar" id="statsBar"></div>
 
+    <!-- ── Section tabs ─────────────────────────────────── -->
+    <div class="section-tabs" id="sectionTabs">
+      <button class="section-tab active" data-tab="activities">📋 Actividades</button>
+      <button class="section-tab" data-tab="flights">✈️ Vuelos</button>
+      <button class="section-tab" data-tab="accommodations">🏨 Alojamientos</button>
+      <button class="section-tab" data-tab="tours">🗺️ Tours</button>
+      <button class="section-tab" data-tab="dayNotes">📝 Notas del día</button>
+      <button class="section-tab" data-tab="trips">🧳 Viajes</button>
+      <button class="section-tab" data-tab="japan">🎌 Japón</button>
+    </div>
+
     <!-- ── Add Activity ──────────────────────────────────── -->
-    <div class="section-box">
+    <div class="section-box" data-section="activities">
       <div class="section-box-header">
         <h2>➕ Añadir nueva actividad</h2>
         <button class="btn btn-secondary btn-small" id="toggleAddBtn">Mostrar / Ocultar</button>
@@ -174,8 +202,8 @@
         <form id="addForm">
           <div class="form-row">
             <div class="form-group">
-              <label>Día * (1–14)</label>
-              <input type="number" id="add-day" min="1" max="14" required placeholder="1–14" />
+              <label>Día *</label>
+              <input type="number" id="add-day" min="1" max="90" required placeholder="ej. 1" />
             </div>
             <div class="form-group">
               <label>Orden dentro del día</label>
@@ -197,6 +225,11 @@
                 <option value="hotel">Hotel</option>
                 <option value="tour">Tour</option>
                 <option value="libre">Libre</option>
+                <option value="comida">Comida</option>
+                <option value="aventura">Aventura</option>
+                <option value="descanso">Descanso</option>
+                <option value="cultural">Cultural</option>
+                <option value="boda">Boda</option>
               </select>
             </div>
           </div>
@@ -221,6 +254,16 @@
           <div class="form-group">
             <label>URL de Google Maps</label>
             <input type="text" id="add-maps" placeholder="https://maps.app.goo.gl/..." />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Contacto — nombre</label>
+              <input type="text" id="add-contactName" placeholder="ej. Abel (East Java Paradise)" />
+            </div>
+            <div class="form-group">
+              <label>Contacto — teléfono/WhatsApp</label>
+              <input type="text" id="add-contactPhone" placeholder="+62 851 4718 0805" />
+            </div>
           </div>
           <!-- PDF Upload -->
           <div class="form-group">
@@ -247,7 +290,7 @@
     </div>
 
     <!-- ── Activity List ─────────────────────────────────── -->
-    <div class="section-box">
+    <div class="section-box" data-section="activities">
       <div class="section-box-header">
         <h2>📋 Todas las actividades</h2>
         <span id="activityCount" style="font-size:13px;color:#888"></span>
@@ -265,6 +308,11 @@
             <option value="hotel">Hotel</option>
             <option value="tour">Tour</option>
             <option value="libre">Libre</option>
+            <option value="comida">Comida</option>
+            <option value="aventura">Aventura</option>
+            <option value="descanso">Descanso</option>
+            <option value="cultural">Cultural</option>
+            <option value="boda">Boda</option>
           </select>
           <select id="filterDone">
             <option value="">Todos</option>
@@ -282,6 +330,626 @@
             </thead>
             <tbody id="activityTableBody"></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Add Flight ───────────────────────────────────── -->
+    <div class="section-box" data-section="flights" style="display:none">
+      <div class="section-box-header">
+        <h2>➕ Añadir nuevo vuelo</h2>
+        <button class="btn btn-secondary btn-small" id="toggleAddFlightBtn">Mostrar / Ocultar</button>
+      </div>
+      <div class="section-box-body" id="addFlightFormWrapper" style="display:none">
+        <form id="addFlightForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Segmento *</label>
+              <input type="text" id="addf-segment" required placeholder="ej. Outbound 1A" />
+            </div>
+            <div class="form-group">
+              <label>Tipo</label>
+              <select id="addf-type">
+                <option value="international">International</option>
+                <option value="domestic">Domestic</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Origen — código (ej. MEX)</label>
+              <input type="text" id="addf-fromCode" />
+            </div>
+            <div class="form-group">
+              <label>Destino — código (ej. YVR)</label>
+              <input type="text" id="addf-toCode" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Origen — ciudad</label>
+              <input type="text" id="addf-fromCity" />
+            </div>
+            <div class="form-group">
+              <label>Destino — ciudad</label>
+              <input type="text" id="addf-toCity" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Origen — país</label>
+              <input type="text" id="addf-fromCountry" />
+            </div>
+            <div class="form-group">
+              <label>Destino — país</label>
+              <input type="text" id="addf-toCountry" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Origen — aeropuerto (nombre completo)</label>
+              <input type="text" id="addf-fromName" />
+            </div>
+            <div class="form-group">
+              <label>Destino — aeropuerto (nombre completo)</label>
+              <input type="text" id="addf-toName" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Fecha salida</label>
+              <input type="date" id="addf-departureDate" />
+            </div>
+            <div class="form-group">
+              <label>Hora salida</label>
+              <input type="time" id="addf-departureTime" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Fecha llegada</label>
+              <input type="date" id="addf-arrivalDate" />
+            </div>
+            <div class="form-group">
+              <label>Hora llegada</label>
+              <input type="time" id="addf-arrivalTime" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Aerolínea *</label>
+              <input type="text" id="addf-airline" placeholder="dejar vacío si es transporte terrestre" />
+            </div>
+            <div class="form-group">
+              <label>Número de vuelo</label>
+              <input type="text" id="addf-flightNumber" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Duración</label>
+              <input type="text" id="addf-duration" placeholder="ej. 5h 50m" />
+            </div>
+            <div class="form-group">
+              <label>Clase</label>
+              <input type="text" id="addf-class" placeholder="Economy" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Estado</label>
+              <select id="addf-status">
+                <option value="confirmed">confirmed</option>
+                <option value="pending">pending</option>
+                <option value="cancelled">cancelled</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Notas</label>
+            <textarea id="addf-notes" placeholder="ej. Layover de 3h, self-transfer, etc."></textarea>
+          </div>
+          <!-- PDF Upload -->
+          <div class="form-group">
+            <label>Boleto / Ticket PDF</label>
+            <div class="pdf-picker">
+              <div class="pdf-picker-row">
+                <input type="file" id="addf-pdf-file" accept="application/pdf" style="display:none" />
+                <button type="button" class="btn btn-secondary btn-small" id="addf-pdf-btn">📎 Adjuntar PDF</button>
+                <span class="pdf-status" id="addf-pdf-status">Sin documento</span>
+                <input type="hidden" id="addf-pdfUrl" />
+              </div>
+              <div class="progress-wrap" id="addf-pdf-progress" style="display:none">
+                <div class="progress-bar"><div class="progress-fill" id="addf-pdf-fill"></div></div>
+                <span class="progress-pct" id="addf-pdf-pct">0%</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+            <button type="submit" class="btn btn-primary">Añadir vuelo</button>
+            <button type="button" class="btn btn-secondary" id="resetAddFlightBtn">Limpiar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Flight List ─────────────────────────────────── -->
+    <div class="section-box" data-section="flights" style="display:none">
+      <div class="section-box-header">
+        <h2>✈️ Todos los vuelos</h2>
+        <span id="flightCount" style="font-size:13px;color:#888"></span>
+      </div>
+      <div class="section-box-body">
+        <div style="overflow-x:auto">
+          <table class="activity-table">
+            <thead>
+              <tr>
+                <th>Segmento</th><th>Ruta</th><th>Fecha/Hora salida</th>
+                <th>Aerolínea</th><th>Estado</th><th>PDF</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="flightTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Add Accommodation ───────────────────────────── -->
+    <div class="section-box" data-section="accommodations" style="display:none">
+      <div class="section-box-header">
+        <h2>➕ Añadir nuevo alojamiento</h2>
+        <button class="btn btn-secondary btn-small" id="toggleAddAccomBtn">Mostrar / Ocultar</button>
+      </div>
+      <div class="section-box-body" id="addAccomFormWrapper" style="display:none">
+        <form id="addAccomForm">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" id="adda-name" required placeholder="ej. Diamond Hill Villa" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tipo</label>
+              <input type="text" id="adda-type" placeholder="hotel / villa / resort / liveaboard-boat…" />
+            </div>
+            <div class="form-group">
+              <label>Estado</label>
+              <select id="adda-status">
+                <option value="confirmed">confirmed</option>
+                <option value="pending">pending</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Región</label>
+              <input type="text" id="adda-region" />
+            </div>
+            <div class="form-group">
+              <label>Provincia</label>
+              <input type="text" id="adda-province" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>País</label>
+              <input type="text" id="adda-country" />
+            </div>
+            <div class="form-group">
+              <label>Reservado vía</label>
+              <input type="text" id="adda-bookedVia" placeholder="Booking.com" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Check-in</label>
+              <input type="date" id="adda-checkInDate" />
+            </div>
+            <div class="form-group">
+              <label>Check-out</label>
+              <input type="date" id="adda-checkOutDate" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Costo</label>
+              <input type="number" id="adda-cost" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label>Moneda</label>
+              <input type="text" id="adda-costCurrency" placeholder="EUR / USD" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Política de cancelación</label>
+            <input type="text" id="adda-cancellationPolicy" placeholder="Non-refundable / Free cancellation" />
+          </div>
+          <div class="form-group">
+            <label>URL de Google Maps</label>
+            <input type="text" id="adda-maps" placeholder="https://www.google.com/maps/search/?api=1&query=..." />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Contacto — nombre</label>
+              <input type="text" id="adda-contactName" placeholder="ej. Host / recepción" />
+            </div>
+            <div class="form-group">
+              <label>Contacto — teléfono/WhatsApp</label>
+              <input type="text" id="adda-contactPhone" />
+            </div>
+          </div>
+          <!-- PDF Upload -->
+          <div class="form-group">
+            <label>Comprobante / Voucher PDF</label>
+            <div class="pdf-picker">
+              <div class="pdf-picker-row">
+                <input type="file" id="adda-pdf-file" accept="application/pdf" style="display:none" />
+                <button type="button" class="btn btn-secondary btn-small" id="adda-pdf-btn">📎 Adjuntar PDF</button>
+                <span class="pdf-status" id="adda-pdf-status">Sin documento</span>
+                <input type="hidden" id="adda-pdfUrl" />
+              </div>
+              <div class="progress-wrap" id="adda-pdf-progress" style="display:none">
+                <div class="progress-bar"><div class="progress-fill" id="adda-pdf-fill"></div></div>
+                <span class="progress-pct" id="adda-pdf-pct">0%</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+            <button type="submit" class="btn btn-primary">Añadir alojamiento</button>
+            <button type="button" class="btn btn-secondary" id="resetAddAccomBtn">Limpiar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Accommodation List ──────────────────────────── -->
+    <div class="section-box" data-section="accommodations" style="display:none">
+      <div class="section-box-header">
+        <h2>🏨 Todos los alojamientos</h2>
+        <span id="accomCount" style="font-size:13px;color:#888"></span>
+      </div>
+      <div class="section-box-body">
+        <div style="overflow-x:auto">
+          <table class="activity-table">
+            <thead>
+              <tr>
+                <th>Nombre</th><th>Check-in</th><th>Check-out</th>
+                <th>Costo</th><th>Estado</th><th>PDF</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="accomTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Add Tour ─────────────────────────────────────── -->
+    <div class="section-box" data-section="tours" style="display:none">
+      <div class="section-box-header">
+        <h2>➕ Añadir nuevo tour</h2>
+        <button class="btn btn-secondary btn-small" id="toggleAddTourBtn">Mostrar / Ocultar</button>
+      </div>
+      <div class="section-box-body" id="addTourFormWrapper" style="display:none">
+        <form id="addTourForm">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" id="addt-name" required placeholder="ej. Nusa Penida Day Trip" />
+          </div>
+          <div class="form-group">
+            <label>Operador *</label>
+            <input type="text" id="addt-operator" required placeholder="ej. Bali Yok" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Fecha inicio</label>
+              <input type="date" id="addt-startDate" />
+            </div>
+            <div class="form-group">
+              <label>Fecha fin (si es de varios días)</label>
+              <input type="date" id="addt-endDate" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Duración</label>
+              <input type="text" id="addt-duration" placeholder="ej. 4.5 hours / 3 days 2 nights" />
+            </div>
+            <div class="form-group">
+              <label>Estado</label>
+              <input type="text" id="addt-status" placeholder="confirmed / pending-deposit / …" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>URL de Google Maps</label>
+            <input type="text" id="addt-maps" placeholder="https://www.google.com/maps/search/?api=1&query=..." />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Contacto — nombre</label>
+              <input type="text" id="addt-contactName" placeholder="ej. Justin (Bali Yok)" />
+            </div>
+            <div class="form-group">
+              <label>Contacto — teléfono/WhatsApp</label>
+              <input type="text" id="addt-contactPhone" />
+            </div>
+          </div>
+          <!-- PDF Upload -->
+          <div class="form-group">
+            <label>Comprobante / Voucher PDF</label>
+            <div class="pdf-picker">
+              <div class="pdf-picker-row">
+                <input type="file" id="addt-pdf-file" accept="application/pdf" style="display:none" />
+                <button type="button" class="btn btn-secondary btn-small" id="addt-pdf-btn">📎 Adjuntar PDF</button>
+                <span class="pdf-status" id="addt-pdf-status">Sin documento</span>
+                <input type="hidden" id="addt-pdfUrl" />
+              </div>
+              <div class="progress-wrap" id="addt-pdf-progress" style="display:none">
+                <div class="progress-bar"><div class="progress-fill" id="addt-pdf-fill"></div></div>
+                <span class="progress-pct" id="addt-pdf-pct">0%</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+            <button type="submit" class="btn btn-primary">Añadir tour</button>
+            <button type="button" class="btn btn-secondary" id="resetAddTourBtn">Limpiar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Tour List ────────────────────────────────────── -->
+    <div class="section-box" data-section="tours" style="display:none">
+      <div class="section-box-header">
+        <h2>🗺️ Todos los tours</h2>
+        <span id="tourCount" style="font-size:13px;color:#888"></span>
+      </div>
+      <div class="section-box-body">
+        <div style="overflow-x:auto">
+          <table class="activity-table">
+            <thead>
+              <tr>
+                <th>Nombre</th><th>Operador</th><th>Fecha</th>
+                <th>Estado</th><th>PDF</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tourTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Day Notes List ──────────────────────────────────── -->
+    <div class="section-box" data-section="dayNotes" style="display:none">
+      <div class="section-box-header">
+        <h2>📝 Notas por día (resumen / recordatorios / recomendaciones)</h2>
+        <span id="dayNoteCount" style="font-size:13px;color:#888"></span>
+      </div>
+      <div class="section-box-body">
+        <div style="overflow-x:auto">
+          <table class="activity-table">
+            <thead>
+              <tr>
+                <th>Día</th><th>Resumen</th><th>Recordatorio clave</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="dayNoteTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Add Trip ─────────────────────────────────────── -->
+    <div class="section-box" data-section="trips" style="display:none">
+      <div class="section-box-header">
+        <h2>➕ Añadir nuevo viaje</h2>
+        <button class="btn btn-secondary btn-small" id="toggleAddTripBtn">Mostrar / Ocultar</button>
+      </div>
+      <div class="section-box-body" id="addTripFormWrapper" style="display:none">
+        <form id="addTripForm">
+          <div class="form-group">
+            <label>ID (único, sin espacios) *</label>
+            <input type="text" id="addtr-id" required placeholder="ej. corea-2027" />
+          </div>
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" id="addtr-name" required placeholder="ej. Corea" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tipo</label>
+              <input type="text" id="addtr-type" placeholder="honeymoon / wedding / ideas / vacation…" />
+            </div>
+            <div class="form-group">
+              <label>Modo de vista *</label>
+              <select id="addtr-viewMode" required>
+                <option value="itinerary">itinerary (con fechas/días)</option>
+                <option value="categories">categories (sin fechas)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Fecha inicio</label>
+              <input type="date" id="addtr-startDate" />
+            </div>
+            <div class="form-group">
+              <label>Fecha fin</label>
+              <input type="date" id="addtr-endDate" />
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+            <button type="submit" class="btn btn-primary">Añadir viaje</button>
+            <button type="button" class="btn btn-secondary" id="resetAddTripBtn">Limpiar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Trip List ────────────────────────────────────── -->
+    <div class="section-box" data-section="trips" style="display:none">
+      <div class="section-box-header">
+        <h2>🧳 Todos los viajes</h2>
+        <span id="tripListCount" style="font-size:13px;color:#888"></span>
+      </div>
+      <div class="section-box-body">
+        <div style="overflow-x:auto">
+          <table class="activity-table">
+            <thead>
+              <tr>
+                <th>ID</th><th>Nombre</th><th>Tipo</th><th>Modo</th><th>Fechas</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tripListTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Add Japan Item ───────────────────────────────── -->
+    <div class="section-box" data-section="japan" style="display:none">
+      <div class="section-box-header">
+        <h2>➕ Añadir idea de Japón</h2>
+        <button class="btn btn-secondary btn-small" id="toggleAddJapanBtn">Mostrar / Ocultar</button>
+      </div>
+      <div class="section-box-body" id="addJapanFormWrapper" style="display:none">
+        <form id="addJapanForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Categoría *</label>
+              <select id="addj-category" required></select>
+            </div>
+            <div class="form-group">
+              <label>Subcategoría</label>
+              <input type="text" id="addj-subcategory" placeholder="ej. Asakusa, Kioto…" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Título *</label>
+            <input type="text" id="addj-title" required placeholder="Nombre del lugar/actividad" />
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea id="addj-description" placeholder="Detalles, horarios, precios…"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Calificación (1-5 ⭐)</label>
+              <select id="addj-rating">
+                <option value="">Sin calificar</option>
+                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                <option value="4">⭐⭐⭐⭐ (4)</option>
+                <option value="3">⭐⭐⭐ (3)</option>
+                <option value="2">⭐⭐ (2)</option>
+                <option value="1">⭐ (1)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Emoji</label>
+              <input type="text" id="addj-emoji" placeholder="ej. ⛩️ 🍜 🏯" maxlength="10" />
+            </div>
+            <div class="form-group">
+              <label>Prioridad (orden, menor = primero)</label>
+              <input type="number" id="addj-priority" placeholder="ej. 1" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ubicación</label>
+              <input type="text" id="addj-location" placeholder="ej. Tokio, Kioto…" />
+            </div>
+            <div class="form-group">
+              <label>Fuente</label>
+              <input type="text" id="addj-source" placeholder="ej. recomendación de amigo / investigación" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>URL de Google Maps</label>
+              <input type="text" id="addj-maps" />
+            </div>
+            <div class="form-group">
+              <label>URL de TikTok</label>
+              <input type="text" id="addj-tiktok" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Contacto — nombre</label>
+              <input type="text" id="addj-contactName" />
+            </div>
+            <div class="form-group">
+              <label>Contacto — teléfono/WhatsApp</label>
+              <input type="text" id="addj-contactPhone" />
+            </div>
+          </div>
+          <!-- PDF Upload -->
+          <div class="form-group">
+            <label>Documento PDF</label>
+            <div class="pdf-picker">
+              <div class="pdf-picker-row">
+                <input type="file" id="addj-pdf-file" accept="application/pdf" style="display:none" />
+                <button type="button" class="btn btn-secondary btn-small" id="addj-pdf-btn">📎 Adjuntar PDF</button>
+                <span class="pdf-status" id="addj-pdf-status">Sin documento</span>
+                <input type="hidden" id="addj-pdfUrl" />
+              </div>
+              <div class="progress-wrap" id="addj-pdf-progress" style="display:none">
+                <div class="progress-bar"><div class="progress-fill" id="addj-pdf-fill"></div></div>
+                <span class="progress-pct" id="addj-pdf-pct">0%</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+            <button type="submit" class="btn btn-primary">Añadir idea</button>
+            <button type="button" class="btn btn-secondary" id="resetAddJapanBtn">Limpiar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Japan Items List ────────────────────────────────── -->
+    <div class="section-box" data-section="japan" style="display:none">
+      <div class="section-box-header">
+        <h2>🎌 Todas las ideas de Japón</h2>
+        <span id="japanCount" style="font-size:13px;color:#888"></span>
+      </div>
+      <div class="section-box-body">
+        <div class="filter-bar">
+          <label>Filtrar:</label>
+          <select id="filterJapanCategory"><option value="">Todas las categorías</option></select>
+          <select id="filterJapanSubcategory"><option value="">Todas las subcategorías</option></select>
+          <select id="filterJapanDone">
+            <option value="">Todos</option>
+            <option value="pending">Sin visitar</option>
+            <option value="done">Visitados</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="activity-table">
+            <thead>
+              <tr>
+                <th>Categoría</th><th>Subcategoría</th><th>Título</th><th>⭐</th>
+                <th>Visto</th><th>PDF</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="japanTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Safe content update (preserves PDFs/done) ──────── -->
+    <div class="section-box">
+      <div class="section-box-header"><h2>🔄 Actualizar contenido</h2></div>
+      <div class="section-box-body">
+        <div class="danger-zone" style="border-color:#BFDBFE;background:#EFF6FF">
+          <div>
+            <strong style="color:#1E40AF">Actualizar contenido desde data.js</strong>
+            <p style="color:#1D4ED8">Reescribe campos de contenido (textos, mapsUrl, contacto, etc.) en las 5 colecciones a partir de data.js.<br>
+               NO toca <code>pdfUrl</code> ni el estado "hecho" de actividades — seguro de usar después de subir PDFs reales.</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <button class="btn btn-primary" id="updateContentBtn">🔄 Actualizar contenido</button>
+            <span id="updateContentProgress" style="font-size:13px;color:#1D4ED8;display:none"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -327,8 +995,8 @@
         <input type="hidden" id="edit-id" />
         <div class="form-row">
           <div class="form-group">
-            <label>Día * (1–14)</label>
-            <input type="number" id="edit-day" min="1" max="14" required />
+            <label>Día *</label>
+            <input type="number" id="edit-day" min="1" max="90" required />
           </div>
           <div class="form-group">
             <label>Orden dentro del día</label>
@@ -350,6 +1018,11 @@
               <option value="hotel">Hotel</option>
               <option value="tour">Tour</option>
               <option value="libre">Libre</option>
+              <option value="comida">Comida</option>
+              <option value="aventura">Aventura</option>
+              <option value="descanso">Descanso</option>
+              <option value="cultural">Cultural</option>
+              <option value="boda">Boda</option>
             </select>
           </div>
         </div>
@@ -374,6 +1047,16 @@
         <div class="form-group">
           <label>URL de Google Maps</label>
           <input type="text" id="edit-maps" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contacto — nombre</label>
+            <input type="text" id="edit-contactName" />
+          </div>
+          <div class="form-group">
+            <label>Contacto — teléfono/WhatsApp</label>
+            <input type="text" id="edit-contactPhone" />
+          </div>
         </div>
         <!-- PDF Upload -->
         <div class="form-group">
@@ -412,11 +1095,550 @@
   </div>
 </div>
 
+<!-- ── Edit Flight Modal ───────────────────────────────────── -->
+<div class="modal-overlay hidden" id="editFlightModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3>✏️ Editar vuelo</h3>
+      <button class="modal-close" id="editFlightModalClose">✕</button>
+    </div>
+    <div class="modal-box-body">
+      <form id="editFlightForm">
+        <input type="hidden" id="editf-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Segmento *</label>
+            <input type="text" id="editf-segment" required />
+          </div>
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="editf-type">
+              <option value="international">International</option>
+              <option value="domestic">Domestic</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Origen — código</label>
+            <input type="text" id="editf-fromCode" />
+          </div>
+          <div class="form-group">
+            <label>Destino — código</label>
+            <input type="text" id="editf-toCode" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Origen — ciudad</label>
+            <input type="text" id="editf-fromCity" />
+          </div>
+          <div class="form-group">
+            <label>Destino — ciudad</label>
+            <input type="text" id="editf-toCity" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Origen — país</label>
+            <input type="text" id="editf-fromCountry" />
+          </div>
+          <div class="form-group">
+            <label>Destino — país</label>
+            <input type="text" id="editf-toCountry" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Origen — aeropuerto</label>
+            <input type="text" id="editf-fromName" />
+          </div>
+          <div class="form-group">
+            <label>Destino — aeropuerto</label>
+            <input type="text" id="editf-toName" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha salida</label>
+            <input type="date" id="editf-departureDate" />
+          </div>
+          <div class="form-group">
+            <label>Hora salida</label>
+            <input type="time" id="editf-departureTime" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha llegada</label>
+            <input type="date" id="editf-arrivalDate" />
+          </div>
+          <div class="form-group">
+            <label>Hora llegada</label>
+            <input type="time" id="editf-arrivalTime" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Aerolínea *</label>
+            <input type="text" id="editf-airline" placeholder="dejar vacío si es transporte terrestre" />
+          </div>
+          <div class="form-group">
+            <label>Número de vuelo</label>
+            <input type="text" id="editf-flightNumber" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Duración</label>
+            <input type="text" id="editf-duration" />
+          </div>
+          <div class="form-group">
+            <label>Clase</label>
+            <input type="text" id="editf-class" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="editf-status">
+            <option value="confirmed">confirmed</option>
+            <option value="pending">pending</option>
+            <option value="cancelled">cancelled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Notas</label>
+          <textarea id="editf-notes" style="min-height:80px"></textarea>
+        </div>
+        <!-- PDF Upload -->
+        <div class="form-group">
+          <label>Boleto / Ticket PDF</label>
+          <div class="pdf-picker">
+            <div id="editf-pdf-current" style="display:none" class="pdf-current">
+              <span>📎</span>
+              <a id="editf-pdf-link" href="#" target="_blank" rel="noopener noreferrer">Ver documento actual</a>
+              <button type="button" class="remove-pdf" id="editf-pdf-remove">✕ Quitar</button>
+            </div>
+            <div class="pdf-picker-row">
+              <input type="file" id="editf-pdf-file" accept="application/pdf" style="display:none" />
+              <button type="button" class="btn btn-secondary btn-small" id="editf-pdf-btn">📎 Adjuntar PDF</button>
+              <span class="pdf-status" id="editf-pdf-status"></span>
+              <input type="hidden" id="editf-pdfUrl" />
+            </div>
+            <div class="progress-wrap" id="editf-pdf-progress" style="display:none">
+              <div class="progress-bar"><div class="progress-fill" id="editf-pdf-fill"></div></div>
+              <span class="progress-pct" id="editf-pdf-pct">0%</span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn btn-secondary" id="editFlightCancelBtn">Cancelar</button>
+      <button class="btn btn-primary" id="editFlightSaveBtn">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Edit Accommodation Modal ────────────────────────────── -->
+<div class="modal-overlay hidden" id="editAccomModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3>✏️ Editar alojamiento</h3>
+      <button class="modal-close" id="editAccomModalClose">✕</button>
+    </div>
+    <div class="modal-box-body">
+      <form id="editAccomForm">
+        <input type="hidden" id="edita-id" />
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" id="edita-name" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo</label>
+            <input type="text" id="edita-type" />
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="edita-status">
+              <option value="confirmed">confirmed</option>
+              <option value="pending">pending</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Región</label>
+            <input type="text" id="edita-region" />
+          </div>
+          <div class="form-group">
+            <label>Provincia</label>
+            <input type="text" id="edita-province" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>País</label>
+            <input type="text" id="edita-country" />
+          </div>
+          <div class="form-group">
+            <label>Reservado vía</label>
+            <input type="text" id="edita-bookedVia" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Check-in</label>
+            <input type="date" id="edita-checkInDate" />
+          </div>
+          <div class="form-group">
+            <label>Check-out</label>
+            <input type="date" id="edita-checkOutDate" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Costo</label>
+            <input type="number" id="edita-cost" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label>Moneda</label>
+            <input type="text" id="edita-costCurrency" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Política de cancelación</label>
+          <input type="text" id="edita-cancellationPolicy" />
+        </div>
+        <div class="form-group">
+          <label>URL de Google Maps</label>
+          <input type="text" id="edita-maps" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contacto — nombre</label>
+            <input type="text" id="edita-contactName" />
+          </div>
+          <div class="form-group">
+            <label>Contacto — teléfono/WhatsApp</label>
+            <input type="text" id="edita-contactPhone" />
+          </div>
+        </div>
+        <!-- PDF Upload -->
+        <div class="form-group">
+          <label>Comprobante / Voucher PDF</label>
+          <div class="pdf-picker">
+            <div id="edita-pdf-current" style="display:none" class="pdf-current">
+              <span>📎</span>
+              <a id="edita-pdf-link" href="#" target="_blank" rel="noopener noreferrer">Ver documento actual</a>
+              <button type="button" class="remove-pdf" id="edita-pdf-remove">✕ Quitar</button>
+            </div>
+            <div class="pdf-picker-row">
+              <input type="file" id="edita-pdf-file" accept="application/pdf" style="display:none" />
+              <button type="button" class="btn btn-secondary btn-small" id="edita-pdf-btn">📎 Adjuntar PDF</button>
+              <span class="pdf-status" id="edita-pdf-status"></span>
+              <input type="hidden" id="edita-pdfUrl" />
+            </div>
+            <div class="progress-wrap" id="edita-pdf-progress" style="display:none">
+              <div class="progress-bar"><div class="progress-fill" id="edita-pdf-fill"></div></div>
+              <span class="progress-pct" id="edita-pdf-pct">0%</span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn btn-secondary" id="editAccomCancelBtn">Cancelar</button>
+      <button class="btn btn-primary" id="editAccomSaveBtn">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Edit Tour Modal ──────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="editTourModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3>✏️ Editar tour</h3>
+      <button class="modal-close" id="editTourModalClose">✕</button>
+    </div>
+    <div class="modal-box-body">
+      <form id="editTourForm">
+        <input type="hidden" id="editt-id" />
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" id="editt-name" required />
+        </div>
+        <div class="form-group">
+          <label>Operador *</label>
+          <input type="text" id="editt-operator" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha inicio</label>
+            <input type="date" id="editt-startDate" />
+          </div>
+          <div class="form-group">
+            <label>Fecha fin (si es de varios días)</label>
+            <input type="date" id="editt-endDate" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Duración</label>
+            <input type="text" id="editt-duration" />
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <input type="text" id="editt-status" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>URL de Google Maps</label>
+          <input type="text" id="editt-maps" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contacto — nombre</label>
+            <input type="text" id="editt-contactName" />
+          </div>
+          <div class="form-group">
+            <label>Contacto — teléfono/WhatsApp</label>
+            <input type="text" id="editt-contactPhone" />
+          </div>
+        </div>
+        <!-- PDF Upload -->
+        <div class="form-group">
+          <label>Comprobante / Voucher PDF</label>
+          <div class="pdf-picker">
+            <div id="editt-pdf-current" style="display:none" class="pdf-current">
+              <span>📎</span>
+              <a id="editt-pdf-link" href="#" target="_blank" rel="noopener noreferrer">Ver documento actual</a>
+              <button type="button" class="remove-pdf" id="editt-pdf-remove">✕ Quitar</button>
+            </div>
+            <div class="pdf-picker-row">
+              <input type="file" id="editt-pdf-file" accept="application/pdf" style="display:none" />
+              <button type="button" class="btn btn-secondary btn-small" id="editt-pdf-btn">📎 Adjuntar PDF</button>
+              <span class="pdf-status" id="editt-pdf-status"></span>
+              <input type="hidden" id="editt-pdfUrl" />
+            </div>
+            <div class="progress-wrap" id="editt-pdf-progress" style="display:none">
+              <div class="progress-bar"><div class="progress-fill" id="editt-pdf-fill"></div></div>
+              <span class="progress-pct" id="editt-pdf-pct">0%</span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn btn-secondary" id="editTourCancelBtn">Cancelar</button>
+      <button class="btn btn-primary" id="editTourSaveBtn">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Edit Day Note Modal ──────────────────────────────────── -->
+<div class="modal-overlay hidden" id="editDayNoteModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3>✏️ Editar nota del día</h3>
+      <button class="modal-close" id="editDayNoteModalClose">✕</button>
+    </div>
+    <div class="modal-box-body">
+      <form id="editDayNoteForm">
+        <input type="hidden" id="editn-id" />
+        <div class="form-group">
+          <label>Día</label>
+          <input type="text" id="editn-day" disabled />
+        </div>
+        <div class="form-group">
+          <label>Resumen</label>
+          <input type="text" id="editn-summary" placeholder="Resumen breve del día" />
+        </div>
+        <div class="form-group">
+          <label>Recordatorio clave (⚠️)</label>
+          <textarea id="editn-criticalNote" placeholder="ej. Dormir temprano, hidratarse, llevar efectivo…" style="min-height:80px"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Recomendaciones (💡)</label>
+          <textarea id="editn-recommendations" placeholder="Sugerencias para este día (sobre todo días libres)" style="min-height:100px"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn btn-secondary" id="editDayNoteCancelBtn">Cancelar</button>
+      <button class="btn btn-primary" id="editDayNoteSaveBtn">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Edit Trip Modal ──────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="editTripModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3>✏️ Editar viaje</h3>
+      <button class="modal-close" id="editTripModalClose">✕</button>
+    </div>
+    <div class="modal-box-body">
+      <form id="editTripForm">
+        <input type="hidden" id="edittr-id" />
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" id="edittr-name" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo</label>
+            <input type="text" id="edittr-type" />
+          </div>
+          <div class="form-group">
+            <label>Modo de vista *</label>
+            <select id="edittr-viewMode" required>
+              <option value="itinerary">itinerary (con fechas/días)</option>
+              <option value="categories">categories (sin fechas)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha inicio</label>
+            <input type="date" id="edittr-startDate" />
+          </div>
+          <div class="form-group">
+            <label>Fecha fin</label>
+            <input type="date" id="edittr-endDate" />
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn btn-secondary" id="editTripCancelBtn">Cancelar</button>
+      <button class="btn btn-primary" id="editTripSaveBtn">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Edit Japan Item Modal ────────────────────────────────── -->
+<div class="modal-overlay hidden" id="editJapanModal">
+  <div class="modal-box">
+    <div class="modal-box-header">
+      <h3>✏️ Editar idea de Japón</h3>
+      <button class="modal-close" id="editJapanModalClose">✕</button>
+    </div>
+    <div class="modal-box-body">
+      <form id="editJapanForm">
+        <input type="hidden" id="editj-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Categoría *</label>
+            <select id="editj-category" required></select>
+          </div>
+          <div class="form-group">
+            <label>Subcategoría</label>
+            <input type="text" id="editj-subcategory" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Título *</label>
+          <input type="text" id="editj-title" required />
+        </div>
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea id="editj-description" style="min-height:100px"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Calificación (1-5 ⭐)</label>
+            <select id="editj-rating">
+              <option value="">Sin calificar</option>
+              <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+              <option value="4">⭐⭐⭐⭐ (4)</option>
+              <option value="3">⭐⭐⭐ (3)</option>
+              <option value="2">⭐⭐ (2)</option>
+              <option value="1">⭐ (1)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Emoji</label>
+            <input type="text" id="editj-emoji" maxlength="10" />
+          </div>
+          <div class="form-group">
+            <label>Prioridad (orden, menor = primero)</label>
+            <input type="number" id="editj-priority" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Ubicación</label>
+            <input type="text" id="editj-location" />
+          </div>
+          <div class="form-group">
+            <label>Fuente</label>
+            <input type="text" id="editj-source" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>URL de Google Maps</label>
+            <input type="text" id="editj-maps" />
+          </div>
+          <div class="form-group">
+            <label>URL de TikTok</label>
+            <input type="text" id="editj-tiktok" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contacto — nombre</label>
+            <input type="text" id="editj-contactName" />
+          </div>
+          <div class="form-group">
+            <label>Contacto — teléfono/WhatsApp</label>
+            <input type="text" id="editj-contactPhone" />
+          </div>
+        </div>
+        <!-- PDF Upload -->
+        <div class="form-group">
+          <label>Documento PDF</label>
+          <div class="pdf-picker">
+            <div id="editj-pdf-current" style="display:none" class="pdf-current">
+              <span>📎</span>
+              <a id="editj-pdf-link" href="#" target="_blank" rel="noopener noreferrer">Ver documento actual</a>
+              <button type="button" class="remove-pdf" id="editj-pdf-remove">✕ Quitar</button>
+            </div>
+            <div class="pdf-picker-row">
+              <input type="file" id="editj-pdf-file" accept="application/pdf" style="display:none" />
+              <button type="button" class="btn btn-secondary btn-small" id="editj-pdf-btn">📎 Adjuntar PDF</button>
+              <span class="pdf-status" id="editj-pdf-status"></span>
+              <input type="hidden" id="editj-pdfUrl" />
+            </div>
+            <div class="progress-wrap" id="editj-pdf-progress" style="display:none">
+              <div class="progress-bar"><div class="progress-fill" id="editj-pdf-fill"></div></div>
+              <span class="progress-pct" id="editj-pdf-pct">0%</span>
+            </div>
+          </div>
+        </div>
+        <!-- Visto state -->
+        <div class="form-group" style="margin-top:16px;padding-top:16px;border-top:1px solid #EEE">
+          <label class="done-check-label">
+            <input type="checkbox" id="editj-done" />
+            Marcar como visto/probado
+          </label>
+        </div>
+      </form>
+    </div>
+    <div class="modal-box-footer">
+      <button class="btn btn-secondary" id="editJapanCancelBtn">Cancelar</button>
+      <button class="btn btn-primary" id="editJapanSaveBtn">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── App (ES Module) ───────────────────────────────────── -->
 <script type="module">
   import firebaseConfig        from './firebase-config.js';
-  import { TRIP_DATA, TYPE_LABELS } from './data.js';
-  import { seedDatabase, clearActivities, isActivitiesEmpty } from './seed.js';
+  import { TYPE_LABELS, JAPAN_CATEGORIES } from './data.js';
+  import { SEED_SETS, seedAll, clearAll, isAllEmpty, updateContent } from './seed.js';
   import { initializeApp }     from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import {
     getFirestore, collection, onSnapshot, addDoc, updateDoc,
@@ -435,7 +1657,68 @@
   let isLoggedIn = false;
   let db, storage;
   let activities = [];
+  let flights = [];
+  let accommodations = [];
+  let tours = [];
+  let dayNotes = [];
+  let trips = [];
+  let japanItems = [];
+  let selectedTripId = 'honeymoon-indonesia';
   let addActivityId = null; // generated when picking file for new activity
+  let addFlightId = null;
+  let addAccomId = null;
+  let addTourId = null;
+  let addJapanId = null;
+
+  // ── Populate category selects from data.js (fixed list) ────
+  function populateJapanCategorySelects() {
+    [document.getElementById('addj-category'), document.getElementById('editj-category')].forEach(sel => {
+      sel.innerHTML = '';
+      JAPAN_CATEGORIES.forEach(c => {
+        const o = document.createElement('option');
+        o.value = c; o.textContent = c;
+        sel.appendChild(o);
+      });
+    });
+  }
+  populateJapanCategorySelects();
+
+  // ── Section tabs ──────────────────────────────────────────
+  document.getElementById('sectionTabs').addEventListener('click', e => {
+    const btn = e.target.closest('[data-tab]');
+    if (!btn) return;
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.section-tab').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('[data-section]').forEach(el => {
+      el.style.display = el.dataset.section === tab ? '' : 'none';
+    });
+  });
+
+  // ── Trip selector ─────────────────────────────────────────
+  document.getElementById('tripSelector').addEventListener('change', e => {
+    selectedTripId = e.target.value;
+    populateFilters();
+    renderList(); renderFlightList(); renderAccomList(); renderTourList(); renderDayNoteList(); renderStats();
+  });
+
+  function renderTripSelector() {
+    const sel = document.getElementById('tripSelector');
+    const prev = sel.value || selectedTripId;
+    sel.innerHTML = '';
+    trips.forEach(t => {
+      const o = document.createElement('option');
+      o.value = t.id;
+      o.textContent = `${t.name} (${t.id})`;
+      sel.appendChild(o);
+    });
+    if (trips.some(t => t.id === prev)) {
+      sel.value = prev;
+      selectedTripId = prev;
+    } else if (trips.length) {
+      selectedTripId = trips[0].id;
+      sel.value = selectedTripId;
+    }
+  }
 
   document.getElementById('loginBtn').addEventListener('click', login);
   document.getElementById('passwordInput').addEventListener('keydown', e => {
@@ -479,7 +1762,7 @@
     startSnapshot();
   }
 
-  // ── Firestore real-time listener ──────────────────────────
+  // ── Firestore real-time listeners ─────────────────────────
   function startSnapshot() {
     const q = query(collection(db, 'activities'), orderBy('day'), orderBy('order'));
     onSnapshot(q, (snap) => {
@@ -487,9 +1770,7 @@
       renderList();
       renderStats();
       populateFilters();
-      // Show seed box only when collection is empty
-      document.getElementById('seedBox').style.display =
-        activities.length === 0 ? 'block' : 'none';
+      updateSeedBoxVisibility();
     }, (err) => {
       console.error('Firestore error:', err);
       // If order fields don't exist yet, fall back without orderBy
@@ -499,23 +1780,87 @@
         renderList();
         renderStats();
         populateFilters();
-        document.getElementById('seedBox').style.display =
-          activities.length === 0 ? 'block' : 'none';
+        updateSeedBoxVisibility();
       });
     });
+
+    onSnapshot(collection(db, 'flights'), (snap) => {
+      flights = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      flights.sort((a, b) => (a.departureDate||'').localeCompare(b.departureDate||'') || (a.departureTime||'').localeCompare(b.departureTime||''));
+      renderFlightList();
+      renderStats();
+      updateSeedBoxVisibility();
+    }, (err) => console.error('Firestore error (flights):', err));
+
+    onSnapshot(collection(db, 'accommodations'), (snap) => {
+      accommodations = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      accommodations.sort((a, b) => (a.checkInDate||'').localeCompare(b.checkInDate||''));
+      renderAccomList();
+      renderStats();
+      updateSeedBoxVisibility();
+    }, (err) => console.error('Firestore error (accommodations):', err));
+
+    onSnapshot(collection(db, 'tours'), (snap) => {
+      tours = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      tours.sort((a, b) => (a.date||a.startDate||'').localeCompare(b.date||b.startDate||''));
+      renderTourList();
+      renderStats();
+      updateSeedBoxVisibility();
+    }, (err) => console.error('Firestore error (tours):', err));
+
+    onSnapshot(collection(db, 'dayNotes'), (snap) => {
+      dayNotes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      dayNotes.sort((a, b) => a.day - b.day);
+      renderDayNoteList();
+      updateSeedBoxVisibility();
+    }, (err) => console.error('Firestore error (dayNotes):', err));
+
+    onSnapshot(collection(db, 'trips'), (snap) => {
+      trips = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const order = { 'honeymoon-indonesia': 0, 'boda-mexico': 1, 'japon': 2 };
+      trips.sort((a, b) => (order[a.id] ?? 99) - (order[b.id] ?? 99));
+      renderTripSelector();
+      renderTripListTable();
+      updateSeedBoxVisibility();
+    }, (err) => console.error('Firestore error (trips):', err));
+
+    onSnapshot(collection(db, 'japanItems'), (snap) => {
+      japanItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      populateJapanFilters();
+      renderJapanList();
+      updateSeedBoxVisibility();
+    }, (err) => console.error('Firestore error (japanItems):', err));
+  }
+
+  let seedCheckPending = false;
+  function updateSeedBoxVisibility() {
+    if (seedCheckPending) return;
+    seedCheckPending = true;
+    setTimeout(async () => {
+      seedCheckPending = false;
+      document.getElementById('seedBox').style.display =
+        (await isAllEmpty(db)) ? 'block' : 'none';
+    }, 150);
   }
 
   // ── Stats ──────────────────────────────────────────────────
   function renderStats() {
-    const done  = activities.filter(a => a.done).length;
-    const pdfs  = activities.filter(a => a.pdfUrl).length;
-    const maps  = activities.filter(a => a.mapsUrl).length;
+    const tripActivities = activities.filter(a => a.tripId === selectedTripId);
+    const tripFlights = flights.filter(f => f.tripId === selectedTripId);
+    const tripAccommodations = accommodations.filter(a => a.tripId === selectedTripId);
+    const tripTours = tours.filter(t => t.tripId === selectedTripId);
+    const done = tripActivities.filter(a => a.done).length;
+    const allPdfs = tripActivities.filter(a => a.pdfUrl).length +
+      tripFlights.filter(f => f.pdfUrl).length +
+      tripAccommodations.filter(a => a.pdfUrl).length +
+      tripTours.filter(t => t.pdfUrl).length;
     document.getElementById('statsBar').innerHTML =
-      stat(activities.length, 'Actividades') +
-      stat(14, 'Días') +
+      stat(tripActivities.length, 'Actividades') +
       stat(done, 'Hechas') +
-      stat(pdfs, 'PDFs') +
-      stat(maps, 'Mapas');
+      stat(tripFlights.length, 'Vuelos') +
+      stat(tripAccommodations.length, 'Alojamientos') +
+      stat(tripTours.length, 'Tours') +
+      stat(allPdfs, 'PDFs');
   }
   function stat(n,l){return`<div class="stat-item"><div class="stat-number">${n}</div><div class="stat-label">${l}</div></div>`}
 
@@ -524,7 +1869,7 @@
     const dayFilter = document.getElementById('filterDay');
     const currentDay = dayFilter.value;
     dayFilter.innerHTML = '<option value="">Todos los días</option>';
-    [...new Set(activities.map(a => a.day))].sort((a,b)=>a-b).forEach(d => {
+    [...new Set(activities.filter(a => a.tripId === selectedTripId).map(a => a.day))].sort((a,b)=>a-b).forEach(d => {
       const o = document.createElement('option');
       o.value = d; o.textContent = 'Día ' + d;
       if (String(d) === currentDay) o.selected = true;
@@ -539,6 +1884,7 @@
     const doneVal = document.getElementById('filterDone').value;
 
     let filtered = activities.filter(a => {
+      if (a.tripId !== selectedTripId)          return false;
       if (dayVal  && String(a.day) !== dayVal) return false;
       if (typeVal && a.type !== typeVal)        return false;
       if (doneVal === 'done'    && !a.done)     return false;
@@ -571,6 +1917,189 @@
     });
   }
 
+  // ── Flight list ─────────────────────────────────────────
+  function renderFlightList() {
+    const filtered = flights.filter(f => f.tripId === selectedTripId);
+    document.getElementById('flightCount').textContent = filtered.length + ' vuelos';
+    const tbody = document.getElementById('flightTableBody');
+    tbody.innerHTML = '';
+    filtered.forEach(f => {
+      const tr = document.createElement('tr');
+      const route = `${esc(f.from?.code || '?')} → ${esc(f.to?.code || '?')}`;
+      tr.innerHTML =
+        `<td>${esc(f.segment)}</td>` +
+        `<td>${route}</td>` +
+        `<td>${esc(f.departureDate || '—')} ${esc(f.departureTime || '')}</td>` +
+        `<td>${esc(f.airline || '—')}</td>` +
+        `<td><span class="type-pill">${esc(f.status || '—')}</span></td>` +
+        `<td>${f.pdfUrl ? `<a href="${esc(f.pdfUrl)}" target="_blank" rel="noopener noreferrer" style="color:#2563EB">📄 Ver</a>` : '—'}</td>` +
+        `<td><div class="td-actions">` +
+          `<button class="btn btn-secondary btn-small" data-edit-flight="${esc(f.id)}">✏️ Editar</button>` +
+          `<button class="btn btn-danger btn-small" data-delete-flight="${esc(f.id)}">🗑</button>` +
+        `</div></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ── Accommodation list ───────────────────────────────────
+  function renderAccomList() {
+    const filtered = accommodations.filter(a => a.tripId === selectedTripId);
+    document.getElementById('accomCount').textContent = filtered.length + ' alojamientos';
+    const tbody = document.getElementById('accomTableBody');
+    tbody.innerHTML = '';
+    filtered.forEach(a => {
+      const cost = a.cost != null ? `${a.cost} ${esc(a.costCurrency || '')}` : '—';
+      tr_accom(tbody, a, cost);
+    });
+  }
+  function tr_accom(tbody, a, cost) {
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      `<td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(a.name)}</td>` +
+      `<td>${esc(a.checkInDate || '—')}</td>` +
+      `<td>${esc(a.checkOutDate || '—')}</td>` +
+      `<td>${cost}</td>` +
+      `<td><span class="type-pill">${esc(a.status || '—')}</span></td>` +
+      `<td>${a.pdfUrl ? `<a href="${esc(a.pdfUrl)}" target="_blank" rel="noopener noreferrer" style="color:#2563EB">📄 Ver</a>` : '—'}</td>` +
+      `<td><div class="td-actions">` +
+        `<button class="btn btn-secondary btn-small" data-edit-accom="${esc(a.id)}">✏️ Editar</button>` +
+        `<button class="btn btn-danger btn-small" data-delete-accom="${esc(a.id)}">🗑</button>` +
+      `</div></td>`;
+    tbody.appendChild(tr);
+  }
+
+  // ── Tour list ─────────────────────────────────────────────
+  function renderTourList() {
+    const filtered = tours.filter(t => t.tripId === selectedTripId);
+    document.getElementById('tourCount').textContent = filtered.length + ' tours';
+    const tbody = document.getElementById('tourTableBody');
+    tbody.innerHTML = '';
+    filtered.forEach(t => {
+      const dateLabel = t.date || [t.startDate, t.endDate].filter(Boolean).join(' → ') || '—';
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        `<td style="max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.name)}</td>` +
+        `<td>${esc(t.operator || '—')}</td>` +
+        `<td>${esc(dateLabel)}</td>` +
+        `<td><span class="type-pill">${esc(t.status || '—')}</span></td>` +
+        `<td>${t.pdfUrl ? `<a href="${esc(t.pdfUrl)}" target="_blank" rel="noopener noreferrer" style="color:#2563EB">📄 Ver</a>` : '—'}</td>` +
+        `<td><div class="td-actions">` +
+          `<button class="btn btn-secondary btn-small" data-edit-tour="${esc(t.id)}">✏️ Editar</button>` +
+          `<button class="btn btn-danger btn-small" data-delete-tour="${esc(t.id)}">🗑</button>` +
+        `</div></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ── Day notes list ────────────────────────────────────────
+  function renderDayNoteList() {
+    const filtered = dayNotes.filter(n => n.tripId === selectedTripId);
+    document.getElementById('dayNoteCount').textContent = filtered.length + ' días';
+    const tbody = document.getElementById('dayNoteTableBody');
+    tbody.innerHTML = '';
+    filtered.forEach(n => {
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        `<td><span class="day-badge">${n.day}</span></td>` +
+        `<td style="max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(n.summary || '—')}</td>` +
+        `<td style="max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(n.criticalNote || '—')}</td>` +
+        `<td><div class="td-actions">` +
+          `<button class="btn btn-secondary btn-small" data-edit-daynote="${esc(n.id)}">✏️ Editar</button>` +
+        `</div></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ── Trip list ─────────────────────────────────────────────
+  function renderTripListTable() {
+    document.getElementById('tripListCount').textContent = trips.length + ' viajes';
+    const tbody = document.getElementById('tripListTableBody');
+    tbody.innerHTML = '';
+    trips.forEach(t => {
+      const dates = [t.startDate, t.endDate].filter(Boolean).join(' → ') || '—';
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        `<td><code>${esc(t.id)}</code></td>` +
+        `<td>${esc(t.name)}</td>` +
+        `<td>${esc(t.type || '—')}</td>` +
+        `<td><span class="type-pill">${esc(t.viewMode)}</span></td>` +
+        `<td>${esc(dates)}</td>` +
+        `<td><div class="td-actions">` +
+          `<button class="btn btn-secondary btn-small" data-edit-trip="${esc(t.id)}">✏️ Editar</button>` +
+          `<button class="btn btn-danger btn-small" data-delete-trip="${esc(t.id)}">🗑</button>` +
+        `</div></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ── Japan items filters ─────────────────────────────────────
+  function populateJapanFilters() {
+    const catSel = document.getElementById('filterJapanCategory');
+    const subSel = document.getElementById('filterJapanSubcategory');
+    const prevCat = catSel.value;
+    const prevSub = subSel.value;
+
+    catSel.innerHTML = '<option value="">Todas las categorías</option>';
+    JAPAN_CATEGORIES.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c; o.textContent = c;
+      if (c === prevCat) o.selected = true;
+      catSel.appendChild(o);
+    });
+
+    const relevant = prevCat ? japanItems.filter(i => i.category === prevCat) : japanItems;
+    subSel.innerHTML = '<option value="">Todas las subcategorías</option>';
+    [...new Set(relevant.map(i => i.subcategory).filter(Boolean))].sort().forEach(s => {
+      const o = document.createElement('option');
+      o.value = s; o.textContent = s;
+      if (s === prevSub) o.selected = true;
+      subSel.appendChild(o);
+    });
+  }
+
+  // ── Japan items list ─────────────────────────────────────────
+  function renderJapanList() {
+    const catVal = document.getElementById('filterJapanCategory').value;
+    const subVal = document.getElementById('filterJapanSubcategory').value;
+    const doneVal = document.getElementById('filterJapanDone').value;
+
+    const filtered = japanItems.filter(i => {
+      if (catVal && i.category !== catVal) return false;
+      if (subVal && i.subcategory !== subVal) return false;
+      if (doneVal === 'done' && !i.done) return false;
+      if (doneVal === 'pending' && i.done) return false;
+      return true;
+    });
+
+    document.getElementById('japanCount').textContent = filtered.length + ' ideas';
+    const tbody = document.getElementById('japanTableBody');
+    tbody.innerHTML = '';
+    filtered.forEach(item => {
+      const tr = document.createElement('tr');
+      if (item.done) tr.className = 'row-done';
+      tr.innerHTML =
+        `<td>${esc(item.category)}</td>` +
+        `<td>${esc(item.subcategory || '—')}</td>` +
+        `<td style="max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" class="cell-title">${item.emoji ? esc(item.emoji) + ' ' : ''}${esc(item.title)}</td>` +
+        `<td>${item.rating ? '⭐'.repeat(item.rating) : '—'}</td>` +
+        `<td>${item.done ? '<span class="done-pill">✓ Visto</span>' : '—'}</td>` +
+        `<td>${item.pdfUrl ? `<a href="${esc(item.pdfUrl)}" target="_blank" rel="noopener noreferrer" style="color:#2563EB">📄 Ver</a>` : '—'}</td>` +
+        `<td><div class="td-actions">` +
+          `<button class="btn btn-secondary btn-small" data-edit-japan="${esc(item.id)}">✏️ Editar</button>` +
+          `<button class="btn btn-${item.done?'secondary':'success'} btn-small" data-toggle-japan="${esc(item.id)}">${item.done ? '↩ Pendiente' : '✓ Visto'}</button>` +
+          `<button class="btn btn-danger btn-small" data-delete-japan="${esc(item.id)}">🗑</button>` +
+        `</div></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  ['filterJapanCategory', 'filterJapanSubcategory', 'filterJapanDone'].forEach(id =>
+    document.getElementById(id).addEventListener('change', () => {
+      if (id === 'filterJapanCategory') populateJapanFilters();
+      renderJapanList();
+    })
+  );
+
   // ── Add form ──────────────────────────────────────────────
   document.getElementById('toggleAddBtn').addEventListener('click', () => {
     const w = document.getElementById('addFormWrapper');
@@ -592,9 +2121,10 @@
     e.preventDefault();
     const day = parseInt(document.getElementById('add-day').value, 10);
     const orderVal = document.getElementById('add-order').value;
-    const autoOrder = activities.filter(a => a.day === day).length;
+    const autoOrder = activities.filter(a => a.day === day && a.tripId === selectedTripId).length;
 
     const newAct = {
+      tripId: selectedTripId,
       day,
       order:       orderVal !== '' ? parseInt(orderVal, 10) : autoOrder,
       done:        false,
@@ -605,7 +2135,11 @@
       description: document.getElementById('add-description').value.trim(),
       type:        document.getElementById('add-type').value,
       pdfUrl:      document.getElementById('add-pdfUrl').value.trim() || null,
-      mapsUrl:     document.getElementById('add-maps').value.trim() || null
+      mapsUrl:     document.getElementById('add-maps').value.trim() || null,
+      contacto: {
+        contactName:  document.getElementById('add-contactName').value.trim() || null,
+        contactPhone: document.getElementById('add-contactPhone').value.trim() || null
+      }
     };
 
     try {
@@ -616,6 +2150,389 @@
     } catch (err) {
       alert('Error al guardar: ' + err.message);
     }
+  });
+
+  // ── Add flight form ────────────────────────────────────────
+  document.getElementById('toggleAddFlightBtn').addEventListener('click', () => {
+    const w = document.getElementById('addFlightFormWrapper');
+    w.style.display = w.style.display === 'none' ? 'block' : 'none';
+  });
+  document.getElementById('resetAddFlightBtn').addEventListener('click', resetAddFlightForm);
+
+  function resetAddFlightForm() {
+    document.getElementById('addFlightForm').reset();
+    document.getElementById('addf-pdfUrl').value = '';
+    document.getElementById('addf-pdf-status').textContent = 'Sin documento';
+    document.getElementById('addf-pdf-status').className = 'pdf-status';
+    document.getElementById('addf-pdf-progress').style.display = 'none';
+    addFlightId = null;
+  }
+
+  document.getElementById('addFlightForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const newFlight = {
+      tripId: selectedTripId,
+      segment: document.getElementById('addf-segment').value.trim(),
+      type: document.getElementById('addf-type').value,
+      from: {
+        code: document.getElementById('addf-fromCode').value.trim(),
+        name: document.getElementById('addf-fromName').value.trim() || null,
+        city: document.getElementById('addf-fromCity').value.trim(),
+        country: document.getElementById('addf-fromCountry').value.trim()
+      },
+      to: {
+        code: document.getElementById('addf-toCode').value.trim(),
+        name: document.getElementById('addf-toName').value.trim() || null,
+        city: document.getElementById('addf-toCity').value.trim(),
+        country: document.getElementById('addf-toCountry').value.trim()
+      },
+      departureDate: document.getElementById('addf-departureDate').value,
+      departureTime: document.getElementById('addf-departureTime').value,
+      arrivalDate: document.getElementById('addf-arrivalDate').value,
+      arrivalTime: document.getElementById('addf-arrivalTime').value,
+      duration: document.getElementById('addf-duration').value.trim(),
+      airline: document.getElementById('addf-airline').value.trim(),
+      flightNumber: document.getElementById('addf-flightNumber').value.trim(),
+      class: document.getElementById('addf-class').value.trim(),
+      status: document.getElementById('addf-status').value,
+      notes: document.getElementById('addf-notes').value.trim(),
+      pdfUrl: document.getElementById('addf-pdfUrl').value.trim() || null
+    };
+    try {
+      await addDoc(collection(db, 'flights'), newFlight);
+      showSaveNotice();
+      resetAddFlightForm();
+      document.getElementById('addFlightFormWrapper').style.display = 'none';
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+
+  // ── Add accommodation form ─────────────────────────────────
+  document.getElementById('toggleAddAccomBtn').addEventListener('click', () => {
+    const w = document.getElementById('addAccomFormWrapper');
+    w.style.display = w.style.display === 'none' ? 'block' : 'none';
+  });
+  document.getElementById('resetAddAccomBtn').addEventListener('click', resetAddAccomForm);
+
+  function resetAddAccomForm() {
+    document.getElementById('addAccomForm').reset();
+    document.getElementById('adda-pdfUrl').value = '';
+    document.getElementById('adda-pdf-status').textContent = 'Sin documento';
+    document.getElementById('adda-pdf-status').className = 'pdf-status';
+    document.getElementById('adda-pdf-progress').style.display = 'none';
+    addAccomId = null;
+  }
+
+  document.getElementById('addAccomForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const costVal = document.getElementById('adda-cost').value;
+    const newAccom = {
+      tripId: selectedTripId,
+      name: document.getElementById('adda-name').value.trim(),
+      type: document.getElementById('adda-type').value.trim(),
+      status: document.getElementById('adda-status').value,
+      region: document.getElementById('adda-region').value.trim(),
+      province: document.getElementById('adda-province').value.trim(),
+      country: document.getElementById('adda-country').value.trim(),
+      bookedVia: document.getElementById('adda-bookedVia').value.trim(),
+      checkInDate: document.getElementById('adda-checkInDate').value,
+      checkOutDate: document.getElementById('adda-checkOutDate').value,
+      cost: costVal !== '' ? parseFloat(costVal) : null,
+      costCurrency: document.getElementById('adda-costCurrency').value.trim(),
+      cancellationPolicy: document.getElementById('adda-cancellationPolicy').value.trim(),
+      mapsUrl: document.getElementById('adda-maps').value.trim() || null,
+      contacto: {
+        contactName:  document.getElementById('adda-contactName').value.trim() || null,
+        contactPhone: document.getElementById('adda-contactPhone').value.trim() || null
+      },
+      pdfUrl: document.getElementById('adda-pdfUrl').value.trim() || null
+    };
+    try {
+      await addDoc(collection(db, 'accommodations'), newAccom);
+      showSaveNotice();
+      resetAddAccomForm();
+      document.getElementById('addAccomFormWrapper').style.display = 'none';
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+
+  // ── Add tour form ───────────────────────────────────────────
+  document.getElementById('toggleAddTourBtn').addEventListener('click', () => {
+    const w = document.getElementById('addTourFormWrapper');
+    w.style.display = w.style.display === 'none' ? 'block' : 'none';
+  });
+  document.getElementById('resetAddTourBtn').addEventListener('click', resetAddTourForm);
+
+  function resetAddTourForm() {
+    document.getElementById('addTourForm').reset();
+    document.getElementById('addt-pdfUrl').value = '';
+    document.getElementById('addt-pdf-status').textContent = 'Sin documento';
+    document.getElementById('addt-pdf-status').className = 'pdf-status';
+    document.getElementById('addt-pdf-progress').style.display = 'none';
+    addTourId = null;
+  }
+
+  document.getElementById('addTourForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const startDate = document.getElementById('addt-startDate').value;
+    const endDate = document.getElementById('addt-endDate').value;
+    const newTour = {
+      tripId: selectedTripId,
+      name: document.getElementById('addt-name').value.trim(),
+      operator: document.getElementById('addt-operator').value.trim(),
+      duration: document.getElementById('addt-duration').value.trim(),
+      status: document.getElementById('addt-status').value.trim(),
+      mapsUrl: document.getElementById('addt-maps').value.trim() || null,
+      contacto: {
+        contactName:  document.getElementById('addt-contactName').value.trim() || null,
+        contactPhone: document.getElementById('addt-contactPhone').value.trim() || null
+      },
+      pdfUrl: document.getElementById('addt-pdfUrl').value.trim() || null
+    };
+    if (endDate) { newTour.startDate = startDate; newTour.endDate = endDate; }
+    else if (startDate) { newTour.date = startDate; }
+    try {
+      await addDoc(collection(db, 'tours'), newTour);
+      showSaveNotice();
+      resetAddTourForm();
+      document.getElementById('addTourFormWrapper').style.display = 'none';
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+
+  // ── Add trip form ────────────────────────────────────────────
+  document.getElementById('toggleAddTripBtn').addEventListener('click', () => {
+    const w = document.getElementById('addTripFormWrapper');
+    w.style.display = w.style.display === 'none' ? 'block' : 'none';
+  });
+  document.getElementById('resetAddTripBtn').addEventListener('click', resetAddTripForm);
+
+  function resetAddTripForm() {
+    document.getElementById('addTripForm').reset();
+  }
+
+  document.getElementById('addTripForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('addtr-id').value.trim();
+    const startDate = document.getElementById('addtr-startDate').value;
+    const endDate = document.getElementById('addtr-endDate').value;
+    const newTrip = {
+      name: document.getElementById('addtr-name').value.trim(),
+      type: document.getElementById('addtr-type').value.trim(),
+      viewMode: document.getElementById('addtr-viewMode').value,
+      startDate: startDate || null,
+      endDate: endDate || null
+    };
+    try {
+      await setDoc(doc(collection(db, 'trips'), id), newTrip);
+      showSaveNotice();
+      resetAddTripForm();
+      document.getElementById('addTripFormWrapper').style.display = 'none';
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+
+  // ── Add Japan item form ───────────────────────────────────────
+  document.getElementById('toggleAddJapanBtn').addEventListener('click', () => {
+    const w = document.getElementById('addJapanFormWrapper');
+    w.style.display = w.style.display === 'none' ? 'block' : 'none';
+  });
+  document.getElementById('resetAddJapanBtn').addEventListener('click', resetAddJapanForm);
+
+  function resetAddJapanForm() {
+    document.getElementById('addJapanForm').reset();
+    document.getElementById('addj-pdfUrl').value = '';
+    document.getElementById('addj-pdf-status').textContent = 'Sin documento';
+    document.getElementById('addj-pdf-status').className = 'pdf-status';
+    document.getElementById('addj-pdf-progress').style.display = 'none';
+    addJapanId = null;
+  }
+
+  document.getElementById('addJapanForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const newItem = {
+      tripId: 'japon',
+      category: document.getElementById('addj-category').value,
+      subcategory: document.getElementById('addj-subcategory').value.trim() || null,
+      title: document.getElementById('addj-title').value.trim(),
+      description: document.getElementById('addj-description').value.trim(),
+      rating: document.getElementById('addj-rating').value ? parseInt(document.getElementById('addj-rating').value, 10) : null,
+      emoji: document.getElementById('addj-emoji').value.trim() || null,
+      priority: document.getElementById('addj-priority').value ? parseInt(document.getElementById('addj-priority').value, 10) : null,
+      location: document.getElementById('addj-location').value.trim() || null,
+      source: document.getElementById('addj-source').value.trim() || null,
+      mapsUrl: document.getElementById('addj-maps').value.trim() || null,
+      tiktokUrl: document.getElementById('addj-tiktok').value.trim() || null,
+      contacto: {
+        contactName:  document.getElementById('addj-contactName').value.trim() || null,
+        contactPhone: document.getElementById('addj-contactPhone').value.trim() || null
+      },
+      done: false,
+      pdfUrl: document.getElementById('addj-pdfUrl').value.trim() || null
+    };
+    try {
+      await addDoc(collection(db, 'japanItems'), newItem);
+      showSaveNotice();
+      resetAddJapanForm();
+      document.getElementById('addJapanFormWrapper').style.display = 'none';
+    } catch (err) {
+      alert('Error al guardar: ' + err.message);
+    }
+  });
+
+  // ── Edit Japan item modal ───────────────────────────────────
+  function openEditJapanModal(id) {
+    const item = japanItems.find(x => x.id === id);
+    if (!item) return;
+    document.getElementById('editj-id').value = item.id;
+    document.getElementById('editj-category').value = item.category;
+    document.getElementById('editj-subcategory').value = item.subcategory || '';
+    document.getElementById('editj-title').value = item.title || '';
+    document.getElementById('editj-description').value = item.description || '';
+    document.getElementById('editj-rating').value = item.rating != null ? String(item.rating) : '';
+    document.getElementById('editj-emoji').value = item.emoji || '';
+    document.getElementById('editj-priority').value = item.priority != null ? String(item.priority) : '';
+    document.getElementById('editj-location').value = item.location || '';
+    document.getElementById('editj-source').value = item.source || '';
+    document.getElementById('editj-maps').value = item.mapsUrl || '';
+    document.getElementById('editj-tiktok').value = item.tiktokUrl || '';
+    document.getElementById('editj-contactName').value = item.contacto?.contactName || '';
+    document.getElementById('editj-contactPhone').value = item.contacto?.contactPhone || '';
+    document.getElementById('editj-done').checked = !!item.done;
+
+    setupEditPdfState('editj', item.pdfUrl);
+    document.getElementById('editJapanModal').classList.remove('hidden');
+  }
+  function closeEditJapanModal() { document.getElementById('editJapanModal').classList.add('hidden'); }
+  document.getElementById('editJapanModalClose').addEventListener('click', closeEditJapanModal);
+  document.getElementById('editJapanCancelBtn').addEventListener('click', closeEditJapanModal);
+  document.getElementById('editJapanModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('editJapanModal')) closeEditJapanModal();
+  });
+  document.getElementById('editj-pdf-remove').addEventListener('click', () => removeEditPdf('editj'));
+
+  document.getElementById('editJapanSaveBtn').addEventListener('click', async () => {
+    if (!document.getElementById('editJapanForm').reportValidity()) return;
+    const id = document.getElementById('editj-id').value;
+    const updated = {
+      category: document.getElementById('editj-category').value,
+      subcategory: document.getElementById('editj-subcategory').value.trim() || null,
+      title: document.getElementById('editj-title').value.trim(),
+      description: document.getElementById('editj-description').value.trim(),
+      rating: document.getElementById('editj-rating').value ? parseInt(document.getElementById('editj-rating').value, 10) : null,
+      emoji: document.getElementById('editj-emoji').value.trim() || null,
+      priority: document.getElementById('editj-priority').value ? parseInt(document.getElementById('editj-priority').value, 10) : null,
+      location: document.getElementById('editj-location').value.trim() || null,
+      source: document.getElementById('editj-source').value.trim() || null,
+      mapsUrl: document.getElementById('editj-maps').value.trim() || null,
+      tiktokUrl: document.getElementById('editj-tiktok').value.trim() || null,
+      contacto: {
+        contactName:  document.getElementById('editj-contactName').value.trim() || null,
+        contactPhone: document.getElementById('editj-contactPhone').value.trim() || null
+      },
+      done: document.getElementById('editj-done').checked,
+      pdfUrl: document.getElementById('editj-pdfUrl').value.trim() || null
+    };
+    try {
+      await updateDoc(doc(db, 'japanItems', id), updated);
+      showSaveNotice();
+      closeEditJapanModal();
+    } catch (err) { alert('Error al guardar: ' + err.message); }
+  });
+
+  async function deleteJapanItem(id) {
+    const item = japanItems.find(x => x.id === id);
+    if (!item) return;
+    if (!confirm(`¿Eliminar "${item.title}"?\n\nNota: el PDF en Firebase Storage (si existe) no se elimina automáticamente.`)) return;
+    try { await deleteDoc(doc(db, 'japanItems', id)); showSaveNotice(); }
+    catch (err) { alert('Error: ' + err.message); }
+  }
+
+  async function toggleJapanDoneById(id) {
+    const item = japanItems.find(x => x.id === id);
+    if (!item) return;
+    try { await updateDoc(doc(db, 'japanItems', id), { done: !item.done }); showSaveNotice(); }
+    catch (err) { alert('Error: ' + err.message); }
+  }
+
+  document.getElementById('japanTableBody').addEventListener('click', e => {
+    const editBtn = e.target.closest('[data-edit-japan]');
+    const delBtn = e.target.closest('[data-delete-japan]');
+    const toggleBtn = e.target.closest('[data-toggle-japan]');
+    if (editBtn) openEditJapanModal(editBtn.dataset.editJapan);
+    if (delBtn) deleteJapanItem(delBtn.dataset.deleteJapan);
+    if (toggleBtn) toggleJapanDoneById(toggleBtn.dataset.toggleJapan);
+  });
+
+  document.getElementById('addj-pdf-btn').addEventListener('click', () => {
+    if (!addJapanId) addJapanId = 'custom-' + Date.now();
+    document.getElementById('addj-pdf-file').click();
+  });
+  document.getElementById('addj-pdf-file').addEventListener('change', () =>
+    handleUpload('addj', 'japanItems', addJapanId)
+  );
+  document.getElementById('editj-pdf-btn').addEventListener('click', () =>
+    document.getElementById('editj-pdf-file').click()
+  );
+  document.getElementById('editj-pdf-file').addEventListener('change', () =>
+    handleUpload('editj', 'japanItems', document.getElementById('editj-id').value)
+  );
+
+  // ── Edit trip modal ──────────────────────────────────────────
+  function openEditTripModal(id) {
+    const t = trips.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('edittr-id').value = t.id;
+    document.getElementById('edittr-name').value = t.name || '';
+    document.getElementById('edittr-type').value = t.type || '';
+    document.getElementById('edittr-viewMode').value = t.viewMode || 'itinerary';
+    document.getElementById('edittr-startDate').value = t.startDate || '';
+    document.getElementById('edittr-endDate').value = t.endDate || '';
+    document.getElementById('editTripModal').classList.remove('hidden');
+  }
+  function closeEditTripModal() { document.getElementById('editTripModal').classList.add('hidden'); }
+  document.getElementById('editTripModalClose').addEventListener('click', closeEditTripModal);
+  document.getElementById('editTripCancelBtn').addEventListener('click', closeEditTripModal);
+  document.getElementById('editTripModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('editTripModal')) closeEditTripModal();
+  });
+
+  document.getElementById('editTripSaveBtn').addEventListener('click', async () => {
+    if (!document.getElementById('editTripForm').reportValidity()) return;
+    const id = document.getElementById('edittr-id').value;
+    const startDate = document.getElementById('edittr-startDate').value;
+    const endDate = document.getElementById('edittr-endDate').value;
+    const updated = {
+      name: document.getElementById('edittr-name').value.trim(),
+      type: document.getElementById('edittr-type').value.trim(),
+      viewMode: document.getElementById('edittr-viewMode').value,
+      startDate: startDate || null,
+      endDate: endDate || null
+    };
+    try {
+      await updateDoc(doc(db, 'trips', id), updated);
+      showSaveNotice();
+      closeEditTripModal();
+    } catch (err) { alert('Error al guardar: ' + err.message); }
+  });
+
+  async function deleteTrip(id) {
+    const t = trips.find(x => x.id === id);
+    if (!t) return;
+    if (!confirm(`¿Eliminar el viaje "${t.name}"?\n\nNota: las actividades/vuelos/alojamientos/tours/notas que ya tengan este tripId NO se eliminan ni se reasignan — quedarán huérfanos.`)) return;
+    try { await deleteDoc(doc(db, 'trips', id)); showSaveNotice(); }
+    catch (err) { alert('Error: ' + err.message); }
+  }
+
+  document.getElementById('tripListTableBody').addEventListener('click', e => {
+    const editBtn = e.target.closest('[data-edit-trip]');
+    const delBtn = e.target.closest('[data-delete-trip]');
+    if (editBtn) openEditTripModal(editBtn.dataset.editTrip);
+    if (delBtn) deleteTrip(delBtn.dataset.deleteTrip);
   });
 
   // ── Edit modal ────────────────────────────────────────────
@@ -633,6 +2550,8 @@
     document.getElementById('edit-description').value = act.description || '';
     document.getElementById('edit-type').value        = act.type || 'visita';
     document.getElementById('edit-maps').value        = act.mapsUrl || '';
+    document.getElementById('edit-contactName').value  = act.contacto?.contactName || '';
+    document.getElementById('edit-contactPhone').value = act.contacto?.contactPhone || '';
     document.getElementById('edit-done').checked      = !!act.done;
 
     // PDF state
@@ -692,6 +2611,10 @@
       type:        document.getElementById('edit-type').value,
       pdfUrl:      document.getElementById('edit-pdfUrl').value.trim() || null,
       mapsUrl:     document.getElementById('edit-maps').value.trim() || null,
+      contacto: {
+        contactName:  document.getElementById('edit-contactName').value.trim() || null,
+        contactPhone: document.getElementById('edit-contactPhone').value.trim() || null
+      },
       done:        document.getElementById('edit-done').checked
     };
     try {
@@ -702,6 +2625,264 @@
       alert('Error al guardar: ' + err.message);
     }
   });
+
+  // ── Edit flight modal ──────────────────────────────────────
+  function openEditFlightModal(id) {
+    const f = flights.find(x => x.id === id);
+    if (!f) return;
+    document.getElementById('editf-id').value = f.id;
+    document.getElementById('editf-segment').value = f.segment || '';
+    document.getElementById('editf-type').value = f.type || 'international';
+    document.getElementById('editf-fromCode').value = f.from?.code || '';
+    document.getElementById('editf-fromName').value = f.from?.name || '';
+    document.getElementById('editf-fromCity').value = f.from?.city || '';
+    document.getElementById('editf-fromCountry').value = f.from?.country || '';
+    document.getElementById('editf-toCode').value = f.to?.code || '';
+    document.getElementById('editf-toName').value = f.to?.name || '';
+    document.getElementById('editf-toCity').value = f.to?.city || '';
+    document.getElementById('editf-toCountry').value = f.to?.country || '';
+    document.getElementById('editf-departureDate').value = f.departureDate || '';
+    document.getElementById('editf-departureTime').value = f.departureTime || '';
+    document.getElementById('editf-arrivalDate').value = f.arrivalDate || '';
+    document.getElementById('editf-arrivalTime').value = f.arrivalTime || '';
+    document.getElementById('editf-airline').value = f.airline || '';
+    document.getElementById('editf-flightNumber').value = f.flightNumber || '';
+    document.getElementById('editf-duration').value = f.duration || '';
+    document.getElementById('editf-class').value = f.class || '';
+    document.getElementById('editf-status').value = f.status || 'confirmed';
+    document.getElementById('editf-notes').value = f.notes || '';
+
+    setupEditPdfState('editf', f.pdfUrl);
+    document.getElementById('editFlightModal').classList.remove('hidden');
+  }
+  function closeEditFlightModal() { document.getElementById('editFlightModal').classList.add('hidden'); }
+  document.getElementById('editFlightModalClose').addEventListener('click', closeEditFlightModal);
+  document.getElementById('editFlightCancelBtn').addEventListener('click', closeEditFlightModal);
+  document.getElementById('editFlightModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('editFlightModal')) closeEditFlightModal();
+  });
+  document.getElementById('editf-pdf-remove').addEventListener('click', () => removeEditPdf('editf'));
+
+  document.getElementById('editFlightSaveBtn').addEventListener('click', async () => {
+    if (!document.getElementById('editFlightForm').reportValidity()) return;
+    const id = document.getElementById('editf-id').value;
+    const updated = {
+      segment: document.getElementById('editf-segment').value.trim(),
+      type: document.getElementById('editf-type').value,
+      from: {
+        code: document.getElementById('editf-fromCode').value.trim(),
+        name: document.getElementById('editf-fromName').value.trim() || null,
+        city: document.getElementById('editf-fromCity').value.trim(),
+        country: document.getElementById('editf-fromCountry').value.trim()
+      },
+      to: {
+        code: document.getElementById('editf-toCode').value.trim(),
+        name: document.getElementById('editf-toName').value.trim() || null,
+        city: document.getElementById('editf-toCity').value.trim(),
+        country: document.getElementById('editf-toCountry').value.trim()
+      },
+      departureDate: document.getElementById('editf-departureDate').value,
+      departureTime: document.getElementById('editf-departureTime').value,
+      arrivalDate: document.getElementById('editf-arrivalDate').value,
+      arrivalTime: document.getElementById('editf-arrivalTime').value,
+      airline: document.getElementById('editf-airline').value.trim(),
+      flightNumber: document.getElementById('editf-flightNumber').value.trim(),
+      duration: document.getElementById('editf-duration').value.trim(),
+      class: document.getElementById('editf-class').value.trim(),
+      status: document.getElementById('editf-status').value,
+      notes: document.getElementById('editf-notes').value.trim(),
+      pdfUrl: document.getElementById('editf-pdfUrl').value.trim() || null
+    };
+    try {
+      await updateDoc(doc(db, 'flights', id), updated);
+      showSaveNotice();
+      closeEditFlightModal();
+    } catch (err) { alert('Error al guardar: ' + err.message); }
+  });
+
+  // ── Edit accommodation modal ───────────────────────────────
+  function openEditAccomModal(id) {
+    const a = accommodations.find(x => x.id === id);
+    if (!a) return;
+    document.getElementById('edita-id').value = a.id;
+    document.getElementById('edita-name').value = a.name || '';
+    document.getElementById('edita-type').value = a.type || '';
+    document.getElementById('edita-status').value = a.status || 'confirmed';
+    document.getElementById('edita-region').value = a.region || '';
+    document.getElementById('edita-province').value = a.province || '';
+    document.getElementById('edita-country').value = a.country || '';
+    document.getElementById('edita-bookedVia').value = a.bookedVia || '';
+    document.getElementById('edita-checkInDate').value = a.checkInDate || '';
+    document.getElementById('edita-checkOutDate').value = a.checkOutDate || '';
+    document.getElementById('edita-cost').value = a.cost ?? '';
+    document.getElementById('edita-costCurrency').value = a.costCurrency || '';
+    document.getElementById('edita-cancellationPolicy').value = a.cancellationPolicy || '';
+    document.getElementById('edita-maps').value = a.mapsUrl || '';
+    document.getElementById('edita-contactName').value = a.contacto?.contactName || '';
+    document.getElementById('edita-contactPhone').value = a.contacto?.contactPhone || '';
+
+    setupEditPdfState('edita', a.pdfUrl);
+    document.getElementById('editAccomModal').classList.remove('hidden');
+  }
+  function closeEditAccomModal() { document.getElementById('editAccomModal').classList.add('hidden'); }
+  document.getElementById('editAccomModalClose').addEventListener('click', closeEditAccomModal);
+  document.getElementById('editAccomCancelBtn').addEventListener('click', closeEditAccomModal);
+  document.getElementById('editAccomModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('editAccomModal')) closeEditAccomModal();
+  });
+  document.getElementById('edita-pdf-remove').addEventListener('click', () => removeEditPdf('edita'));
+
+  document.getElementById('editAccomSaveBtn').addEventListener('click', async () => {
+    if (!document.getElementById('editAccomForm').reportValidity()) return;
+    const id = document.getElementById('edita-id').value;
+    const costVal = document.getElementById('edita-cost').value;
+    const updated = {
+      name: document.getElementById('edita-name').value.trim(),
+      type: document.getElementById('edita-type').value.trim(),
+      status: document.getElementById('edita-status').value,
+      region: document.getElementById('edita-region').value.trim(),
+      province: document.getElementById('edita-province').value.trim(),
+      country: document.getElementById('edita-country').value.trim(),
+      bookedVia: document.getElementById('edita-bookedVia').value.trim(),
+      checkInDate: document.getElementById('edita-checkInDate').value,
+      checkOutDate: document.getElementById('edita-checkOutDate').value,
+      cost: costVal !== '' ? parseFloat(costVal) : null,
+      costCurrency: document.getElementById('edita-costCurrency').value.trim(),
+      cancellationPolicy: document.getElementById('edita-cancellationPolicy').value.trim(),
+      mapsUrl: document.getElementById('edita-maps').value.trim() || null,
+      contacto: {
+        contactName:  document.getElementById('edita-contactName').value.trim() || null,
+        contactPhone: document.getElementById('edita-contactPhone').value.trim() || null
+      },
+      pdfUrl: document.getElementById('edita-pdfUrl').value.trim() || null
+    };
+    try {
+      await updateDoc(doc(db, 'accommodations', id), updated);
+      showSaveNotice();
+      closeEditAccomModal();
+    } catch (err) { alert('Error al guardar: ' + err.message); }
+  });
+
+  // ── Edit tour modal ─────────────────────────────────────────
+  function openEditTourModal(id) {
+    const t = tours.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('editt-id').value = t.id;
+    document.getElementById('editt-name').value = t.name || '';
+    document.getElementById('editt-operator').value = t.operator || '';
+    document.getElementById('editt-startDate').value = t.startDate || t.date || '';
+    document.getElementById('editt-endDate').value = t.endDate || '';
+    document.getElementById('editt-duration').value = t.duration || '';
+    document.getElementById('editt-status').value = t.status || '';
+    document.getElementById('editt-maps').value = t.mapsUrl || '';
+    document.getElementById('editt-contactName').value = t.contacto?.contactName || '';
+    document.getElementById('editt-contactPhone').value = t.contacto?.contactPhone || '';
+
+    setupEditPdfState('editt', t.pdfUrl);
+    document.getElementById('editTourModal').classList.remove('hidden');
+  }
+  function closeEditTourModal() { document.getElementById('editTourModal').classList.add('hidden'); }
+  document.getElementById('editTourModalClose').addEventListener('click', closeEditTourModal);
+  document.getElementById('editTourCancelBtn').addEventListener('click', closeEditTourModal);
+  document.getElementById('editTourModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('editTourModal')) closeEditTourModal();
+  });
+  document.getElementById('editt-pdf-remove').addEventListener('click', () => removeEditPdf('editt'));
+
+  document.getElementById('editTourSaveBtn').addEventListener('click', async () => {
+    if (!document.getElementById('editTourForm').reportValidity()) return;
+    const id = document.getElementById('editt-id').value;
+    const startDate = document.getElementById('editt-startDate').value;
+    const endDate = document.getElementById('editt-endDate').value;
+    const updated = {
+      name: document.getElementById('editt-name').value.trim(),
+      operator: document.getElementById('editt-operator').value.trim(),
+      duration: document.getElementById('editt-duration').value.trim(),
+      status: document.getElementById('editt-status').value.trim(),
+      mapsUrl: document.getElementById('editt-maps').value.trim() || null,
+      contacto: {
+        contactName:  document.getElementById('editt-contactName').value.trim() || null,
+        contactPhone: document.getElementById('editt-contactPhone').value.trim() || null
+      },
+      pdfUrl: document.getElementById('editt-pdfUrl').value.trim() || null
+    };
+    if (endDate) { updated.startDate = startDate; updated.endDate = endDate; updated.date = null; }
+    else { updated.date = startDate; updated.startDate = null; updated.endDate = null; }
+    try {
+      await updateDoc(doc(db, 'tours', id), updated);
+      showSaveNotice();
+      closeEditTourModal();
+    } catch (err) { alert('Error al guardar: ' + err.message); }
+  });
+
+  // ── Edit day note modal ─────────────────────────────────────
+  function openEditDayNoteModal(id) {
+    const n = dayNotes.find(x => x.id === id);
+    if (!n) return;
+    document.getElementById('editn-id').value = n.id;
+    document.getElementById('editn-day').value = 'Día ' + n.day;
+    document.getElementById('editn-summary').value = n.summary || '';
+    document.getElementById('editn-criticalNote').value = n.criticalNote || '';
+    document.getElementById('editn-recommendations').value = n.recommendations || '';
+    document.getElementById('editDayNoteModal').classList.remove('hidden');
+  }
+  function closeEditDayNoteModal() { document.getElementById('editDayNoteModal').classList.add('hidden'); }
+  document.getElementById('editDayNoteModalClose').addEventListener('click', closeEditDayNoteModal);
+  document.getElementById('editDayNoteCancelBtn').addEventListener('click', closeEditDayNoteModal);
+  document.getElementById('editDayNoteModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('editDayNoteModal')) closeEditDayNoteModal();
+  });
+
+  document.getElementById('editDayNoteSaveBtn').addEventListener('click', async () => {
+    const id = document.getElementById('editn-id').value;
+    const updated = {
+      summary: document.getElementById('editn-summary').value.trim(),
+      criticalNote: document.getElementById('editn-criticalNote').value.trim(),
+      recommendations: document.getElementById('editn-recommendations').value.trim()
+    };
+    try {
+      await updateDoc(doc(db, 'dayNotes', id), updated);
+      showSaveNotice();
+      closeEditDayNoteModal();
+    } catch (err) { alert('Error al guardar: ' + err.message); }
+  });
+
+  document.getElementById('dayNoteTableBody').addEventListener('click', e => {
+    const editBtn = e.target.closest('[data-edit-daynote]');
+    if (editBtn) openEditDayNoteModal(editBtn.dataset.editDaynote);
+  });
+
+  // ── Shared edit-PDF preview state helper ───────────────────
+  function setupEditPdfState(ctx, pdfUrl) {
+    document.getElementById(`${ctx}-pdfUrl`).value = pdfUrl || '';
+    document.getElementById(`${ctx}-pdf-status`).textContent = '';
+    document.getElementById(`${ctx}-pdf-status`).className = 'pdf-status';
+    document.getElementById(`${ctx}-pdf-progress`).style.display = 'none';
+    document.getElementById(`${ctx}-pdf-file`).value = '';
+
+    const currentDiv = document.getElementById(`${ctx}-pdf-current`);
+    const currentLink = document.getElementById(`${ctx}-pdf-link`);
+    if (pdfUrl) {
+      try {
+        const parts = pdfUrl.split('?')[0].split('/');
+        currentLink.textContent = decodeURIComponent(parts[parts.length - 1]);
+      } catch { currentLink.textContent = 'Ver documento actual'; }
+      currentLink.href = pdfUrl;
+      currentDiv.style.display = 'flex';
+      document.getElementById(`${ctx}-pdf-btn`).textContent = '📎 Reemplazar PDF';
+    } else {
+      currentDiv.style.display = 'none';
+      document.getElementById(`${ctx}-pdf-btn`).textContent = '📎 Adjuntar PDF';
+    }
+  }
+
+  function removeEditPdf(ctx) {
+    document.getElementById(`${ctx}-pdfUrl`).value = '';
+    document.getElementById(`${ctx}-pdf-current`).style.display = 'none';
+    document.getElementById(`${ctx}-pdf-btn`).textContent = '📎 Adjuntar PDF';
+    document.getElementById(`${ctx}-pdf-status`).textContent = 'Documento eliminado';
+    document.getElementById(`${ctx}-pdf-status`).className = 'pdf-status';
+  }
 
   // ── Delete ────────────────────────────────────────────────
   async function deleteActivity(id) {
@@ -739,23 +2920,107 @@
     document.getElementById(id).addEventListener('change', renderList)
   );
 
+  // ── Delete: flights / accommodations / tours ──────────────
+  async function deleteFlight(id) {
+    const f = flights.find(x => x.id === id);
+    if (!f) return;
+    if (!confirm(`¿Eliminar vuelo "${f.segment}"?\n\nNota: el PDF en Firebase Storage (si existe) no se elimina automáticamente.`)) return;
+    try { await deleteDoc(doc(db, 'flights', id)); showSaveNotice(); }
+    catch (err) { alert('Error: ' + err.message); }
+  }
+  async function deleteAccom(id) {
+    const a = accommodations.find(x => x.id === id);
+    if (!a) return;
+    if (!confirm(`¿Eliminar alojamiento "${a.name}"?\n\nNota: el PDF en Firebase Storage (si existe) no se elimina automáticamente.`)) return;
+    try { await deleteDoc(doc(db, 'accommodations', id)); showSaveNotice(); }
+    catch (err) { alert('Error: ' + err.message); }
+  }
+  async function deleteTour(id) {
+    const t = tours.find(x => x.id === id);
+    if (!t) return;
+    if (!confirm(`¿Eliminar tour "${t.name}"?\n\nNota: el PDF en Firebase Storage (si existe) no se elimina automáticamente.`)) return;
+    try { await deleteDoc(doc(db, 'tours', id)); showSaveNotice(); }
+    catch (err) { alert('Error: ' + err.message); }
+  }
+
+  document.getElementById('flightTableBody').addEventListener('click', e => {
+    const editBtn = e.target.closest('[data-edit-flight]');
+    const delBtn = e.target.closest('[data-delete-flight]');
+    if (editBtn) openEditFlightModal(editBtn.dataset.editFlight);
+    if (delBtn) deleteFlight(delBtn.dataset.deleteFlight);
+  });
+  document.getElementById('accomTableBody').addEventListener('click', e => {
+    const editBtn = e.target.closest('[data-edit-accom]');
+    const delBtn = e.target.closest('[data-delete-accom]');
+    if (editBtn) openEditAccomModal(editBtn.dataset.editAccom);
+    if (delBtn) deleteAccom(delBtn.dataset.deleteAccom);
+  });
+  document.getElementById('tourTableBody').addEventListener('click', e => {
+    const editBtn = e.target.closest('[data-edit-tour]');
+    const delBtn = e.target.closest('[data-delete-tour]');
+    if (editBtn) openEditTourModal(editBtn.dataset.editTour);
+    if (delBtn) deleteTour(delBtn.dataset.deleteTour);
+  });
+
   // ── PDF Upload ────────────────────────────────────────────
+  // Storage path: docs/{collection}/{itemId}/{fileName}
   document.getElementById('add-pdf-btn').addEventListener('click', () => {
     if (!addActivityId) addActivityId = 'custom-' + Date.now();
     document.getElementById('add-pdf-file').click();
   });
   document.getElementById('add-pdf-file').addEventListener('change', () =>
-    handleUpload('add', addActivityId)
+    handleUpload('add', 'activities', addActivityId)
   );
-
   document.getElementById('edit-pdf-btn').addEventListener('click', () =>
     document.getElementById('edit-pdf-file').click()
   );
   document.getElementById('edit-pdf-file').addEventListener('change', () =>
-    handleUpload('edit', document.getElementById('edit-id').value)
+    handleUpload('edit', 'activities', document.getElementById('edit-id').value)
   );
 
-  function handleUpload(ctx, actId) {
+  document.getElementById('addf-pdf-btn').addEventListener('click', () => {
+    if (!addFlightId) addFlightId = 'custom-' + Date.now();
+    document.getElementById('addf-pdf-file').click();
+  });
+  document.getElementById('addf-pdf-file').addEventListener('change', () =>
+    handleUpload('addf', 'flights', addFlightId)
+  );
+  document.getElementById('editf-pdf-btn').addEventListener('click', () =>
+    document.getElementById('editf-pdf-file').click()
+  );
+  document.getElementById('editf-pdf-file').addEventListener('change', () =>
+    handleUpload('editf', 'flights', document.getElementById('editf-id').value)
+  );
+
+  document.getElementById('adda-pdf-btn').addEventListener('click', () => {
+    if (!addAccomId) addAccomId = 'custom-' + Date.now();
+    document.getElementById('adda-pdf-file').click();
+  });
+  document.getElementById('adda-pdf-file').addEventListener('change', () =>
+    handleUpload('adda', 'accommodations', addAccomId)
+  );
+  document.getElementById('edita-pdf-btn').addEventListener('click', () =>
+    document.getElementById('edita-pdf-file').click()
+  );
+  document.getElementById('edita-pdf-file').addEventListener('change', () =>
+    handleUpload('edita', 'accommodations', document.getElementById('edita-id').value)
+  );
+
+  document.getElementById('addt-pdf-btn').addEventListener('click', () => {
+    if (!addTourId) addTourId = 'custom-' + Date.now();
+    document.getElementById('addt-pdf-file').click();
+  });
+  document.getElementById('addt-pdf-file').addEventListener('change', () =>
+    handleUpload('addt', 'tours', addTourId)
+  );
+  document.getElementById('editt-pdf-btn').addEventListener('click', () =>
+    document.getElementById('editt-pdf-file').click()
+  );
+  document.getElementById('editt-pdf-file').addEventListener('change', () =>
+    handleUpload('editt', 'tours', document.getElementById('editt-id').value)
+  );
+
+  function handleUpload(ctx, collectionName, itemId) {
     const fileInput  = document.getElementById(`${ctx}-pdf-file`);
     const statusEl   = document.getElementById(`${ctx}-pdf-status`);
     const progressEl = document.getElementById(`${ctx}-pdf-progress`);
@@ -774,7 +3039,7 @@
       statusEl.className = 'pdf-status error'; return;
     }
 
-    const storageRef = ref(storage, `docs/${actId}/${file.name}`);
+    const storageRef = ref(storage, `docs/${collectionName}/${itemId}/${file.name}`);
     const task = uploadBytesResumable(storageRef, file);
 
     statusEl.textContent = 'Subiendo…';
@@ -799,18 +3064,40 @@
         statusEl.textContent = '✅ ' + file.name;
         statusEl.className = 'pdf-status success';
         progressEl.style.display = 'none';
-        if (ctx === 'edit') {
-          const link = document.getElementById('edit-pdf-link');
-          link.href = url; link.textContent = file.name;
-          document.getElementById('edit-pdf-current').style.display = 'flex';
+        const linkEl = document.getElementById(`${ctx}-pdf-link`);
+        const currentDiv = document.getElementById(`${ctx}-pdf-current`);
+        if (linkEl && currentDiv) {
+          linkEl.href = url; linkEl.textContent = file.name;
+          currentDiv.style.display = 'flex';
         }
       }
     );
   }
 
   // ── Seed ──────────────────────────────────────────────────
+  const TOTAL_SEED_DOCS = Object.values(SEED_SETS).reduce((sum, arr) => sum + arr.length, 0);
+
+  document.getElementById('updateContentBtn').addEventListener('click', async () => {
+    if (!confirm(`¿Actualizar contenido de las ${TOTAL_SEED_DOCS} entradas en data.js?\n\npdfUrl y el estado "hecho" NO se tocan.`)) return;
+    const btn = document.getElementById('updateContentBtn');
+    const progress = document.getElementById('updateContentProgress');
+    btn.disabled = true;
+    progress.style.display = 'inline';
+    try {
+      await updateContent(db, (collectionName, done, total) => {
+        progress.textContent = `${collectionName}: ${done}/${total}…`;
+      });
+      progress.textContent = `✅ Contenido actualizado (PDFs y estado "hecho" preservados).`;
+      showSaveNotice();
+    } catch (err) {
+      progress.textContent = '❌ Error: ' + err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
   document.getElementById('seedBtn').addEventListener('click', async () => {
-    if (!confirm(`Esto cargará ${TRIP_DATA.length} actividades en Firestore.\n¿Continuar?`)) return;
+    if (!confirm(`Esto cargará ${TOTAL_SEED_DOCS} documentos en Firestore (actividades, vuelos, alojamientos, tours, notas del día).\n¿Continuar?`)) return;
     const btn      = document.getElementById('seedBtn');
     const progress = document.getElementById('seedProgress');
     btn.disabled = true;
@@ -818,10 +3105,10 @@
     progress.style.display = 'block';
 
     try {
-      await seedDatabase(db, (done, total) => {
-        progress.textContent = `${done} / ${total} actividades cargadas…`;
+      await seedAll(db, (collectionName, done, total) => {
+        progress.textContent = `${collectionName}: ${done} / ${total}…`;
       });
-      progress.textContent = `✅ ¡Listo! ${TRIP_DATA.length} actividades cargadas.`;
+      progress.textContent = `✅ ¡Listo! ${TOTAL_SEED_DOCS} documentos cargados.`;
       showSaveNotice();
     } catch (err) {
       progress.textContent = '❌ Error: ' + err.message;
@@ -831,27 +3118,27 @@
   });
 
   document.getElementById('reseedBtn').addEventListener('click', async () => {
-    if (!confirm(`¿Re-sembrar todos los datos originales?\n\nSe sobrescribirán TODAS las actividades existentes y el estado "hecho" se perderá. Los PDFs en Storage no se tocan.`)) return;
+    if (!confirm(`¿Re-sembrar todos los datos originales?\n\nSe sobrescribirán TODOS los documentos existentes (mismo ID = mismo documento): el estado "hecho" se perderá y el campo pdfUrl volverá a null (los archivos ya subidos quedan en Storage pero sin enlazar). Usa "Actualizar contenido" arriba si quieres preservar ambos.`)) return;
     try {
-      await seedDatabase(db);
+      await seedAll(db);
       showSaveNotice();
     } catch (err) { alert('Error: ' + err.message); }
   });
 
   document.getElementById('clearReseedBtn').addEventListener('click', async () => {
-    if (!confirm(`¿Limpiar y recargar datos?\n\nSe eliminarán TODOS los documentos existentes y se volverán a cargar los ${TRIP_DATA.length} originales desde cero.\n\nEsta acción no se puede deshacer.`)) return;
+    if (!confirm(`¿Limpiar y recargar datos?\n\nSe eliminarán TODOS los documentos existentes en las 5 colecciones (actividades, vuelos, alojamientos, tours, notas del día) y se volverán a cargar los ${TOTAL_SEED_DOCS} originales desde cero. Esto incluye perder pdfUrl y el estado "hecho".\n\nEsta acción no se puede deshacer.`)) return;
     const btn      = document.getElementById('clearReseedBtn');
     const progress = document.getElementById('clearReseedProgress');
     btn.disabled = true;
     progress.style.display = 'inline';
     try {
       progress.textContent = 'Limpiando…';
-      await clearActivities(db);
-      progress.textContent = `Cargando ${TRIP_DATA.length} actividades…`;
-      await seedDatabase(db, (done, total) => {
-        progress.textContent = `Cargando ${TRIP_DATA.length} actividades… (${done}/${total})`;
+      await clearAll(db);
+      progress.textContent = `Cargando ${TOTAL_SEED_DOCS} documentos…`;
+      await seedAll(db, (collectionName, done, total) => {
+        progress.textContent = `Cargando… ${collectionName}: ${done}/${total}`;
       });
-      progress.textContent = `✅ ¡Listo! ${TRIP_DATA.length} actividades cargadas.`;
+      progress.textContent = `✅ ¡Listo! ${TOTAL_SEED_DOCS} documentos cargados.`;
       showSaveNotice();
     } catch (err) {
       progress.textContent = '❌ Error: ' + err.message;

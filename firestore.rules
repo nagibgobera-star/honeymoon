@@ -7,9 +7,56 @@ service cloud.firestore {
       // Public itinerary is read-only for everyone (no login on index.html).
       allow read: if true;
 
-      // Writes require an authenticated client (admin.html signs in anonymously
-      // after the password gate) and a document that matches the expected shape.
-      allow create, update: if request.auth != null && isValidActivity(request.resource.data);
+      // Full edits require an authenticated client (admin.html signs in
+      // anonymously after the password gate) and a document that matches the
+      // expected shape. The public itinerary (index.html, no login) is also
+      // allowed to flip the "done" checklist flag and nothing else — that's
+      // the one write the unauthenticated public page needs to make.
+      allow create: if request.auth != null && isValidActivity(request.resource.data);
+      allow update: if (request.auth != null && isValidActivity(request.resource.data))
+                    || isOnlyToggleDone();
+      allow delete: if request.auth != null;
+    }
+
+    match /flights/{flightId} {
+      allow read: if true;
+      allow create, update: if request.auth != null && isValidFlight(request.resource.data);
+      allow delete: if request.auth != null;
+    }
+
+    match /accommodations/{accomId} {
+      allow read: if true;
+      allow create, update: if request.auth != null && isValidAccommodation(request.resource.data);
+      allow delete: if request.auth != null;
+    }
+
+    match /tours/{tourId} {
+      allow read: if true;
+      allow create, update: if request.auth != null && isValidTour(request.resource.data);
+      allow delete: if request.auth != null;
+    }
+
+    match /dayNotes/{dayNoteId} {
+      allow read: if true;
+      allow create, update: if request.auth != null && isValidDayNote(request.resource.data);
+      allow delete: if request.auth != null;
+    }
+
+    match /trips/{tripId} {
+      // Public trip switcher (index.html) needs to read the trip list with
+      // no login, same as every other collection here.
+      allow read: if true;
+      allow create, update: if request.auth != null && isValidTrip(request.resource.data);
+      allow delete: if request.auth != null;
+    }
+
+    match /japanItems/{itemId} {
+      allow read: if true;
+      // "done" here means "visited/tried" — same public toggle exception
+      // as activities.
+      allow create: if request.auth != null && isValidJapanItem(request.resource.data);
+      allow update: if (request.auth != null && isValidJapanItem(request.resource.data))
+                    || isOnlyToggleDone();
       allow delete: if request.auth != null;
     }
 
@@ -18,18 +65,86 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // True if this update changes only the "done" field (and to a bool) —
+    // the narrow write the public, unauthenticated itinerary page needs.
+    function isOnlyToggleDone() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['done']) &&
+             request.resource.data.done is bool;
+    }
+
     function isValidActivity(data) {
       return data.day is int && data.day >= 1 && data.day <= 90 &&
              data.order is int && data.order >= 0 &&
              data.done is bool &&
              data.date is string && data.date.size() <= 200 &&
-             data.city is string && data.city.size() <= 100 &&
+             data.city is string && data.city.size() <= 200 &&
              data.time is string && data.time.size() <= 50 &&
-             data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 300 &&
              data.description is string && data.description.size() <= 5000 &&
              (data.mapsUrl == null || (data.mapsUrl is string && data.mapsUrl.size() <= 500)) &&
              (data.pdfUrl  == null || (data.pdfUrl  is string && data.pdfUrl.size()  <= 500)) &&
-             data.type in ['transporte', 'visita', 'almuerzo', 'cena', 'hotel', 'tour', 'libre'];
+             data.type in ['transporte', 'visita', 'almuerzo', 'cena', 'hotel', 'tour',
+                           'libre', 'comida', 'aventura', 'descanso', 'cultural', 'boda'];
+    }
+
+    // Flights/accommodations/tours carry many optional nested fields (full
+    // booking/itinerary detail). Rules only pin down the handful of fields
+    // every document is guaranteed to have, rather than a closed schema.
+    // departureDate/arrivalDate/airline may be null for not-yet-booked
+    // ground transport placeholders (status "pending").
+    function isValidFlight(data) {
+      return data.segment is string && data.segment.size() <= 100 &&
+             data.from is map && data.to is map &&
+             (data.departureDate == null || data.departureDate is string) &&
+             (data.arrivalDate == null || data.arrivalDate is string) &&
+             (data.airline == null || (data.airline is string && data.airline.size() <= 100)) &&
+             data.status is string && data.status.size() <= 50 &&
+             (data.pdfUrl == null || (data.pdfUrl is string && data.pdfUrl.size() <= 500));
+    }
+
+    function isValidAccommodation(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
+             data.country is string && data.country.size() <= 100 &&
+             data.status is string && data.status.size() <= 50 &&
+             (data.pdfUrl == null || (data.pdfUrl is string && data.pdfUrl.size() <= 500));
+    }
+
+    function isValidTour(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 300 &&
+             data.operator is string && data.operator.size() <= 150 &&
+             data.status is string && data.status.size() <= 50 &&
+             (data.pdfUrl == null || (data.pdfUrl is string && data.pdfUrl.size() <= 500));
+    }
+
+    function isValidDayNote(data) {
+      return data.day is int && data.day >= 1 && data.day <= 90 &&
+             data.summary is string && data.summary.size() <= 300 &&
+             data.recommendations is string && data.recommendations.size() <= 3000 &&
+             data.criticalNote is string && data.criticalNote.size() <= 1000;
+    }
+
+    function isValidTrip(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 150 &&
+             data.type is string && data.type.size() <= 50 &&
+             (data.startDate == null || data.startDate is string) &&
+             (data.endDate == null || data.endDate is string) &&
+             data.viewMode in ['itinerary', 'categories'];
+    }
+
+    function isValidJapanItem(data) {
+      return data.category is string && data.category.size() <= 100 &&
+             (data.subcategory == null || data.subcategory is string) &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 300 &&
+             data.description is string && data.description.size() <= 5000 &&
+             data.done is bool &&
+             (data.location == null || data.location is string) &&
+             (data.mapsUrl == null || (data.mapsUrl is string && data.mapsUrl.size() <= 500)) &&
+             (data.tiktokUrl == null || (data.tiktokUrl is string && data.tiktokUrl.size() <= 500)) &&
+             (data.pdfUrl == null || (data.pdfUrl is string && data.pdfUrl.size() <= 500)) &&
+             (data.source == null || data.source is string) &&
+             (data.rating == null || (data.rating is int && data.rating >= 1 && data.rating <= 5)) &&
+             (data.priority == null || data.priority is int) &&
+             (data.emoji == null || (data.emoji is string && data.emoji.size() <= 10));
     }
   }
 }

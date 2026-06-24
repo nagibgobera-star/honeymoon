@@ -1,0 +1,94 @@
+// =============================================================
+//  sw.js — Service worker for offline support (index.html only)
+//
+//  Two caches:
+//   - STATIC_CACHE: the app shell (HTML/CSS/JS + the Firebase SDK
+//     chunks index.html imports), precached on install.
+//   - PDF_CACHE: uploaded ticket/voucher PDFs, cached lazily the
+//     first time each one is fetched (via the page's openPdf()
+//     helper, not via direct <a target="_blank"> navigation).
+//
+//  Firestore's own data (activities/flights/accommodations/tours/
+//  dayNotes/japanItems) is NOT cached here — the Firestore SDK's
+//  built-in IndexedDB persistence (enabled in index.html via
+//  persistentLocalCache) already handles that, and trying to
+//  intercept Firestore's WebChannel traffic with the Cache API
+//  would be fragile and redundant.
+// =============================================================
+
+const STATIC_CACHE = 'mi-viaje-static-v1';
+const PDF_CACHE = 'mi-viaje-pdfs-v1';
+
+const PRECACHE_URLS = [
+  './',
+  './index.html',
+  './style.css',
+  './data.js',
+  './firebase-config.js',
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js',
+  'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(STATIC_CACHE)
+      .then((cache) => cache.addAll(PRECACHE_URLS))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(
+        keys
+          .filter((key) => key !== STATIC_CACHE && key !== PDF_CACHE)
+          .map((key) => caches.delete(key))
+      ))
+      .then(() => self.clients.claim())
+  );
+});
+
+function isPdfRequest(url) {
+  return url.includes('firebasestorage.googleapis.com');
+}
+
+// Network-first, fall back to cache — always prefer fresh data when
+// online, but never show a broken page when offline.
+async function networkFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  try {
+    const fresh = await fetch(request);
+    if (fresh && fresh.ok) cache.put(request, fresh.clone());
+    return fresh;
+  } catch (err) {
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    throw err;
+  }
+}
+
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  if (request.method !== 'GET') return;
+
+  // Only intercept same-origin requests, the precached Firebase SDK
+  // chunks, and Storage PDF downloads. Everything else (Firestore's
+  // own WebChannel/gRPC traffic, Google Maps, TikTok, etc.) passes
+  // straight through untouched.
+  const url = request.url;
+  const sameOrigin = url.startsWith(self.location.origin);
+  const isFirebaseSdk = url.startsWith('https://www.gstatic.com/firebasejs/');
+
+  if (isPdfRequest(url)) {
+    event.respondWith(networkFirst(request, PDF_CACHE));
+    return;
+  }
+
+  if (sameOrigin || isFirebaseSdk) {
+    event.respondWith(networkFirst(request, STATIC_CACHE));
+  }
+});
