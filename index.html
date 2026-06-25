@@ -66,6 +66,15 @@
     <div class="global-download-row" id="globalDownloadRow"></div>
   </div>
 
+  <!-- ── Trip hero photo ───────────────────────────────────────
+       Scrolls away normally (NOT part of the sticky stack above) so
+       it never affects the compact mobile sticky-header fix. Hidden
+       entirely if the selected trip has no photoUrl. -->
+  <div class="trip-hero" id="tripHero" style="display:none">
+    <img id="tripHeroImg" alt="" loading="lazy" />
+    <div class="trip-hero-overlay"></div>
+  </div>
+
   <!-- ── Mobile hierarchical menu (hamburger) ─────────────────
        Hidden on desktop via CSS; replaces the trip-switcher +
        dest-tabs carousel on narrow viewports. -->
@@ -626,8 +635,12 @@
       if (trip.id === 'honeymoon-indonesia') {
         titleEl.innerHTML = 'Honeymoon <em>Indonesia</em>';
       } else {
-        titleEl.textContent = trip.name;
+        // Same script-font accent treatment as the Honeymoon header, just
+        // applied to the whole (short) trip name for Boda/Japón.
+        titleEl.innerHTML = `<em>${escHtml(trip.name)}</em>`;
       }
+
+      document.body.classList.toggle('trip-theme-japon', trip.id === 'japon');
 
       const datesEl = document.getElementById('headerDates');
       if (trip.startDate && trip.endDate) {
@@ -638,6 +651,16 @@
       }
 
       document.getElementById('headerCities').style.display = trip.id === 'honeymoon-indonesia' ? '' : 'none';
+
+      const heroEl = document.getElementById('tripHero');
+      const heroImg = document.getElementById('tripHeroImg');
+      if (trip.photoUrl) {
+        heroImg.src = trip.photoUrl;
+        heroImg.alt = trip.name;
+        heroEl.style.display = '';
+      } else {
+        heroEl.style.display = 'none';
+      }
     }
 
     function formatDateRange(start, end) {
@@ -765,6 +788,10 @@
         const panel = document.getElementById('tabPanel-' + tabSlug(cityName));
         if (!panel) return;
         panel.innerHTML = '';
+
+        if (destinations[cityName].photo) {
+          panel.appendChild(renderDestinationPhoto(destinations[cityName].photo, cityName));
+        }
 
         destinations[cityName].days.forEach(day => {
           if (!grouped[day]) return;
@@ -1094,12 +1121,15 @@
         const card = document.createElement('div');
         card.className = 'district-summary-card';
         card.innerHTML =
-          `<div class="district-summary-title">${d.emoji} ${escHtml(d.name)}</div>` +
-          `<div class="district-summary-theme">${escHtml(d.theme)}</div>` +
-          `<div class="district-summary-desc">${escHtml(d.description)}</div>` +
-          `<div class="district-summary-tags">` +
-            `<span class="district-summary-tag">💰 ${escHtml(d.budget)}</span>` +
-            `<span class="district-summary-tag">✨ ${escHtml(d.bestFor)}</span>` +
+          (d.photo ? `<img class="district-summary-photo" src="${escHtml(d.photo)}" alt="${escHtml(d.name)}" loading="lazy">` : '') +
+          `<div class="district-summary-body">` +
+            `<div class="district-summary-title">${d.emoji} ${escHtml(d.name)}</div>` +
+            `<div class="district-summary-theme">${escHtml(d.theme)}</div>` +
+            `<div class="district-summary-desc">${escHtml(d.description)}</div>` +
+            `<div class="district-summary-tags">` +
+              `<span class="district-summary-tag">💰 ${escHtml(d.budget)}</span>` +
+              `<span class="district-summary-tag">✨ ${escHtml(d.bestFor)}</span>` +
+            `</div>` +
           `</div>`;
         grid.appendChild(card);
       });
@@ -1222,6 +1252,18 @@
       panel.innerHTML = '<h2 class="overview-title">✈️ Vuelos</h2>' +
         '<div class="flight-list" id="flightsList"></div>';
       renderFlights(flights, document.getElementById('flightsList'));
+    }
+
+    // ── Destination/district hero photo (lazy-loaded) ───────────
+    function renderDestinationPhoto(photoUrl, label) {
+      const wrap = document.createElement('div');
+      wrap.className = 'dest-photo';
+      const img = document.createElement('img');
+      img.src = photoUrl;
+      img.alt = label;
+      img.loading = 'lazy';
+      wrap.appendChild(img);
+      return wrap;
     }
 
     // ── Accommodations / tours that belong to a given city tab ──

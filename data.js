@@ -27,7 +27,8 @@ export const TRIPS_DATA = [
     type: "honeymoon",
     startDate: "2026-08-18",
     endDate: "2026-08-31",
-    viewMode: "itinerary"
+    viewMode: "itinerary",
+    photoUrl: "https://images.unsplash.com/photo-1671965448417-0582cb361168?q=80&w=1600&auto=format&fit=crop"
   },
   {
     id: "boda-mexico",
@@ -35,7 +36,8 @@ export const TRIPS_DATA = [
     type: "wedding",
     startDate: "2026-07-30",
     endDate: "2026-08-13",
-    viewMode: "itinerary"
+    viewMode: "itinerary",
+    photoUrl: "https://images.unsplash.com/photo-1655299417498-52f3a304c2a4?q=80&w=1600&auto=format&fit=crop"
   },
   {
     id: "japon",
@@ -43,7 +45,8 @@ export const TRIPS_DATA = [
     type: "ideas",
     startDate: null,
     endDate: null,
-    viewMode: "categories"
+    viewMode: "categories",
+    photoUrl: "https://images.unsplash.com/photo-1767127961298-337a7a922df4?q=80&w=1600&auto=format&fit=crop"
   }
 ];
 
@@ -836,14 +839,14 @@ export const TRIP_DATA = [
 
 // ── Destination metadata (used for nav + day section grouping) ──
 export const CITY_INFO = {
-  "Ciudad de México": { emoji: "🌆", color: "#C4793A", days: [1] },
-  "Vancouver":         { emoji: "🏔️", color: "#4A7FA5", days: [2] },
-  "Hong Kong":         { emoji: "🌃", color: "#D4860A", days: [3] },
-  "Java":              { emoji: "🌋", color: "#B45309", days: [4, 5] },
-  "Bali":              { emoji: "🌴", color: "#2C6E49", days: [6, 7, 8, 12] },
-  "Komodo":            { emoji: "🐉", color: "#0E7490", days: [9, 10, 11] },
-  "Singapur":          { emoji: "🦁", color: "#9333EA", days: [13] },
-  "Tokio":             { emoji: "🗼", color: "#DC2626", days: [14] }
+  "Ciudad de México": { emoji: "🌆", color: "#C4793A", days: [1], photo: "https://images.unsplash.com/photo-1711025716267-e75c2a8598da?q=80&w=600&auto=format&fit=crop" },
+  "Vancouver":         { emoji: "🏔️", color: "#4A7FA5", days: [2], photo: "https://images.unsplash.com/photo-1660143158587-bddffa026e06?q=80&w=600&auto=format&fit=crop" },
+  "Hong Kong":         { emoji: "🌃", color: "#D4860A", days: [3], photo: "https://images.unsplash.com/photo-1716706711056-510d49962eea?q=80&w=600&auto=format&fit=crop" },
+  "Java":              { emoji: "🌋", color: "#B45309", days: [4, 5], photo: "https://images.unsplash.com/photo-1662114480912-05a338d79da3?q=80&w=600&auto=format&fit=crop" },
+  "Bali":              { emoji: "🌴", color: "#2C6E49", days: [6, 7, 8, 12], photo: "https://images.unsplash.com/photo-1559628233-100c798642d4?q=80&w=600&auto=format&fit=crop" },
+  "Komodo":            { emoji: "🐉", color: "#0E7490", days: [9, 10, 11], photo: "https://images.unsplash.com/photo-1700591698351-f8131b0f5d3c?q=80&w=600&auto=format&fit=crop" },
+  "Singapur":          { emoji: "🦁", color: "#9333EA", days: [13], photo: "https://images.unsplash.com/photo-1628866686613-6cf852bed925?q=80&w=600&auto=format&fit=crop" },
+  "Tokio":             { emoji: "🗼", color: "#DC2626", days: [14], photo: "https://images.unsplash.com/photo-1493515322954-4fa727e97985?q=80&w=600&auto=format&fit=crop" }
 };
 
 export const TYPE_LABELS = {
@@ -881,11 +884,11 @@ export const TOUR_CITY_MAP = {
 
 // ── Boda México — destination metadata ──────────────────────────
 export const BODA_CITY_INFO = {
-  "Cancún":                   { emoji: "🏖️", color: "#0E7490", days: [1] },
-  "Tulum":                    { emoji: "🌴", color: "#C4793A", days: [2, 3, 4, 5] },
-  "Tulum (Boda)":             { emoji: "💍", color: "#DB2777", days: [6, 7, 8, 9] },
-  "Monterrey / Cd. Victoria": { emoji: "👨‍👩‍👧", color: "#2C6E49", days: [10, 11, 12, 13, 14] },
-  "Querétaro":                { emoji: "🏡", color: "#7B5EA7", days: [15] }
+  "Cancún":                   { emoji: "🏖️", color: "#0E7490", days: [1], photo: "https://images.unsplash.com/photo-1457537227909-08f41319e53c?q=80&w=600&auto=format&fit=crop" },
+  "Tulum":                    { emoji: "🌴", color: "#C4793A", days: [2, 3, 4, 5], photo: "https://images.unsplash.com/photo-1777268977436-b5d867a740b9?q=80&w=600&auto=format&fit=crop" },
+  "Tulum (Boda)":             { emoji: "💍", color: "#DB2777", days: [6, 7, 8, 9], photo: "https://images.unsplash.com/photo-1740880978174-db9dddf6c58c?q=80&w=600&auto=format&fit=crop" },
+  "Monterrey / Cd. Victoria": { emoji: "👨‍👩‍👧", color: "#2C6E49", days: [10, 11, 12, 13, 14], photo: "https://images.unsplash.com/photo-1776048613315-91bc48d24147?q=80&w=600&auto=format&fit=crop" },
+  "Querétaro":                { emoji: "🏡", color: "#7B5EA7", days: [15], photo: "https://images.unsplash.com/photo-1636300958497-42e3df244288?q=80&w=600&auto=format&fit=crop" }
 };
 
 export const BODA_ACCOM_CITY_MAP = {
@@ -9781,6 +9784,7 @@ export const JAPAN_ITEMS_DATA = [
 export const TOKYO_DISTRICT_SUMMARIES = [
   {
     "name": "Asakusa",
+    "photo": "https://images.unsplash.com/photo-1664716083755-1333cdc24fd0?q=80&w=600&auto=format&fit=crop",
     "emoji": "🏯",
     "theme": "Histórico / Tradicional",
     "description": "Shitamachi auténtico, templos, el más fotogénico de noche, base económica.",
@@ -9789,6 +9793,7 @@ export const TOKYO_DISTRICT_SUMMARIES = [
   },
   {
     "name": "Shibuya",
+    "photo": "https://images.unsplash.com/photo-1532274804934-6572ef1581e9?q=80&w=600&auto=format&fit=crop",
     "emoji": "🛍️",
     "theme": "Moda joven / Energía",
     "description": "Cruce icónico, tendencias, vida nocturna.",
@@ -9797,6 +9802,7 @@ export const TOKYO_DISTRICT_SUMMARIES = [
   },
   {
     "name": "Shinjuku",
+    "photo": "https://images.unsplash.com/photo-1531164442814-c81a813fd9a4?q=80&w=600&auto=format&fit=crop",
     "emoji": "🌃",
     "theme": "Vida nocturna / Conveniencia",
     "description": "Estación más grande del mundo, Golden Gai, Kabukicho, muy bien conectado.",
@@ -9805,6 +9811,7 @@ export const TOKYO_DISTRICT_SUMMARIES = [
   },
   {
     "name": "Harajuku",
+    "photo": "https://images.unsplash.com/photo-1774660012462-d5d94b30fadf?q=80&w=600&auto=format&fit=crop",
     "emoji": "👗",
     "theme": "Moda alternativa",
     "description": "Takeshita Street, Meiji Shrine al lado, mejor de día.",
@@ -9813,6 +9820,7 @@ export const TOKYO_DISTRICT_SUMMARIES = [
   },
   {
     "name": "Ginza",
+    "photo": "https://images.unsplash.com/photo-1560360482-d5588f13d530?q=80&w=600&auto=format&fit=crop",
     "emoji": "💎",
     "theme": "Lujo / Compras",
     "description": "Tiendas de alta gama, arquitectura europea, caro.",
@@ -9821,6 +9829,7 @@ export const TOKYO_DISTRICT_SUMMARIES = [
   },
   {
     "name": "Akihabara",
+    "photo": "https://images.unsplash.com/photo-1683995259187-54142c49338b?q=80&w=600&auto=format&fit=crop",
     "emoji": "🎮",
     "theme": "Otaku / Tecnología",
     "description": "Anime, electrónicos, maid cafes.",
@@ -9829,6 +9838,7 @@ export const TOKYO_DISTRICT_SUMMARIES = [
   },
   {
     "name": "Ueno",
+    "photo": "https://images.unsplash.com/photo-1584443800406-b3be34385344?q=80&w=600&auto=format&fit=crop",
     "emoji": "🏛️",
     "theme": "Museos / Cultura",
     "description": "Parque grande, museos, económico.",
@@ -9837,6 +9847,7 @@ export const TOKYO_DISTRICT_SUMMARIES = [
   },
   {
     "name": "Ikebukuro",
+    "photo": "https://images.unsplash.com/photo-1763530054615-08f3acd38876?q=80&w=600&auto=format&fit=crop",
     "emoji": "🎯",
     "theme": "Mix urbano",
     "description": "Menos turístico, buena vida nocturna local.",
@@ -9845,6 +9856,7 @@ export const TOKYO_DISTRICT_SUMMARIES = [
   },
   {
     "name": "Odaiba",
+    "photo": "https://images.unsplash.com/photo-1567597714138-3bdc30f4f493?q=80&w=600&auto=format&fit=crop",
     "emoji": "🌉",
     "theme": "Moderno / Futurista",
     "description": "TeamLab, vistas al puente, isla artificial.",
@@ -9853,6 +9865,7 @@ export const TOKYO_DISTRICT_SUMMARIES = [
   },
   {
     "name": "Chiyoda",
+    "photo": "https://images.unsplash.com/photo-1715905680339-6958d7632430?q=80&w=600&auto=format&fit=crop",
     "emoji": "👑",
     "theme": "Gubernamental / Histórico",
     "description": "Palacio Imperial, jardines.",

@@ -4,40 +4,53 @@
    ============================================================ */
 
 /* ── Google Fonts ─────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Nunito:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Parisienne&family=Lato:wght@400;700;900&display=swap');
 
 /* ── Variables ────────────────────────────────────────────── */
 :root {
-  --bg:           #FAFAF8;
-  --white:        #FFFFFF;
-  --ink:          #1C1917;
-  --ink-mid:      #44403C;
-  --ink-muted:    #78716C;
-  --border:       #E7E0D5;
-  --border-light: #F0EBE3;
+  /* Mediterranean / earth-tone travel-blog palette */
+  --bg:           #F5F0E8;
+  --white:        #FFFCF7;
+  --ink:          #3D332B;
+  --ink-mid:      #5C4F42;
+  --ink-muted:    #8A7B6C;
+  --border:       #E3D9C8;
+  --border-light: #EDE5D8;
 
-  /* Accent */
-  --accent:       #C4793A;
-  --accent-light: #FBF0E6;
-  --accent-dark:  #9A5A25;
+  /* Accent — warm terracotta (primary, Honeymoon + Boda) */
+  --accent:       #C17F59;
+  --accent-light: #F3E4D8;
+  --accent-dark:  #96603F;
 
-  /* City accent colors (also used as type colors) */
-  --clr-transporte: #4A7FA5;
-  --clr-visita:     #C4793A;
-  --clr-almuerzo:   #D4860A;
-  --clr-cena:       #8B4513;
-  --clr-hotel:      #2C6E49;
-  --clr-tour:       #7B5EA7;
-  --clr-libre:      #6B7280;
-  --clr-comida:     #C2710C;
-  --clr-aventura:   #DC2626;
-  --clr-descanso:   #64748B;
-  --clr-cultural:   #9333EA;
-  --clr-boda:       #DB2777;
+  /* Sage — secondary accent, swapped in for Japón via body.trip-theme-japon */
+  --sage:         #8A9A7E;
+  --sage-light:   #EAEDE6;
+  --sage-dark:    #6B7A60;
+
+  /* Status colors, recolored to fit the palette (used by .status-pill) */
+  --status-confirmed:      #6B7A60;
+  --status-confirmed-bg:   #EAEDE6;
+  --status-pending:        #A8762E;
+  --status-pending-bg:     #F3E9D5;
+
+  /* City accent colors (also used as type colors) — warmed to match */
+  --clr-transporte: #6E8AA3;
+  --clr-visita:     #C17F59;
+  --clr-almuerzo:   #C99A3E;
+  --clr-cena:       #8B5E3C;
+  --clr-hotel:      #6B7A60;
+  --clr-tour:       #8C7AA0;
+  --clr-libre:      #8A7B6C;
+  --clr-comida:     #B97F4A;
+  --clr-aventura:   #B2543F;
+  --clr-descanso:   #93887A;
+  --clr-cultural:   #946E96;
+  --clr-boda:       #B5707E;
 
   /* Typography */
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body:    'Nunito', 'Segoe UI', sans-serif;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-script:  'Parisienne', cursive;
+  --font-body:    'Lato', 'Segoe UI', sans-serif;
 
   /* Sizes — larger for elderly users */
   --text-xs:   14px;
@@ -65,9 +78,19 @@
   --radius-xl: 28px;
 
   /* Shadows */
-  --shadow-card: 0 2px 12px rgba(28,25,23,0.07), 0 1px 3px rgba(28,25,23,0.05);
-  --shadow-card-hover: 0 8px 28px rgba(28,25,23,0.12), 0 2px 8px rgba(28,25,23,0.06);
-  --shadow-modal: 0 -4px 40px rgba(28,25,23,0.18);
+  --shadow-card: 0 2px 12px rgba(61,51,43,0.08), 0 1px 3px rgba(61,51,43,0.05);
+  --shadow-card-hover: 0 8px 28px rgba(61,51,43,0.13), 0 2px 8px rgba(61,51,43,0.06);
+  --shadow-modal: 0 -4px 40px rgba(61,51,43,0.18);
+}
+
+/* Japón uses sage instead of terracotta as its accent — toggled on
+   document.body whenever the selected trip changes (see
+   updateHeaderForTrip in index.html). Purely a palette swap via the
+   same custom properties everything else already reads from. */
+body.trip-theme-japon {
+  --accent:       var(--sage);
+  --accent-light: var(--sage-light);
+  --accent-dark:  var(--sage-dark);
 }
 
 /* ── Reset ────────────────────────────────────────────────── */
@@ -184,8 +207,12 @@ body {
 }
 
 .header-title em {
-  font-style: italic;
+  font-family: var(--font-script);
+  font-style: normal;
+  font-weight: 400;
   color: var(--accent);
+  font-size: 1.25em;
+  padding-left: 2px;
 }
 
 .header-dates {
@@ -216,6 +243,34 @@ body {
   content: '·';
   margin-left: var(--space-2);
   color: var(--border);
+}
+
+/* ── Trip hero photo ──────────────────────────────────────── */
+.trip-hero {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background: var(--border-light);
+}
+
+.trip-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.trip-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(61,51,43,0) 50%, rgba(61,51,43,0.35) 100%);
+}
+
+@media (max-width: 640px) {
+  .trip-hero {
+    height: 160px;
+  }
 }
 
 /* ── Day Navigation ───────────────────────────────────────── */
@@ -283,6 +338,21 @@ body {
   padding: var(--space-6) var(--space-4) var(--space-10);
 }
 
+/* ── Destination photo banner (top of each destination tab) ─── */
+.dest-photo {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-card);
+}
+
+.dest-photo img {
+  display: block;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
 /* ── Day Section ──────────────────────────────────────────── */
 .day-section {
   margin-bottom: var(--space-8);
@@ -347,8 +417,9 @@ body {
 }
 
 .city-emoji {
-  font-size: 22px;
+  font-size: 16px;
   line-height: 1;
+  opacity: 0.85;
 }
 
 .day-date-text {
@@ -367,8 +438,8 @@ body {
 }
 
 .activity-card {
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  border: none;
   box-shadow: var(--shadow-card);
   overflow: hidden;
   cursor: pointer;
@@ -380,7 +451,6 @@ body {
 .activity-card:active {
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
-  border-color: var(--border);
 }
 
 .activity-card:active {
@@ -509,7 +579,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(28, 25, 23, 0.62);
+  background: rgba(61, 51, 43, 0.62);
   z-index: 999;
   display: flex;
   align-items: center;
@@ -533,7 +603,7 @@ body {
   max-height: 85vh;
   background: var(--white);
   border-radius: var(--radius-xl);
-  box-shadow: 0 24px 80px rgba(28, 25, 23, 0.28), 0 4px 16px rgba(28, 25, 23, 0.12);
+  box-shadow: 0 24px 80px rgba(61, 51, 43, 0.28), 0 4px 16px rgba(61, 51, 43, 0.12);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -648,13 +718,14 @@ body {
   justify-content: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-md);
+  border-radius: 999px;
   font-family: var(--font-body);
   font-size: var(--text-base);
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
-  border: none;
+  border: 1.5px solid var(--border);
+  background: var(--white);
   transition: all 0.18s ease;
   min-height: 52px;
   -webkit-tap-highlight-color: transparent;
@@ -663,24 +734,24 @@ body {
 }
 
 .btn-maps {
-  background: var(--accent);
-  color: var(--white);
+  background: transparent;
+  color: var(--accent-dark);
+  border-color: var(--accent);
 }
 
 .btn-maps:hover {
-  background: var(--accent-dark);
+  background: var(--accent-light);
 }
 
 .btn-pdf {
-  background: var(--bg);
+  background: transparent;
   color: var(--ink);
   border: 1.5px solid var(--border);
 }
 
 .btn-pdf:hover {
-  background: var(--ink);
-  color: var(--white);
-  border-color: var(--ink);
+  background: var(--bg);
+  border-color: var(--ink-muted);
 }
 
 /* ── Done card state ─────────────────────────────────────── */
@@ -691,7 +762,7 @@ body {
 }
 
 .activity-card.is-done {
-  background: #F0F0F0;
+  background: var(--border-light);
 }
 
 .activity-card.is-done .card-title {
@@ -711,7 +782,7 @@ body {
   justify-content: center;
   width: 22px;
   height: 22px;
-  background: #22C55E;
+  background: var(--sage-dark);
   border-radius: 50%;
   color: white;
   font-size: 13px;
@@ -723,13 +794,13 @@ body {
 /* Done toggle button in modal footer */
 .btn-done-toggle {
   flex: 0 0 100%;
-  background: white;
-  border: 2px solid #22C55E;
-  color: #16A34A;
+  background: transparent;
+  border: 1.5px solid var(--sage-dark);
+  color: var(--sage-dark);
   font-weight: 700;
   font-size: var(--text-base);
   min-height: 52px;
-  border-radius: var(--radius-md);
+  border-radius: 999px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -741,7 +812,7 @@ body {
 }
 
 .btn-done-toggle:hover {
-  background: #F0FDF4;
+  background: var(--sage-light);
 }
 
 .btn-done-toggle.is-done {
@@ -751,7 +822,7 @@ body {
 }
 
 .btn-done-toggle.is-done:hover {
-  background: #EBEBEB;
+  background: var(--border-light);
 }
 
 .modal-footer-sep {
@@ -907,12 +978,12 @@ body {
 .accom-card,
 .tour-card {
   position: relative;
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  border: none;
   box-shadow: var(--shadow-card);
   overflow: hidden;
   background: var(--white);
-  padding: var(--space-4) var(--space-4) var(--space-4) 20px;
+  padding: var(--space-5) var(--space-5) var(--space-5) 22px;
 }
 
 .flight-card::before,
@@ -1001,8 +1072,8 @@ body {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  background: #FEF9C3;
-  color: #854D0E;
+  background: var(--status-pending-bg);
+  color: var(--status-pending);
 }
 
 .accom-card-meta {
@@ -1082,9 +1153,9 @@ body {
   text-transform: uppercase;
 }
 
-.status-confirmed       { background: #E6F3EC; color: #15803D; }
-.status-pending         { background: #FEF3DC; color: #B45309; }
-.status-default         { background: #F3F4F6; color: #6B7280; }
+.status-confirmed       { background: var(--status-confirmed-bg); color: var(--status-confirmed); }
+.status-pending         { background: var(--status-pending-bg); color: var(--status-pending); }
+.status-default         { background: var(--border-light); color: var(--ink-muted); }
 
 /* PDF link button reused in overview cards */
 .overview-pdf-link {
@@ -1257,7 +1328,7 @@ body {
   gap: 4px;
   font-size: var(--text-sm);
   font-weight: 700;
-  color: #16A34A;
+  color: var(--sage-dark);
   text-decoration: none;
 }
 
@@ -1324,8 +1395,9 @@ body {
 /* ── Categories view (viewMode "categories", e.g. Japón) ─────── */
 .japan-subcat-block {
   margin-bottom: var(--space-4);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-md);
+  border: none;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
   overflow: hidden;
   background: var(--white);
 }
@@ -1380,13 +1452,14 @@ body {
 .japan-item-card {
   position: relative;
   border-radius: var(--radius-md);
-  border: 1.5px solid var(--border-light);
-  background: var(--bg);
-  padding: var(--space-3) var(--space-4);
+  border: none;
+  box-shadow: var(--shadow-card);
+  background: var(--white);
+  padding: var(--space-4);
 }
 
 .japan-item-card.is-done {
-  background: #F0F0F0;
+  background: var(--border-light);
   opacity: 0.75;
 }
 
@@ -1437,9 +1510,9 @@ body {
   gap: 4px;
   padding: 4px 12px;
   border-radius: 999px;
-  border: 1.5px solid #22C55E;
+  border: 1.5px solid var(--sage-dark);
   background: var(--white);
-  color: #16A34A;
+  color: var(--sage-dark);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -1448,7 +1521,7 @@ body {
 }
 
 .visto-toggle-btn.is-done {
-  background: #F0FDF4;
+  background: var(--sage-light);
   border-color: var(--border);
   color: var(--ink-muted);
 }
@@ -1471,9 +1544,9 @@ body {
   display: inline-block;
   font-size: 11px;
   font-weight: 700;
-  color: #16A34A;
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
+  color: var(--sage-dark);
+  background: var(--sage-light);
+  border: 1px solid var(--sage);
   border-radius: 999px;
   padding: 1px 7px;
   margin-left: 6px;
@@ -1483,8 +1556,8 @@ body {
 .japan-subcat-note {
   font-size: var(--text-sm);
   color: var(--ink-mid);
-  background: #FFF8E1;
-  border: 1px solid #FCE7A6;
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
   border-radius: var(--radius-md);
   padding: var(--space-2) var(--space-3);
   margin-bottom: var(--space-3);
@@ -1557,10 +1630,22 @@ body {
 }
 
 .district-summary-card {
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--border-light);
-  background: var(--bg);
-  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: none;
+  box-shadow: var(--shadow-card);
+  background: var(--white);
+  overflow: hidden;
+}
+
+.district-summary-photo {
+  display: block;
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.district-summary-body {
+  padding: var(--space-4);
 }
 
 .district-summary-title {
@@ -1707,7 +1792,7 @@ body {
 .map-sheet-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(28, 25, 23, 0.55);
+  background: rgba(61, 51, 43, 0.55);
   z-index: 400;
   opacity: 0;
   pointer-events: none;
@@ -1810,7 +1895,7 @@ body {
 }
 
 .offline-banner {
-  background: #92400E;
+  background: var(--status-pending);
   color: var(--white);
   text-align: center;
   font-size: 13px;
@@ -1841,7 +1926,7 @@ body {
 .mobile-menu-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(28, 25, 23, 0.55);
+  background: rgba(61, 51, 43, 0.55);
   z-index: 300;
   display: none;
 }
