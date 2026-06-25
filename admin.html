@@ -190,6 +190,7 @@
       <button class="section-tab" data-tab="dayNotes">📝 Notas del día</button>
       <button class="section-tab" data-tab="trips">🧳 Viajes</button>
       <button class="section-tab" data-tab="japan">🎌 Japón</button>
+      <button class="section-tab" data-tab="blog">📖 Blog</button>
     </div>
 
     <!-- ── Add Activity ──────────────────────────────────── -->
@@ -441,8 +442,13 @@
               <select id="addf-status">
                 <option value="confirmed">confirmed</option>
                 <option value="pending">pending</option>
+                <option value="partial">partial (🟡 reservado, falta pagar)</option>
                 <option value="cancelled">cancelled</option>
               </select>
+            </div>
+            <div class="form-group">
+              <label>Nota de estado (opcional)</label>
+              <input type="text" id="addf-statusNote" placeholder="ej. Pagar 70% restante en efectivo a la llegada" />
             </div>
           </div>
           <div class="form-group">
@@ -516,8 +522,13 @@
               <select id="adda-status">
                 <option value="confirmed">confirmed</option>
                 <option value="pending">pending</option>
+                <option value="partial">partial (🟡 reservado, falta pagar)</option>
               </select>
             </div>
+          </div>
+          <div class="form-group">
+            <label>Nota de estado (opcional)</label>
+            <input type="text" id="adda-statusNote" placeholder="ej. Pagar 70% restante en efectivo a la llegada" />
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -655,8 +666,18 @@
             </div>
             <div class="form-group">
               <label>Estado</label>
-              <input type="text" id="addt-status" placeholder="confirmed / pending-deposit / …" />
+              <input type="text" id="addt-status" list="tourStatusOptions" placeholder="confirmed / pending / partial / …" />
+              <datalist id="tourStatusOptions">
+                <option value="confirmed"></option>
+                <option value="pending"></option>
+                <option value="partial"></option>
+                <option value="cancelled"></option>
+              </datalist>
             </div>
+          </div>
+          <div class="form-group">
+            <label>Nota de estado (opcional)</label>
+            <input type="text" id="addt-statusNote" placeholder="ej. Pagar 70% restante en efectivo a la llegada" />
           </div>
           <div class="form-group">
             <label>URL de Google Maps</label>
@@ -936,6 +957,54 @@
       </div>
     </div>
 
+    <!-- ── Día en fotos blog (Honeymoon Indonesia only) ────── -->
+    <div class="section-box" data-section="blog" style="display:none">
+      <div class="section-box-header">
+        <h2>📖 Día en fotos — Honeymoon Indonesia</h2>
+      </div>
+      <div class="section-box-body">
+        <div class="form-group">
+          <label>Día</label>
+          <select id="blog-day"></select>
+        </div>
+        <div class="form-group">
+          <label>✨ Lo más memorable del día</label>
+          <textarea id="blog-memorable" style="min-height:80px"></textarea>
+        </div>
+        <div class="form-group">
+          <label>🍽️ Qué comimos / probamos</label>
+          <textarea id="blog-food" style="min-height:80px"></textarea>
+        </div>
+        <div class="form-group">
+          <label>📸 Un momento que queremos recordar</label>
+          <textarea id="blog-moment" style="min-height:80px"></textarea>
+        </div>
+        <div class="form-group">
+          <label>💭 ¿Lo repetiríamos?</label>
+          <textarea id="blog-wouldRepeat" style="min-height:80px"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Fotos</label>
+          <div class="pdf-picker">
+            <div class="pdf-picker-row">
+              <input type="file" id="blog-photo-files" accept="image/*" multiple style="display:none" />
+              <button type="button" class="btn btn-secondary btn-small" id="blog-photo-btn">📷 Subir fotos</button>
+              <span class="pdf-status" id="blog-photo-status">Sin fotos nuevas</span>
+            </div>
+            <div class="progress-wrap" id="blog-photo-progress" style="display:none">
+              <div class="progress-bar"><div class="progress-fill" id="blog-photo-fill"></div></div>
+              <span class="progress-pct" id="blog-photo-pct">0%</span>
+            </div>
+          </div>
+          <div id="blog-photo-grid" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+          <button type="button" class="btn btn-primary" id="blog-save-btn">Guardar día</button>
+        </div>
+        <p id="blog-save-status" style="font-size:13px;color:#888;margin-top:8px"></p>
+      </div>
+    </div>
+
     <!-- ── Safe content update (preserves PDFs/done) ──────── -->
     <div class="section-box">
       <div class="section-box-header"><h2>🔄 Actualizar contenido</h2></div>
@@ -1203,8 +1272,13 @@
           <select id="editf-status">
             <option value="confirmed">confirmed</option>
             <option value="pending">pending</option>
+            <option value="partial">partial (🟡 reservado, falta pagar)</option>
             <option value="cancelled">cancelled</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label>Nota de estado (opcional)</label>
+          <input type="text" id="editf-statusNote" placeholder="ej. Pagar 70% restante en efectivo a la llegada" />
         </div>
         <div class="form-group">
           <label>Notas</label>
@@ -1264,8 +1338,13 @@
             <select id="edita-status">
               <option value="confirmed">confirmed</option>
               <option value="pending">pending</option>
+              <option value="partial">partial (🟡 reservado, falta pagar)</option>
             </select>
           </div>
+        </div>
+        <div class="form-group">
+          <label>Nota de estado (opcional)</label>
+          <input type="text" id="edita-statusNote" placeholder="ej. Pagar 70% restante en efectivo a la llegada" />
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -1390,8 +1469,12 @@
           </div>
           <div class="form-group">
             <label>Estado</label>
-            <input type="text" id="editt-status" />
+            <input type="text" id="editt-status" list="tourStatusOptions" />
           </div>
+        </div>
+        <div class="form-group">
+          <label>Nota de estado (opcional)</label>
+          <input type="text" id="editt-statusNote" placeholder="ej. Pagar 70% restante en efectivo a la llegada" />
         </div>
         <div class="form-group">
           <label>URL de Google Maps</label>
@@ -1684,14 +1767,158 @@
   populateJapanCategorySelects();
 
   // ── Section tabs ──────────────────────────────────────────
-  document.getElementById('sectionTabs').addEventListener('click', e => {
-    const btn = e.target.closest('[data-tab]');
+  function switchToSectionTab(tab) {
+    const btn = document.querySelector(`.section-tab[data-tab="${tab}"]`);
     if (!btn) return;
-    const tab = btn.dataset.tab;
     document.querySelectorAll('.section-tab').forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('[data-section]').forEach(el => {
       el.style.display = el.dataset.section === tab ? '' : 'none';
     });
+  }
+  document.getElementById('sectionTabs').addEventListener('click', e => {
+    const btn = e.target.closest('[data-tab]');
+    if (!btn) return;
+    switchToSectionTab(btn.dataset.tab);
+  });
+
+  // ── Día en fotos blog (Honeymoon Indonesia only, days 1-14) ────
+  const HONEYMOON_BLOG_DAYS = 14;
+  let honeymoonBlogDocs = {};
+  let blogSelectedDay = 1;
+
+  function populateBlogDaySelect() {
+    const sel = document.getElementById('blog-day');
+    sel.innerHTML = '';
+    for (let d = 1; d <= HONEYMOON_BLOG_DAYS; d++) {
+      const o = document.createElement('option');
+      o.value = d; o.textContent = 'Día ' + d;
+      sel.appendChild(o);
+    }
+  }
+  populateBlogDaySelect();
+
+  // ?blogDay=N (linked from the public site's "Día en fotos" button) jumps
+  // straight to the Blog tab with that day pre-selected, even before login —
+  // the actual field values populate once Firestore data arrives post-login.
+  const blogDayParam = new URLSearchParams(location.search).get('blogDay');
+  if (blogDayParam) {
+    blogSelectedDay = Math.max(1, Math.min(HONEYMOON_BLOG_DAYS, parseInt(blogDayParam, 10) || 1));
+    document.getElementById('blog-day').value = blogSelectedDay;
+    switchToSectionTab('blog');
+  }
+
+  function loadBlogDayIntoForm(day) {
+    const entry = honeymoonBlogDocs[day] || {};
+    document.getElementById('blog-memorable').value = entry.memorable || '';
+    document.getElementById('blog-food').value = entry.food || '';
+    document.getElementById('blog-moment').value = entry.moment || '';
+    document.getElementById('blog-wouldRepeat').value = entry.wouldRepeat || '';
+    renderBlogPhotoGrid(entry.photos || []);
+    document.getElementById('blog-save-status').textContent = '';
+  }
+
+  function renderBlogPhotoGrid(photos) {
+    const grid = document.getElementById('blog-photo-grid');
+    grid.innerHTML = '';
+    photos.forEach((url, idx) => {
+      const wrap = document.createElement('div');
+      wrap.style.position = 'relative';
+      wrap.innerHTML =
+        `<img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:8px;display:block" />` +
+        `<button type="button" data-remove-photo="${idx}" title="Quitar foto" ` +
+          `style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:#DC2626;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1">✕</button>`;
+      grid.appendChild(wrap);
+    });
+  }
+
+  document.getElementById('blog-day').addEventListener('change', (e) => {
+    blogSelectedDay = Number(e.target.value);
+    loadBlogDayIntoForm(blogSelectedDay);
+  });
+
+  document.getElementById('blog-photo-grid').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-remove-photo]');
+    if (!btn) return;
+    const idx = Number(btn.dataset.removePhoto);
+    const day = blogSelectedDay;
+    const photos = [...(honeymoonBlogDocs[day]?.photos || [])];
+    photos.splice(idx, 1);
+    await setDoc(doc(db, 'honeymoonBlog', String(day)), { day, photos }, { merge: true });
+  });
+
+  document.getElementById('blog-photo-btn').addEventListener('click', () =>
+    document.getElementById('blog-photo-files').click()
+  );
+  document.getElementById('blog-photo-files').addEventListener('change', async () => {
+    const files = Array.from(document.getElementById('blog-photo-files').files);
+    if (!files.length) return;
+    const day = blogSelectedDay;
+    const statusEl   = document.getElementById('blog-photo-status');
+    const progressEl = document.getElementById('blog-photo-progress');
+    const fillEl     = document.getElementById('blog-photo-fill');
+    const pctEl      = document.getElementById('blog-photo-pct');
+    const uploaded = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (!file.type.startsWith('image/')) {
+        statusEl.textContent = `❌ ${file.name} no es una imagen, omitida.`;
+        statusEl.className = 'pdf-status error';
+        continue;
+      }
+      if (file.size > 15 * 1024 * 1024) {
+        statusEl.textContent = `❌ ${file.name} supera 15 MB, omitida.`;
+        statusEl.className = 'pdf-status error';
+        continue;
+      }
+      statusEl.textContent = `Subiendo ${i + 1}/${files.length}…`;
+      statusEl.className = 'pdf-status';
+      progressEl.style.display = 'flex';
+      const storageRef = ref(storage, `blog/honeymoon-indonesia/${day}/${Date.now()}-${file.name}`);
+      const task = uploadBytesResumable(storageRef, file);
+      try {
+        await new Promise((resolve, reject) => {
+          task.on('state_changed',
+            snap => {
+              const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+              fillEl.style.width = pct + '%';
+              pctEl.textContent = pct + '%';
+            },
+            reject,
+            async () => { uploaded.push(await getDownloadURL(task.snapshot.ref)); resolve(); }
+          );
+        });
+      } catch (err) {
+        statusEl.textContent = '❌ Error: ' + err.message;
+        statusEl.className = 'pdf-status error';
+      }
+    }
+
+    progressEl.style.display = 'none';
+    if (uploaded.length) {
+      const photos = [...(honeymoonBlogDocs[day]?.photos || []), ...uploaded];
+      await setDoc(doc(db, 'honeymoonBlog', String(day)), { day, photos }, { merge: true });
+      statusEl.textContent = `✅ ${uploaded.length} foto(s) subida(s)`;
+      statusEl.className = 'pdf-status success';
+    }
+    document.getElementById('blog-photo-files').value = '';
+  });
+
+  document.getElementById('blog-save-btn').addEventListener('click', async () => {
+    const day = blogSelectedDay;
+    const updated = {
+      day,
+      memorable: document.getElementById('blog-memorable').value.trim(),
+      food: document.getElementById('blog-food').value.trim(),
+      moment: document.getElementById('blog-moment').value.trim(),
+      wouldRepeat: document.getElementById('blog-wouldRepeat').value.trim()
+    };
+    try {
+      await setDoc(doc(db, 'honeymoonBlog', String(day)), updated, { merge: true });
+      document.getElementById('blog-save-status').textContent = '✅ Guardado';
+    } catch (err) {
+      document.getElementById('blog-save-status').textContent = '❌ Error: ' + err.message;
+    }
   });
 
   // ── Trip selector ─────────────────────────────────────────
@@ -1830,6 +2057,12 @@
       renderJapanList();
       updateSeedBoxVisibility();
     }, (err) => console.error('Firestore error (japanItems):', err));
+
+    onSnapshot(collection(db, 'honeymoonBlog'), (snap) => {
+      honeymoonBlogDocs = {};
+      snap.docs.forEach(d => { honeymoonBlogDocs[d.data().day] = { id: d.id, ...d.data() }; });
+      loadBlogDayIntoForm(blogSelectedDay);
+    }, (err) => console.error('Firestore error (honeymoonBlog):', err));
   }
 
   let seedCheckPending = false;
@@ -2195,6 +2428,7 @@
       flightNumber: document.getElementById('addf-flightNumber').value.trim(),
       class: document.getElementById('addf-class').value.trim(),
       status: document.getElementById('addf-status').value,
+      statusNote: document.getElementById('addf-statusNote').value.trim() || null,
       notes: document.getElementById('addf-notes').value.trim(),
       pdfUrl: document.getElementById('addf-pdfUrl').value.trim() || null
     };
@@ -2232,6 +2466,7 @@
       name: document.getElementById('adda-name').value.trim(),
       type: document.getElementById('adda-type').value.trim(),
       status: document.getElementById('adda-status').value,
+      statusNote: document.getElementById('adda-statusNote').value.trim() || null,
       region: document.getElementById('adda-region').value.trim(),
       province: document.getElementById('adda-province').value.trim(),
       country: document.getElementById('adda-country').value.trim(),
@@ -2284,6 +2519,7 @@
       operator: document.getElementById('addt-operator').value.trim(),
       duration: document.getElementById('addt-duration').value.trim(),
       status: document.getElementById('addt-status').value.trim(),
+      statusNote: document.getElementById('addt-statusNote').value.trim() || null,
       mapsUrl: document.getElementById('addt-maps').value.trim() || null,
       contacto: {
         contactName:  document.getElementById('addt-contactName').value.trim() || null,
@@ -2650,6 +2886,7 @@
     document.getElementById('editf-duration').value = f.duration || '';
     document.getElementById('editf-class').value = f.class || '';
     document.getElementById('editf-status').value = f.status || 'confirmed';
+    document.getElementById('editf-statusNote').value = f.statusNote || '';
     document.getElementById('editf-notes').value = f.notes || '';
 
     setupEditPdfState('editf', f.pdfUrl);
@@ -2690,6 +2927,7 @@
       duration: document.getElementById('editf-duration').value.trim(),
       class: document.getElementById('editf-class').value.trim(),
       status: document.getElementById('editf-status').value,
+      statusNote: document.getElementById('editf-statusNote').value.trim() || null,
       notes: document.getElementById('editf-notes').value.trim(),
       pdfUrl: document.getElementById('editf-pdfUrl').value.trim() || null
     };
@@ -2708,6 +2946,7 @@
     document.getElementById('edita-name').value = a.name || '';
     document.getElementById('edita-type').value = a.type || '';
     document.getElementById('edita-status').value = a.status || 'confirmed';
+    document.getElementById('edita-statusNote').value = a.statusNote || '';
     document.getElementById('edita-region').value = a.region || '';
     document.getElementById('edita-province').value = a.province || '';
     document.getElementById('edita-country').value = a.country || '';
@@ -2740,6 +2979,7 @@
       name: document.getElementById('edita-name').value.trim(),
       type: document.getElementById('edita-type').value.trim(),
       status: document.getElementById('edita-status').value,
+      statusNote: document.getElementById('edita-statusNote').value.trim() || null,
       region: document.getElementById('edita-region').value.trim(),
       province: document.getElementById('edita-province').value.trim(),
       country: document.getElementById('edita-country').value.trim(),
@@ -2774,6 +3014,7 @@
     document.getElementById('editt-endDate').value = t.endDate || '';
     document.getElementById('editt-duration').value = t.duration || '';
     document.getElementById('editt-status').value = t.status || '';
+    document.getElementById('editt-statusNote').value = t.statusNote || '';
     document.getElementById('editt-maps').value = t.mapsUrl || '';
     document.getElementById('editt-contactName').value = t.contacto?.contactName || '';
     document.getElementById('editt-contactPhone').value = t.contacto?.contactPhone || '';
@@ -2799,6 +3040,7 @@
       operator: document.getElementById('editt-operator').value.trim(),
       duration: document.getElementById('editt-duration').value.trim(),
       status: document.getElementById('editt-status').value.trim(),
+      statusNote: document.getElementById('editt-statusNote').value.trim() || null,
       mapsUrl: document.getElementById('editt-maps').value.trim() || null,
       contacto: {
         contactName:  document.getElementById('editt-contactName').value.trim() || null,

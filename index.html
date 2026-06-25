@@ -52,8 +52,6 @@
       <div class="dest-tabs-inner" id="destTabsInner"></div>
     </nav>
 
-    <!-- ── Global "download all" row (both desktop + mobile) ─── -->
-    <div class="global-download-row" id="globalDownloadRow"></div>
   </div>
 
   <!-- ── Trip hero photo ───────────────────────────────────────
@@ -139,11 +137,59 @@
     <div id="mapSheetBody"></div>
   </div>
 
+  <!-- ── "Día en fotos" blog page (Honeymoon Indonesia only) ──
+       Full-screen overlay rather than the small activity modal —
+       this needs room for a hero, four journal cards, and a
+       gallery grid, closer to a dedicated page than a dialog. -->
+  <div class="blog-overlay" id="blogOverlay" role="dialog" aria-modal="true" aria-label="Día en fotos">
+    <div class="blog-overlay-scroll">
+      <button class="blog-back-btn" id="blogBackBtn" type="button">← Volver</button>
+
+      <div class="blog-hero-empty" id="blogHeroEmpty">
+        <div class="blog-hero-empty-icon">🌅</div>
+        <div class="blog-hero-empty-text">Agrega la foto del día desde el panel de administración</div>
+      </div>
+      <div class="blog-hero-photo" id="blogHeroPhoto" style="display:none">
+        <img id="blogHeroPhotoImg" alt="" />
+      </div>
+
+      <div class="blog-content">
+        <div class="blog-day-date" id="blogDayDate"></div>
+        <h1 class="blog-day-title" id="blogDayTitle"></h1>
+
+        <div class="blog-prompt-card">
+          <div class="blog-prompt-label">✨ Lo más memorable del día</div>
+          <div class="blog-prompt-text" id="blogPromptMemorable"></div>
+        </div>
+        <div class="blog-prompt-card">
+          <div class="blog-prompt-label">🍽️ Qué comimos / probamos</div>
+          <div class="blog-prompt-text" id="blogPromptFood"></div>
+        </div>
+        <div class="blog-prompt-card">
+          <div class="blog-prompt-label">📸 Un momento que queremos recordar</div>
+          <div class="blog-prompt-text" id="blogPromptMoment"></div>
+        </div>
+        <div class="blog-prompt-card">
+          <div class="blog-prompt-label">💭 ¿Lo repetiríamos?</div>
+          <div class="blog-prompt-text" id="blogPromptRepeat"></div>
+        </div>
+
+        <h2 class="blog-gallery-title">📷 Galería</h2>
+        <div class="blog-gallery-grid" id="blogGalleryGrid"></div>
+
+        <div class="blog-action-row">
+          <a class="blog-action-btn" id="blogAddPhotosBtn" target="_blank" rel="noopener noreferrer">📷 Agregar fotos</a>
+          <a class="blog-action-btn blog-action-btn-secondary" id="blogAddExpBtn" target="_blank" rel="noopener noreferrer">✍️ Agregar experiencia</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── App (ES Module) ─────────────────────────────────── -->
   <script type="module">
     import firebaseConfig from './firebase-config.js';
     import {
-      TYPE_LABELS, DESTINATIONS_BY_TRIP, ACCOM_CITY_MAP_BY_TRIP, TOUR_CITY_MAP_BY_TRIP,
+      TYPE_LABELS, DESTINATIONS_BY_TRIP, ACCOM_CITY_MAP_BY_TRIP, TOUR_CITY_MAP_BY_TRIP, FLIGHT_CITY_MAP_BY_TRIP,
       JAPAN_CATEGORIES, JAPAN_SUBCATEGORY_ORDER, TOKYO_DISTRICT_SUMMARIES, JAPAN_SUBCATEGORY_NOTES
     } from './data.js';
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
@@ -309,6 +355,7 @@
     let currentAccommodations = [];
     let currentTours = [];
     let currentDayNotesRaw = [];
+    let currentHoneymoonBlog = {}; // keyed by day number
     let currentJapanItems = [];
     let trips = [];
     let selectedTripId = 'honeymoon-indonesia';
@@ -530,7 +577,6 @@
       });
       tabsBuiltForTrip = tripId;
       buildMobileMenu();
-      renderGlobalDownloadRow();
     }
 
     function setActiveTab(key) {
@@ -654,27 +700,6 @@
       if (e.target.id === 'mobileMenuOverlay') closeMobileMenu();
     });
 
-    // ── Global per-trip "download all" row ─────────────────────
-    function renderGlobalDownloadRow() {
-      const row = document.getElementById('globalDownloadRow');
-      if (!row) return;
-      row.innerHTML = '';
-      const trip = trips.find(t => t.id === selectedTripId);
-      const tripName = trip ? trip.name : 'este viaje';
-      const getUrls = () => {
-        const tid = selectedTripId;
-        const all = [
-          ...currentActivities.filter(a => a.tripId === tid),
-          ...currentFlights.filter(f => f.tripId === tid),
-          ...currentAccommodations.filter(a => a.tripId === tid),
-          ...currentTours.filter(t => t.tripId === tid),
-          ...currentJapanItems.filter(i => i.tripId === tid)
-        ];
-        return collectPdfUrls(all);
-      };
-      row.appendChild(renderDownloadAllButton(getUrls, 'global', `📥 Descargar todo de ${tripName} para offline`));
-    }
-
     function updateHeaderForTrip(trip) {
       const titleEl = document.getElementById('headerTitle');
       if (trip.id === 'honeymoon-indonesia') {
@@ -733,6 +758,12 @@
       renderAll();
     }, (error) => console.error('Firestore error (dayNotes):', error));
 
+    onSnapshot(collection(db, 'honeymoonBlog'), (snapshot) => {
+      currentHoneymoonBlog = {};
+      snapshot.docs.forEach(d => { currentHoneymoonBlog[d.data().day] = { id: d.id, ...d.data() }; });
+      if (openBlogContext) renderBlogPageContent();
+    }, (error) => console.error('Firestore error (honeymoonBlog):', error));
+
     onSnapshot(collection(db, 'trips'), (snapshot) => {
       trips = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
       buildTripSwitcher();
@@ -787,7 +818,7 @@
         return;
       }
 
-      renderOverviewTab(tripFlights);
+      renderOverviewTab(tripFlights, tripAccommodations, tripTours);
 
       const destinations = DESTINATIONS_BY_TRIP[selectedTripId];
       if (!destinations) return; // categories-mode / no breakdown yet: overview only
@@ -1011,8 +1042,17 @@
 
       wrap.innerHTML =
         `<svg class="tokio-map-svg" viewBox="0 0 560 620" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa ilustrado de Tokio por distrito">` +
-          `<rect x="5" y="5" width="535" height="500" rx="46" fill="#FAF3E8"></rect>` +
-          `<path d="M370 330 Q460 330 540 395 L560 620 L340 620 Q325 470 370 330 Z" fill="#BFDBFE"></path>` +
+          // Land mass card — soft earth-tone backdrop standing in for Tokyo's
+          // built-up area, with a couple of muted green "park" patches and a
+          // winding river feeding into a coastline-shaped Tokyo Bay, all sitting
+          // behind the clickable district shapes (purely decorative, no data-*).
+          `<rect x="5" y="5" width="535" height="500" rx="46" fill="#F5EBD8"></rect>` +
+          `<ellipse cx="180" cy="98" rx="95" ry="46" fill="#C3D2AE" opacity="0.4"></ellipse>` +
+          `<ellipse cx="88" cy="468" rx="72" ry="30" fill="#C3D2AE" opacity="0.35"></ellipse>` +
+          `<path d="M300 5 C322 58,288 108,328 158 S380 228,358 288 S400 338,394 346" fill="none" stroke="#A9CBDD" stroke-width="7" stroke-linecap="round" opacity="0.55"></path>` +
+          `<path d="M345 330 C400 320,460 335,505 375 C535 400,555 440,558 480 L560 620 L335 620 C322 540,318 460,330 400 C334 375,338 350,345 330 Z" fill="#BFDDEC"></path>` +
+          `<path d="M380 420 Q420 410,460 425" fill="none" stroke="#9FC4D8" stroke-width="3" opacity="0.5" stroke-linecap="round"></path>` +
+          `<path d="M375 470 Q420 460,468 478" fill="none" stroke="#9FC4D8" stroke-width="3" opacity="0.5" stroke-linecap="round"></path>` +
           shapesHtml +
           `<line x1="82" y1="495" x2="76" y2="568" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,5"></line>` +
           `<text x="92" y="535" class="tokio-map-commute-label">🚃 ~25 min</text>` +
@@ -1091,10 +1131,18 @@
 
       wrap.innerHTML =
         `<svg class="tokio-map-svg" viewBox="0 0 420 780" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa ilustrado de Japón por región">` +
-          `<rect x="5" y="10" width="405" height="605" rx="50" fill="#FAF3E8"></rect>` +
+          // Ocean backdrop + a soft wavy archipelago landmass silhouette behind
+          // the clickable region shapes (purely decorative, no data-* attrs) —
+          // not cartographically precise, just enough coastline shape to read
+          // as "Japan" rather than blobs floating on a blank card.
+          `<rect x="5" y="10" width="405" height="605" rx="50" fill="#D7E6ED"></rect>` +
+          `<path d="M160,18 C230,12 280,30 295,65 C305,90 290,110 305,135 C360,150 400,190 398,240 C396,290 410,330 400,375 C420,410 415,450 395,480 C380,505 350,515 330,535 C310,560 270,575 230,585 C180,600 130,598 95,580 C55,560 20,530 18,495 C16,460 28,430 35,400 C18,365 12,325 20,285 C12,245 22,205 35,170 C20,140 15,105 35,80 C55,50 100,25 160,18 Z" fill="#EBDDBB"></path>` +
+          `<path d="M60,150 Q90,160 80,200" fill="none" stroke="#D7E6ED" stroke-width="3" opacity="0.5" stroke-linecap="round"></path>` +
+          `<path d="M340,250 Q370,265 355,300" fill="none" stroke="#D7E6ED" stroke-width="3" opacity="0.5" stroke-linecap="round"></path>` +
           shapesHtml +
           `<line x1="170" y1="600" x2="180" y2="648" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,5"></line>` +
           `<text x="190" y="635" class="tokio-map-commute-label">✈️ ~3h vuelo</text>` +
+          `<ellipse cx="${ocx}" cy="${ocy}" rx="${okinawa.w / 2 + 14}" ry="${okinawa.h / 2 + 12}" fill="#EBDDBB"></ellipse>` +
           `<g class="tokio-map-shape" data-region="Okinawa" tabindex="0" role="button" aria-label="Okinawa">` +
             `<rect x="${okinawa.x}" y="${okinawa.y}" width="${okinawa.w}" height="${okinawa.h}" rx="14" fill="${JAPAN_MAP_COLORS['Okinawa']}" stroke="#fff" stroke-width="2"></rect>` +
             `<text x="${ocx}" y="${ocy - 5}" text-anchor="middle" class="tokio-map-emoji">${okinawa.emoji}</text>` +
@@ -1262,16 +1310,67 @@
     }
 
     // ── Overview tab: flights only ───────────────────────────
-    function renderOverviewTab(flights) {
+    function renderOverviewTab(flights, accommodations, tours) {
       const panel = document.getElementById('tabPanel-overview');
       if (!panel) return;
       if (!flights.length) {
         panel.innerHTML = '';
-        return;
+      } else {
+        panel.innerHTML = '<h2 class="overview-title">✈️ Vuelos</h2>' +
+          '<div class="flight-list" id="flightsList"></div>';
+        renderFlights(flights, document.getElementById('flightsList'));
       }
-      panel.innerHTML = '<h2 class="overview-title">✈️ Vuelos</h2>' +
-        '<div class="flight-list" id="flightsList"></div>';
-      renderFlights(flights, document.getElementById('flightsList'));
+
+      if (selectedTripId === 'honeymoon-indonesia') {
+        panel.appendChild(renderStatusSummary(flights, accommodations || [], tours || []));
+      }
+    }
+
+    // ── Honeymoon-only: scannable per-destination reservation checklist ──
+    // Name + status pill only (full detail is one tap away in each
+    // destination's own tab) — flights attributed by arrival city,
+    // accommodations/tours by their existing city maps.
+    function renderStatusSummary(flights, accommodations, tours) {
+      const wrap = document.createElement('div');
+      wrap.className = 'status-summary';
+
+      const destinations = DESTINATIONS_BY_TRIP[selectedTripId] || {};
+      const flightDestMap = FLIGHT_CITY_MAP_BY_TRIP[selectedTripId] || {};
+      const accomDestMap = ACCOM_CITY_MAP_BY_TRIP[selectedTripId] || {};
+      const tourDestMap = TOUR_CITY_MAP_BY_TRIP[selectedTripId] || {};
+
+      const rowsHtml = Object.keys(destinations).map(destName => {
+        const info = destinations[destName];
+        const rows = [
+          ...flights.filter(f => flightDestMap[f.id] === destName)
+            .map(f => ({ icon: '✈️', name: `${f.from?.city || ''} → ${f.to?.city || ''}`, status: f.status, statusNote: f.statusNote })),
+          ...accommodations.filter(a => accomDestMap[a.id] === destName)
+            .map(a => ({ icon: '🏨', name: a.name, status: a.status, statusNote: a.statusNote })),
+          ...tours.filter(t => tourDestMap[t.id] === destName)
+            .map(t => ({ icon: '🗺️', name: t.name, status: t.status, statusNote: t.statusNote }))
+        ];
+        if (!rows.length) return '';
+
+        return (
+          `<div class="status-summary-dest">` +
+            `<h3 class="status-summary-dest-title"><span class="city-emoji">${info.emoji}</span>${escHtml(destName)}</h3>` +
+            `<div class="status-summary-rows">` +
+              rows.map(r =>
+                `<div class="status-summary-row">` +
+                  `<div class="status-summary-row-main">` +
+                    `<span class="status-summary-name">${r.icon} ${escHtml(r.name)}</span>` +
+                    `<span class="status-pill ${statusPillClass(r.status)}">${escHtml(statusLabel(r.status))}</span>` +
+                  `</div>` +
+                  (r.statusNote ? `<div class="status-summary-note">${escHtml(r.statusNote)}</div>` : '') +
+                `</div>`
+              ).join('') +
+            `</div>` +
+          `</div>`
+        );
+      }).join('');
+
+      wrap.innerHTML = '<h2 class="overview-title">✅ Resumen de reservaciones</h2>' + rowsHtml;
+      return wrap;
     }
 
     // ── Accommodations / tours that belong to a given city tab ──
@@ -1317,7 +1416,7 @@
         `</div>`;
       section.appendChild(header);
 
-      section.appendChild(renderDayOverview(day, dayNotesMap, acts));
+      section.appendChild(renderDayOverview(day, dayNotesMap, acts, city));
 
       const list = document.createElement('div');
       list.className = 'cards-list';
@@ -1328,7 +1427,7 @@
     }
 
     // ── Day overview toggle + panel ──────────────────────────
-    function renderDayOverview(day, dayNotesMap, acts) {
+    function renderDayOverview(day, dayNotesMap, acts, city) {
       const wrap = document.createElement('div');
       const note = dayNotesMap[day];
 
@@ -1340,6 +1439,15 @@
       toggle.type = 'button';
       toggle.innerHTML = 'ℹ️ Resumen del día';
       toggleRow.appendChild(toggle);
+
+      if (selectedTripId === 'honeymoon-indonesia') {
+        const blogBtn = document.createElement('button');
+        blogBtn.className = 'day-overview-toggle day-blog-btn';
+        blogBtn.type = 'button';
+        blogBtn.innerHTML = '📖 Día en fotos';
+        blogBtn.addEventListener('click', () => openBlogPage(day, acts[0]?.date || '', city));
+        toggleRow.appendChild(blogBtn);
+      }
 
       toggleRow.appendChild(renderDownloadAllButton(() => collectPdfUrls(acts || []), 'day'));
       wrap.appendChild(toggleRow);
@@ -1509,6 +1617,85 @@
     overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
+    // ── "Día en fotos" blog page (Honeymoon Indonesia only) ──
+    let openBlogContext = null; // { day, dateStr, city }
+
+    function openBlogPage(day, dateStr, city) {
+      openBlogContext = { day, dateStr, city };
+      renderBlogPageContent();
+      document.getElementById('blogOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeBlogPage() {
+      document.getElementById('blogOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+      openBlogContext = null;
+    }
+
+    function renderBlogPageContent() {
+      if (!openBlogContext) return;
+      const { day, dateStr, city } = openBlogContext;
+      const entry = currentHoneymoonBlog[day] || {};
+
+      document.getElementById('blogDayDate').textContent = dateStr || '';
+      document.getElementById('blogDayTitle').innerHTML =
+        `Día ${day}` + (city ? ` <span class="blog-day-title-city">${city.info.emoji} ${escHtml(city.name)}</span>` : '');
+
+      const photos = entry.photos || [];
+      const heroEmpty = document.getElementById('blogHeroEmpty');
+      const heroPhoto = document.getElementById('blogHeroPhoto');
+      if (photos.length) {
+        document.getElementById('blogHeroPhotoImg').src = photos[0];
+        heroEmpty.style.display = 'none';
+        heroPhoto.style.display = '';
+      } else {
+        heroEmpty.style.display = '';
+        heroPhoto.style.display = 'none';
+      }
+
+      const placeholder = 'Aún no hay nada escrito aquí — añádelo desde el panel de administración.';
+      [
+        ['blogPromptMemorable', entry.memorable],
+        ['blogPromptFood', entry.food],
+        ['blogPromptMoment', entry.moment],
+        ['blogPromptRepeat', entry.wouldRepeat]
+      ].forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        el.textContent = value || placeholder;
+        el.classList.toggle('blog-prompt-empty', !value);
+      });
+
+      const grid = document.getElementById('blogGalleryGrid');
+      grid.innerHTML = '';
+      const slotCount = Math.max(4, photos.length);
+      for (let i = 0; i < slotCount; i++) {
+        const url = photos[i];
+        const cell = document.createElement(url ? 'a' : 'div');
+        cell.className = url ? 'blog-gallery-photo' : 'blog-gallery-empty';
+        if (url) {
+          cell.href = url;
+          cell.target = '_blank';
+          cell.rel = 'noopener noreferrer';
+          cell.innerHTML = `<img src="${escHtml(url)}" alt="" loading="lazy" />`;
+        } else {
+          cell.innerHTML = '<span class="blog-gallery-empty-icon">+</span>';
+        }
+        grid.appendChild(cell);
+      }
+
+      document.getElementById('blogAddPhotosBtn').href = `admin.html?blogDay=${day}`;
+      document.getElementById('blogAddExpBtn').href = `admin.html?blogDay=${day}`;
+    }
+
+    document.getElementById('blogBackBtn').addEventListener('click', closeBlogPage);
+    document.getElementById('blogOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'blogOverlay') closeBlogPage();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('blogOverlay').classList.contains('open')) closeBlogPage();
+    });
+
     // ── Toggle done ─────────────────────────────────────────
     async function toggleDone(id) {
       const act = currentActivities.find(a => a.id === id);
@@ -1551,9 +1738,18 @@
     // ── Status pill helper (flights / accommodations / tours) ──
     function statusPillClass(status) {
       const s = String(status || '').toLowerCase();
+      if (s === 'partial') return 'status-partial';
       if (s.startsWith('confirmed')) return 'status-confirmed';
       if (s.startsWith('pending') || s.includes('awaiting')) return 'status-pending';
       return 'status-default';
+    }
+
+    // Friendly display label for a status value — known statuses get a
+    // translated/emoji label, anything else (freeform tour statuses like
+    // "confirmed-custom-route") falls back to showing the raw string.
+    function statusLabel(status) {
+      if (status === 'partial') return '🟡 Reservado - falta pagar';
+      return status || '';
     }
 
     // ── Contact / WhatsApp element ───────────────────────────
@@ -1596,9 +1792,10 @@
             (f.duration ? `<span>${escHtml(f.duration)}</span>` : '') +
           `</div>` +
           `<div class="flight-card-footer">` +
-            `<span class="status-pill ${statusPillClass(f.status)}">${escHtml(f.status || '')}</span>` +
+            `<span class="status-pill ${statusPillClass(f.status)}">${escHtml(statusLabel(f.status))}</span>` +
             pdf +
-          `</div>`;
+          `</div>` +
+          (f.statusNote ? `<div class="status-note">${escHtml(f.statusNote)}</div>` : '');
         list.appendChild(card);
       });
     }
@@ -1625,9 +1822,10 @@
           `<div class="accom-card-meta">` +
             (dates ? `<span>${escHtml(dates)}</span>` : '') +
             (cost ? `<span>${escHtml(cost)}</span>` : '') +
-            `<span class="status-pill ${statusPillClass(a.status)}">${escHtml(a.status || '')}</span>` +
+            `<span class="status-pill ${statusPillClass(a.status)}">${escHtml(statusLabel(a.status))}</span>` +
             maps + pdf +
-          `</div>`;
+          `</div>` +
+          (a.statusNote ? `<div class="status-note">${escHtml(a.statusNote)}</div>` : '');
         if (a.contacto?.contactName) {
           const contactWrap = document.createElement('div');
           contactWrap.style.marginTop = '8px';
@@ -1681,9 +1879,10 @@
           `<div class="tour-card-meta">` +
             (dateLabel ? `<span>${escHtml(dateLabel)}</span>` : '') +
             (t.duration ? `<span>${escHtml(t.duration)}</span>` : '') +
-            `<span class="status-pill ${statusPillClass(t.status)}">${escHtml(t.status || '')}</span>` +
+            `<span class="status-pill ${statusPillClass(t.status)}">${escHtml(statusLabel(t.status))}</span>` +
             maps + pdf +
           `</div>` +
+          (t.statusNote ? `<div class="status-note">${escHtml(t.statusNote)}</div>` : '') +
           itineraryHtml;
 
         if (t.contacto?.contactName) {

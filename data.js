@@ -881,6 +881,19 @@ export const TOUR_CITY_MAP = {
   "tour-3": "Komodo",
   "tour-4": "Komodo"
 };
+// Same idea as ACCOM_CITY_MAP/TOUR_CITY_MAP, but for flights: keyed by the
+// destination the flight ARRIVES at (its "to" city), not departs from —
+// that's the trip leg that actually delivers you into that destination.
+// Mexico City has no entry since it's the trip's origin, not a flight target.
+export const FLIGHT_CITY_MAP = {
+  "flight-1a": "Vancouver",
+  "flight-1b": "Hong Kong",
+  "flight-1c": "Java",
+  "flight-2": "Komodo",
+  "flight-3": "Bali",
+  "flight-4a": "Singapur",
+  "flight-4b": "Tokio"
+};
 
 // ── Boda México — destination metadata ──────────────────────────
 export const BODA_CITY_INFO = {
@@ -913,6 +926,10 @@ export const ACCOM_CITY_MAP_BY_TRIP = {
 };
 export const TOUR_CITY_MAP_BY_TRIP = {
   "honeymoon-indonesia": TOUR_CITY_MAP,
+  "boda-mexico": {}
+};
+export const FLIGHT_CITY_MAP_BY_TRIP = {
+  "honeymoon-indonesia": FLIGHT_CITY_MAP,
   "boda-mexico": {}
 };
 
@@ -1425,7 +1442,8 @@ export const TOURS_DATA = [
       "Travel insurance",
       "Personal expenses"
     ],
-    "status": "pending-deposit",
+    "status": "partial",
+    "statusNote": "Pagar 70% restante en efectivo a la llegada",
     "confirmedDetails": {
       "pickupTime": "19:00 at SUB airport with name sign 'Nagib Gobera'",
       "driverWillTrackFlight": true,
