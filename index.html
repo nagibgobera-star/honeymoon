@@ -19,37 +19,65 @@
 </head>
 <body>
 
-  <!-- ── Offline banner ──────────────────────────────────── -->
-  <div class="offline-banner" id="offlineBanner" style="display:none">
-    📡 Sin conexión — mostrando datos guardados
+  <!-- ── Sticky top stack: banner + header + nav, as ONE sticky
+       unit so they don't fight each other for position:sticky top:0 ── -->
+  <div class="sticky-top-stack" id="stickyTopStack">
+
+    <!-- ── Offline banner ──────────────────────────────────── -->
+    <div class="offline-banner" id="offlineBanner" style="display:none">
+      📡 Sin conexión — mostrando datos guardados
+    </div>
+
+    <!-- ── App Header ──────────────────────────────────────── -->
+    <header class="app-header">
+      <div class="header-main-row">
+        <div class="header-text-col">
+          <div class="header-eyebrow" id="headerEyebrow">💍 Honeymoon</div>
+          <h1 class="header-title" id="headerTitle">Honeymoon <em>Indonesia</em></h1>
+        </div>
+        <button class="mobile-menu-trigger" id="mobileMenuTrigger" aria-label="Abrir menú" aria-expanded="false">
+          <span class="mobile-menu-trigger-bars"></span>
+        </button>
+      </div>
+      <p class="header-dates" id="headerDates" style="display:none"></p>
+      <div class="header-cities" id="headerCities">
+        <span>🌆 CDMX</span>
+        <span>🏔️ Vancouver</span>
+        <span>🌃 Hong Kong</span>
+        <span>🌋 Java</span>
+        <span>🌴 Bali</span>
+        <span>🐉 Komodo</span>
+        <span>🦁 Singapur</span>
+        <span>🗼 Tokio</span>
+      </div>
+    </header>
+
+    <!-- ── Trip Switcher (desktop) ───────────────────────────── -->
+    <nav class="trip-switcher" aria-label="Selector de viaje">
+      <div class="trip-switcher-inner" id="tripSwitcherInner"></div>
+    </nav>
+
+    <!-- ── Destination Tabs (desktop) ────────────────────────── -->
+    <nav class="dest-tabs" aria-label="Navegación por destino">
+      <div class="dest-tabs-inner" id="destTabsInner"></div>
+    </nav>
+
+    <!-- ── Global "download all" row (both desktop + mobile) ─── -->
+    <div class="global-download-row" id="globalDownloadRow"></div>
   </div>
 
-  <!-- ── App Header ──────────────────────────────────────── -->
-  <header class="app-header">
-    <div class="header-eyebrow" id="headerEyebrow">💍 Honeymoon</div>
-    <h1 class="header-title" id="headerTitle">Honeymoon <em>Indonesia</em></h1>
-    <p class="header-dates" id="headerDates" style="display:none"></p>
-    <div class="header-cities" id="headerCities">
-      <span>🌆 CDMX</span>
-      <span>🏔️ Vancouver</span>
-      <span>🌃 Hong Kong</span>
-      <span>🌋 Java</span>
-      <span>🌴 Bali</span>
-      <span>🐉 Komodo</span>
-      <span>🦁 Singapur</span>
-      <span>🗼 Tokio</span>
+  <!-- ── Mobile hierarchical menu (hamburger) ─────────────────
+       Hidden on desktop via CSS; replaces the trip-switcher +
+       dest-tabs carousel on narrow viewports. -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+    <div class="mobile-menu-panel" id="mobileMenuPanel" role="dialog" aria-modal="true" aria-label="Menú de navegación">
+      <div class="mobile-menu-header">
+        <span class="mobile-menu-title">📋 Menú</span>
+        <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Cerrar menú">✕</button>
+      </div>
+      <div class="mobile-menu-trips" id="mobileMenuTrips"></div>
     </div>
-  </header>
-
-  <!-- ── Trip Switcher ─────────────────────────────────────── -->
-  <nav class="trip-switcher" aria-label="Selector de viaje">
-    <div class="trip-switcher-inner" id="tripSwitcherInner"></div>
-  </nav>
-
-  <!-- ── Destination Tabs ─────────────────────────────────── -->
-  <nav class="dest-tabs" aria-label="Navegación por destino">
-    <div class="dest-tabs-inner" id="destTabsInner"></div>
-  </nav>
+  </div>
 
   <!-- ── Tab panels (one per destination + Resumen) ────────── -->
   <div id="tabPanels">
@@ -148,12 +176,21 @@
     // caches the response on first view — making a ticket once opened
     // available offline afterward. Maps/TikTok links are untouched.
     let activePdfBlobUrl = null;
+
+    // Just fetches (and lets the service worker cache it) without
+    // displaying anything — shared by openPdf() and the bulk
+    // "Descargar todo para offline" buttons.
+    async function cachePdf(url) {
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error('PDF fetch failed: ' + resp.status);
+      return resp;
+    }
+
     async function openPdf(url) {
       const pdfOverlay = document.getElementById('pdfViewerOverlay');
       const pdfFrame = document.getElementById('pdfViewerFrame');
       try {
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error('PDF fetch failed: ' + resp.status);
+        const resp = await cachePdf(url);
         const blob = await resp.blob();
         if (activePdfBlobUrl) URL.revokeObjectURL(activePdfBlobUrl);
         activePdfBlobUrl = URL.createObjectURL(blob);
@@ -162,6 +199,65 @@
       } catch (err) {
         alert('No se pudo abrir el documento. Si no tienes conexión, ábrelo primero con internet para guardarlo sin conexión.');
       }
+    }
+
+    // Sequentially caches every URL, reporting progress via onProgress(done,
+    // total) after each one (including failures, which are just skipped —
+    // a single bad/offline PDF shouldn't abort the whole batch).
+    async function cacheAllPdfs(urls, onProgress) {
+      let done = 0;
+      for (const url of urls) {
+        try { await cachePdf(url); } catch (err) { console.warn('No se pudo cachear PDF:', url, err); }
+        done++;
+        onProgress(done, urls.length);
+      }
+    }
+
+    function collectPdfUrls(items) {
+      return [...new Set(items.map(i => i.pdfUrl).filter(Boolean))];
+    }
+
+    // Reusable "📥 Descargar todo para offline" button. `getUrls` is called
+    // at click time (not render time) so it always reflects current data.
+    function renderDownloadAllButton(getUrls, variant, label) {
+      const wrap = document.createElement('div');
+      wrap.className = 'download-all-wrap' + (variant === 'global' ? ' download-all-global' : '');
+
+      const defaultLabel = label || '📥 Descargar todo para offline';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'download-all-btn';
+      btn.textContent = defaultLabel;
+
+      const progress = document.createElement('span');
+      progress.className = 'download-all-progress';
+      progress.style.display = 'none';
+
+      btn.addEventListener('click', async () => {
+        const urls = getUrls();
+        if (!urls.length) {
+          btn.textContent = '✓ Sin documentos para descargar';
+          setTimeout(() => { btn.textContent = defaultLabel; }, 2000);
+          return;
+        }
+        btn.disabled = true;
+        btn.style.display = 'none';
+        progress.style.display = '';
+        await cacheAllPdfs(urls, (done, total) => {
+          progress.textContent = `⏳ ${done}/${total} documentos descargados`;
+        });
+        progress.textContent = `✓ ${urls.length}/${urls.length} documentos guardados sin conexión`;
+        setTimeout(() => {
+          progress.style.display = 'none';
+          btn.textContent = defaultLabel;
+          btn.style.display = '';
+          btn.disabled = false;
+        }, 2500);
+      });
+
+      wrap.appendChild(btn);
+      wrap.appendChild(progress);
+      return wrap;
     }
     document.getElementById('pdfViewerClose').addEventListener('click', () => {
       document.getElementById('pdfViewerOverlay').classList.remove('open');
@@ -192,7 +288,19 @@
     let currentOpenId = null;
     let tabsBuiltForTrip = null;
     let currentTabKeys = ['overview'];
-    const topRatedFilterByCategory = {}; // category name -> bool, "Solo 5★" toggle
+    const filterStateByCategory = {}; // category name -> { rating: 'todos'|'alto'|'medio'|'bajo', price: 'todos'|'eco'|'medio'|'caro' }
+    const RATING_TIERS = {
+      todos: () => true,
+      alto:  (r) => r != null && r >= 4,
+      medio: (r) => r != null && r >= 3 && r <= 4,
+      bajo:  (r) => r != null && r <= 2
+    };
+    const PRICE_TIERS = {
+      todos: () => true,
+      eco:   (p) => p === '¥',
+      medio: (p) => p === '¥¥',
+      caro:  (p) => p === '¥¥¥'
+    };
     let tokioSubView = 'resumen'; // "Tokio por Distrito" sub-tab: 'resumen' | 'mapa'
     let regionsSubView = 'lista'; // "Fuera de Tokio (Japón)" sub-tab: 'lista' | 'mapa'
 
@@ -300,24 +408,24 @@
       return destinations ? ['overview', ...Object.keys(destinations)] : ['overview'];
     }
 
+    // Shared between the desktop tab bar and the mobile hierarchical menu.
+    function labelForTabKey(tripId, key) {
+      if (isCategoriesTrip(tripId)) return (CATEGORY_ICONS[key] || '📌') + ' ' + key;
+      if (key === 'overview') return '📋 Resumen';
+      const destinations = DESTINATIONS_BY_TRIP[tripId] || {};
+      return destinations[key] ? destinations[key].emoji + ' ' + key : key;
+    }
+
     // ── Build tab bar (re-run whenever the selected trip changes) ──
     function buildTabs(tripId) {
       currentTabKeys = tabKeysForTrip(tripId);
-      const categories = isCategoriesTrip(tripId);
-      const destinations = DESTINATIONS_BY_TRIP[tripId] || {};
       const nav = document.getElementById('destTabsInner');
       nav.innerHTML = '';
       currentTabKeys.forEach(key => {
         const btn = document.createElement('button');
         btn.className = 'day-nav-city';
         btn.dataset.tabKey = key;
-        if (categories) {
-          btn.textContent = (CATEGORY_ICONS[key] || '📌') + ' ' + key;
-        } else if (key === 'overview') {
-          btn.textContent = '📋 Resumen';
-        } else {
-          btn.textContent = destinations[key].emoji + ' ' + key;
-        }
+        btn.textContent = labelForTabKey(tripId, key);
         btn.addEventListener('click', () => setActiveTab(key));
         nav.appendChild(btn);
       });
@@ -332,10 +440,15 @@
         panels.appendChild(panel);
       });
       tabsBuiltForTrip = tripId;
+      buildMobileMenu();
+      renderGlobalDownloadRow();
     }
 
     function setActiveTab(key) {
       document.querySelectorAll('.day-nav-city').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.tabKey === key)
+      );
+      document.querySelectorAll('.mobile-menu-item-btn').forEach(btn =>
         btn.classList.toggle('active', btn.dataset.tabKey === key)
       );
       currentTabKeys.forEach(k => {
@@ -345,15 +458,18 @@
       window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     }
 
-    // ── Trip switcher ─────────────────────────────────────────
+    // ── Trip switcher (desktop tab bar) ────────────────────────
     const TRIP_TYPE_ICONS = { honeymoon: '💍', wedding: '💒', ideas: '🎌' };
     const TRIP_ORDER = { 'honeymoon-indonesia': 0, 'boda-mexico': 1, 'japon': 2 };
+
+    function sortedTrips() {
+      return [...trips].sort((a, b) => (TRIP_ORDER[a.id] ?? 99) - (TRIP_ORDER[b.id] ?? 99));
+    }
 
     function buildTripSwitcher() {
       const nav = document.getElementById('tripSwitcherInner');
       nav.innerHTML = '';
-      const sorted = [...trips].sort((a, b) => (TRIP_ORDER[a.id] ?? 99) - (TRIP_ORDER[b.id] ?? 99));
-      sorted.forEach(trip => {
+      sortedTrips().forEach(trip => {
         const btn = document.createElement('button');
         btn.className = 'trip-switcher-btn' + (trip.id === selectedTripId ? ' active' : '');
         btn.dataset.tripId = trip.id;
@@ -361,6 +477,7 @@
         btn.addEventListener('click', () => selectTrip(trip.id));
         nav.appendChild(btn);
       });
+      buildMobileMenu();
     }
 
     function selectTrip(tripId) {
@@ -372,6 +489,99 @@
       const trip = trips.find(t => t.id === tripId);
       if (trip) updateHeaderForTrip(trip);
       renderAll();
+      buildMobileMenu();
+      closeMobileMenu();
+    }
+
+    // ── Mobile hierarchical menu (hamburger) ───────────────────
+    // Trip name -> tab/category list, each a vertical accordion, replacing
+    // the horizontal-scroll tab carousel on narrow viewports. Reuses
+    // selectTrip()/setActiveTab() so behavior stays identical to desktop.
+    function buildMobileMenu() {
+      const wrap = document.getElementById('mobileMenuTrips');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      sortedTrips().forEach(trip => {
+        const isSelected = trip.id === selectedTripId;
+
+        const tripBtn = document.createElement('button');
+        tripBtn.type = 'button';
+        tripBtn.className = 'mobile-menu-trip-btn' + (isSelected ? ' expanded' : '');
+        tripBtn.innerHTML =
+          `<span>${TRIP_TYPE_ICONS[trip.type] || '🧳'} ${escHtml(trip.name)}</span>` +
+          `<span class="mobile-menu-chevron">›</span>`;
+
+        const sublist = document.createElement('div');
+        sublist.className = 'mobile-menu-sublist';
+        sublist.style.display = isSelected ? 'flex' : 'none';
+
+        tabKeysForTrip(trip.id).forEach(key => {
+          const itemBtn = document.createElement('button');
+          itemBtn.type = 'button';
+          itemBtn.className = 'mobile-menu-item-btn';
+          itemBtn.dataset.tabKey = key;
+          itemBtn.textContent = labelForTabKey(trip.id, key);
+          itemBtn.addEventListener('click', () => {
+            if (trip.id !== selectedTripId) selectTrip(trip.id);
+            setActiveTab(key);
+            closeMobileMenu();
+          });
+          sublist.appendChild(itemBtn);
+        });
+
+        tripBtn.addEventListener('click', () => {
+          const opening = sublist.style.display === 'none';
+          wrap.querySelectorAll('.mobile-menu-sublist').forEach(s => { s.style.display = 'none'; });
+          wrap.querySelectorAll('.mobile-menu-trip-btn').forEach(b => b.classList.remove('expanded'));
+          if (opening) { sublist.style.display = 'flex'; tripBtn.classList.add('expanded'); }
+        });
+
+        wrap.appendChild(tripBtn);
+        wrap.appendChild(sublist);
+      });
+
+      // Mirror the currently-active tab's highlight into the freshly-built menu.
+      const activeKey = document.querySelector('.day-nav-city.active')?.dataset.tabKey;
+      if (activeKey) {
+        wrap.querySelectorAll('.mobile-menu-item-btn').forEach(btn =>
+          btn.classList.toggle('active', btn.dataset.tabKey === activeKey)
+        );
+      }
+    }
+
+    function openMobileMenu() {
+      document.getElementById('mobileMenuOverlay').classList.add('open');
+      document.getElementById('mobileMenuTrigger').setAttribute('aria-expanded', 'true');
+    }
+    function closeMobileMenu() {
+      document.getElementById('mobileMenuOverlay').classList.remove('open');
+      document.getElementById('mobileMenuTrigger').setAttribute('aria-expanded', 'false');
+    }
+    document.getElementById('mobileMenuTrigger').addEventListener('click', openMobileMenu);
+    document.getElementById('mobileMenuClose').addEventListener('click', closeMobileMenu);
+    document.getElementById('mobileMenuOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'mobileMenuOverlay') closeMobileMenu();
+    });
+
+    // ── Global per-trip "download all" row ─────────────────────
+    function renderGlobalDownloadRow() {
+      const row = document.getElementById('globalDownloadRow');
+      if (!row) return;
+      row.innerHTML = '';
+      const trip = trips.find(t => t.id === selectedTripId);
+      const tripName = trip ? trip.name : 'este viaje';
+      const getUrls = () => {
+        const tid = selectedTripId;
+        const all = [
+          ...currentActivities.filter(a => a.tripId === tid),
+          ...currentFlights.filter(f => f.tripId === tid),
+          ...currentAccommodations.filter(a => a.tripId === tid),
+          ...currentTours.filter(t => t.tripId === tid),
+          ...currentJapanItems.filter(i => i.tripId === tid)
+        ];
+        return collectPdfUrls(all);
+      };
+      row.appendChild(renderDownloadAllButton(getUrls, 'global', `📥 Descargar todo de ${tripName} para offline`));
     }
 
     function updateHeaderForTrip(trip) {
@@ -556,12 +766,14 @@
           return;
         }
 
-        panel.appendChild(renderTopFilterToggle(category, panel));
+        panel.appendChild(renderFilterBar(category));
 
-        const showOnlyTop = !!topRatedFilterByCategory[category];
-        const catItems = showOnlyTop ? allCatItems.filter(i => i.rating === 5) : allCatItems;
+        const filterState = filterStateByCategory[category] || { rating: 'todos', price: 'todos' };
+        const catItems = allCatItems.filter(i =>
+          RATING_TIERS[filterState.rating](i.rating) && PRICE_TIERS[filterState.price](i.priceTier)
+        );
         if (!catItems.length) {
-          panel.insertAdjacentHTML('beforeend', '<p class="category-tabs-empty">Ningún elemento 5★ en esta categoría todavía.</p>');
+          panel.insertAdjacentHTML('beforeend', '<p class="category-tabs-empty">Ningún elemento coincide con estos filtros.</p>');
           return;
         }
 
@@ -602,18 +814,41 @@
       });
     }
 
-    function renderTopFilterToggle(category, panel) {
+    function renderFilterBar(category) {
+      const state = filterStateByCategory[category] ||= { rating: 'todos', price: 'todos' };
       const bar = document.createElement('div');
-      bar.className = 'japan-top-filter-bar';
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'japan-top-filter-btn' + (topRatedFilterByCategory[category] ? ' is-active' : '');
-      btn.textContent = topRatedFilterByCategory[category] ? '⭐ Solo 5★ (activo)' : '⭐ Solo 5★ / Top recomendado';
-      btn.addEventListener('click', () => {
-        topRatedFilterByCategory[category] = !topRatedFilterByCategory[category];
-        renderCategoriesView();
-      });
-      bar.appendChild(btn);
+      bar.className = 'japan-filter-bar';
+
+      function chipGroup(icon, options, currentKey, onPick) {
+        const group = document.createElement('div');
+        group.className = 'japan-filter-group';
+        const label = document.createElement('span');
+        label.className = 'japan-filter-icon';
+        label.textContent = icon;
+        group.appendChild(label);
+        options.forEach(([key, text]) => {
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'japan-filter-chip' + (currentKey === key ? ' is-active' : '');
+          chip.textContent = text;
+          chip.addEventListener('click', () => {
+            if (currentKey === key) return;
+            onPick(key);
+            renderCategoriesView();
+          });
+          group.appendChild(chip);
+        });
+        return group;
+      }
+
+      bar.appendChild(chipGroup('⭐', [
+        ['todos', 'Todos'], ['alto', 'Alto 4-5★'], ['medio', 'Medio 3-4★'], ['bajo', 'Bajo 1-2★']
+      ], state.rating, (key) => { state.rating = key; }));
+
+      bar.appendChild(chipGroup('💰', [
+        ['todos', 'Todos'], ['eco', '¥ Económico'], ['medio', '¥¥ Medio'], ['caro', '¥¥¥ Caro']
+      ], state.price, (key) => { state.price = key; }));
+
       return bar;
     }
 
@@ -633,6 +868,75 @@
         bar.appendChild(btn);
       });
       return bar;
+    }
+
+    // Shared tap-to-callout behavior for the Tokyo/Japan illustrated maps —
+    // tapping a shape shows a small popup anchored near it (emoji + name +
+    // teaser + "Ver más" button); tapping elsewhere on the map or document
+    // dismisses it. Used identically on desktop and mobile (no hover) so
+    // the interaction is consistent across input types.
+    // `rectsByName`: { name -> {x,y,w,h} } in the SVG's own viewBox units.
+    // `getInfo(name)`: returns {emoji, title, teaser, badge?, noNav?} or null.
+    // `onVerMas(name)`: called when the callout's button is tapped.
+    function attachMapCallouts(wrap, viewBoxW, viewBoxH, rectsByName, getInfo, onVerMas) {
+      wrap.style.position = 'relative';
+      let calloutEl = null;
+
+      function dismissCallout() {
+        if (calloutEl) { calloutEl.remove(); calloutEl = null; }
+      }
+
+      function showCallout(name) {
+        const rect = rectsByName[name];
+        const info = getInfo(name);
+        if (!rect || !info) return;
+        dismissCallout();
+
+        const cx = rect.x + rect.w / 2;
+        const cxPct = (cx / viewBoxW) * 100;
+        // Flip below the shape instead of above when there isn't enough
+        // room above (near the top of the map) — otherwise the callout
+        // renders off-screen / behind the sub-tab bar above the map.
+        const flipBelow = rect.y / viewBoxH < 0.12;
+        const topPct = ((flipBelow ? rect.y + rect.h : rect.y) / viewBoxH) * 100;
+        // Three horizontal zones, since a fixed-width callout centered via
+        // -50% would overflow the wrap for shapes near either edge: anchor
+        // by left edge / right edge instead of centering in those zones.
+        // Set as inline transform/CSS-vars (not animation keyframes) so the
+        // pop-in animation below only touches opacity, never fights this.
+        const hZone = cxPct < 33 ? 'left' : cxPct > 67 ? 'right' : 'center';
+        const translateX = hZone === 'left' ? '0%' : hZone === 'right' ? '-100%' : '-50%';
+        const arrowLeft = hZone === 'left' ? '24px' : hZone === 'right' ? 'calc(100% - 24px)' : '50%';
+
+        calloutEl = document.createElement('div');
+        calloutEl.className = 'map-callout' + (flipBelow ? ' map-callout-below' : '');
+        calloutEl.style.left = cxPct + '%';
+        calloutEl.style.top = topPct + '%';
+        calloutEl.style.transform = `translate(${translateX}, ${flipBelow ? '0%' : '-100%'})`;
+        calloutEl.style.setProperty('--arrow-left', arrowLeft);
+        calloutEl.innerHTML =
+          `<div class="map-callout-title">${info.emoji} ${escHtml(info.title)}${info.badge ? ` <span class="map-callout-badge">${escHtml(info.badge)}</span>` : ''}</div>` +
+          `<div class="map-callout-teaser">${escHtml(info.teaser)}</div>` +
+          (info.noNav ? '' : `<button type="button" class="map-callout-btn">Ver más →</button>`);
+        calloutEl.addEventListener('click', (e) => e.stopPropagation());
+        const verMasBtn = calloutEl.querySelector('.map-callout-btn');
+        if (verMasBtn) {
+          verMasBtn.addEventListener('click', () => { dismissCallout(); onVerMas(name); });
+        }
+        wrap.appendChild(calloutEl);
+      }
+
+      wrap.querySelectorAll('.tokio-map-shape, .tokio-map-pin').forEach(shape => {
+        const name = shape.dataset.subcat || shape.dataset.region || shape.dataset.pin;
+        shape.addEventListener('click', (e) => { e.stopPropagation(); showCallout(name); });
+        shape.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); showCallout(name); }
+        });
+      });
+
+      // Tapping the map background (not a shape) or anywhere outside dismisses.
+      wrap.addEventListener('click', dismissCallout);
+      document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) dismissCallout(); });
     }
 
     function renderDistrictMap(panel) {
@@ -660,22 +964,27 @@
           shapesHtml +
           `<line x1="82" y1="495" x2="76" y2="568" stroke="#94A3B8" stroke-width="2" stroke-dasharray="5,5"></line>` +
           `<text x="92" y="535" class="tokio-map-commute-label">🚃 ~25 min</text>` +
-          `<g class="tokio-map-pin" data-pin="hiyoshi">` +
+          `<g class="tokio-map-pin" data-pin="hiyoshi" tabindex="0" role="button" aria-label="Keio Hiyoshi Campus">` +
             `<circle cx="75" cy="582" r="14" fill="#7C3AED" stroke="#fff" stroke-width="2"></circle>` +
             `<text x="75" y="587" text-anchor="middle" class="tokio-map-pin-emoji">🎓</text>` +
             `<text x="75" y="606" text-anchor="middle" class="tokio-map-pin-label">Keio Hiyoshi</text>` +
           `</g>` +
         `</svg>` +
-        `<div class="tokio-map-info" id="tokioMapInfo"><span class="tokio-map-info-placeholder">👆 Toca un distrito para ver más</span></div>`;
+        `<p class="tokio-map-hint">👆 Toca un distrito para ver más</p>`;
 
-      const infoEl = wrap.querySelector('#tokioMapInfo');
+      const rectsByName = {};
+      TOKIO_MAP_SHAPES.forEach(s => { rectsByName[s.name] = s; });
+      rectsByName.hiyoshi = { x: 50, y: 568, w: 50, h: 38 };
 
-      function showTeaser(name) {
+      function getInfo(name) {
+        if (name === 'hiyoshi') {
+          return {
+            emoji: '🎓', title: 'Keio Hiyoshi Campus', noNav: true,
+            teaser: 'Fuera del cluster principal de distritos — conectado por la línea Tokyu Toyoko desde Shibuya, ~25 min de viaje (no caminable).'
+          };
+        }
         const d = summaryByName[name];
-        if (!d) return;
-        infoEl.innerHTML =
-          `<div class="tokio-map-info-title">${d.emoji} ${escHtml(name)}</div>` +
-          `<div class="tokio-map-info-teaser">${escHtml(d.description)}</div>`;
+        return d ? { emoji: d.emoji, title: name, teaser: d.description } : null;
       }
 
       function navigateToSubcat(name) {
@@ -687,20 +996,7 @@
         block.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
-      wrap.querySelectorAll('.tokio-map-shape').forEach(shape => {
-        const name = shape.dataset.subcat;
-        shape.addEventListener('mouseenter', () => showTeaser(name));
-        shape.addEventListener('click', () => { showTeaser(name); navigateToSubcat(name); });
-        shape.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showTeaser(name); navigateToSubcat(name); }
-        });
-      });
-
-      wrap.querySelector('[data-pin="hiyoshi"]')?.addEventListener('click', () => {
-        infoEl.innerHTML =
-          '<div class="tokio-map-info-title">🎓 Keio Hiyoshi Campus</div>' +
-          '<div class="tokio-map-info-teaser">Fuera del cluster principal de distritos — conectado por la línea Tokyu Toyoko desde Shibuya, ~25 min de viaje (no caminable).</div>';
-      });
+      attachMapCallouts(wrap, 560, 620, rectsByName, getInfo, navigateToSubcat);
 
       return wrap;
     }
@@ -753,18 +1049,14 @@
             `<text x="${ocx}" y="${ocy + 15}" text-anchor="middle" class="tokio-map-label">${escHtml(okinawa.name)}</text>` +
           `</g>` +
         `</svg>` +
-        `<div class="tokio-map-info" id="japanMapInfo"><span class="tokio-map-info-placeholder">👆 Toca una región para ver más</span></div>`;
+        `<p class="tokio-map-hint">👆 Toca una región para ver más</p>`;
 
-      const infoEl = wrap.querySelector('#japanMapInfo');
       const regionByName = {};
       JAPAN_MAP_REGIONS.forEach(r => { regionByName[r.name] = r; });
 
-      function showTeaser(name) {
+      function getInfo(name) {
         const r = regionByName[name];
-        if (!r) return;
-        infoEl.innerHTML =
-          `<div class="tokio-map-info-title">${r.emoji} ${escHtml(name)} <span class="tokio-map-travel-badge">${escHtml(r.travel)}</span></div>` +
-          `<div class="tokio-map-info-teaser">${escHtml(r.teaser)}</div>`;
+        return r ? { emoji: r.emoji, title: name, teaser: r.teaser, badge: r.travel } : null;
       }
 
       function navigateToSubcat(name) {
@@ -778,14 +1070,7 @@
         block.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
-      wrap.querySelectorAll('.tokio-map-shape').forEach(shape => {
-        const name = shape.dataset.region;
-        shape.addEventListener('mouseenter', () => showTeaser(name));
-        shape.addEventListener('click', () => { showTeaser(name); navigateToSubcat(name); });
-        shape.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showTeaser(name); navigateToSubcat(name); }
-        });
-      });
+      attachMapCallouts(wrap, 420, 780, regionByName, getInfo, navigateToSubcat);
 
       return wrap;
     }
@@ -863,8 +1148,12 @@
         ? `<a class="tiktok-link" href="${escHtml(item.tiktokUrl)}" target="_blank" rel="noopener noreferrer">🎵 TikTok</a>`
         : '';
 
+      const priceBadge = item.priceTier
+        ? `<span class="japan-item-price-badge">${escHtml(item.priceTier)}</span>`
+        : '';
+
       card.innerHTML =
-        `<div class="japan-item-title">${item.emoji ? escHtml(item.emoji) + ' ' : ''}${escHtml(item.title)}${starsHtml(item.rating)}</div>` +
+        `<div class="japan-item-title">${item.emoji ? escHtml(item.emoji) + ' ' : ''}${escHtml(item.title)}${starsHtml(item.rating)}${priceBadge}</div>` +
         (item.description ? `<div class="japan-item-description">${escHtml(item.description)}</div>` : '') +
         `<div class="japan-item-meta">${maps}${tiktok}</div>`;
 
@@ -968,7 +1257,7 @@
         `</div>`;
       section.appendChild(header);
 
-      section.appendChild(renderDayOverview(day, dayNotesMap));
+      section.appendChild(renderDayOverview(day, dayNotesMap, acts));
 
       const list = document.createElement('div');
       list.className = 'cards-list';
@@ -979,15 +1268,21 @@
     }
 
     // ── Day overview toggle + panel ──────────────────────────
-    function renderDayOverview(day, dayNotesMap) {
+    function renderDayOverview(day, dayNotesMap, acts) {
       const wrap = document.createElement('div');
       const note = dayNotesMap[day];
+
+      const toggleRow = document.createElement('div');
+      toggleRow.className = 'day-overview-toggle-row';
 
       const toggle = document.createElement('button');
       toggle.className = 'day-overview-toggle';
       toggle.type = 'button';
       toggle.innerHTML = 'ℹ️ Resumen del día';
-      wrap.appendChild(toggle);
+      toggleRow.appendChild(toggle);
+
+      toggleRow.appendChild(renderDownloadAllButton(() => collectPdfUrls(acts || []), 'day'));
+      wrap.appendChild(toggleRow);
 
       const panel = document.createElement('div');
       panel.className = 'day-overview-panel';

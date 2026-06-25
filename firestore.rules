@@ -144,7 +144,8 @@ service cloud.firestore {
              (data.source == null || data.source is string) &&
              (data.rating == null || (data.rating is int && data.rating >= 1 && data.rating <= 5)) &&
              (data.priority == null || data.priority is int) &&
-             (data.emoji == null || (data.emoji is string && data.emoji.size() <= 10));
+             (data.emoji == null || (data.emoji is string && data.emoji.size() <= 10)) &&
+             (data.priceTier == null || data.priceTier in ['¥', '¥¥', '¥¥¥']);
     }
   }
 }

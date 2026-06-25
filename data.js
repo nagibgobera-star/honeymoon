@@ -2755,7 +2755,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🔪",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-002",
@@ -2776,7 +2777,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🧁",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-003",
@@ -2797,7 +2799,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍱",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-004",
@@ -2818,7 +2821,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏮",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-005",
@@ -2839,7 +2843,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "⛩️",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-006",
@@ -2860,7 +2865,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🍡",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-007",
@@ -2881,7 +2887,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🚤",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥"
   },
   {
     "id": "japon-008",
@@ -2902,7 +2909,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🎨",
-    "priority": 9
+    "priority": 9,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-009",
@@ -2923,7 +2931,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍺",
-    "priority": 10
+    "priority": 10,
+    "priceTier": "¥"
   },
   {
     "id": "japon-010",
@@ -2944,7 +2953,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🗼",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-011",
@@ -2965,7 +2975,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌳",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-012",
@@ -2986,7 +2997,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏛️",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-013",
@@ -3007,7 +3019,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "⛩️",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-014",
@@ -3028,7 +3041,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "⛩️",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-015",
@@ -3049,7 +3063,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛕",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-016",
@@ -3070,7 +3085,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛕",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-017",
@@ -3091,7 +3107,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛍️",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-018",
@@ -3112,7 +3129,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "📄",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-019",
@@ -3133,7 +3151,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🎮",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-020",
@@ -3154,7 +3173,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🔌",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-021",
@@ -3175,7 +3195,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🚉",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-022",
@@ -3196,7 +3217,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏢",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-023",
@@ -3217,7 +3239,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🏮",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-024",
@@ -3238,7 +3261,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌳",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-025",
@@ -3259,7 +3283,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🌃",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-026",
@@ -3280,7 +3305,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🍻",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-027",
@@ -3301,7 +3327,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🇰🇷",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-028",
@@ -3322,7 +3349,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏛️",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-029",
@@ -3343,7 +3371,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🍭",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-030",
@@ -3364,7 +3393,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🪞",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-031",
@@ -3385,7 +3415,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "👗",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-032",
@@ -3406,7 +3437,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌳",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-033",
@@ -3427,7 +3459,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "⛩️",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-034",
@@ -3448,7 +3481,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🐕",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-035",
@@ -3469,7 +3503,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🚦",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-036",
@@ -3490,7 +3525,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🎮",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-037",
@@ -3511,7 +3547,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍺",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-038",
@@ -3532,7 +3569,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛍️",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-039",
@@ -3553,7 +3591,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🎭",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-040",
@@ -3574,7 +3613,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏬",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-041",
@@ -3595,7 +3635,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🐟",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-042",
@@ -3616,7 +3657,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌳",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-043",
@@ -3637,7 +3679,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🚉",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-044",
@@ -3658,7 +3701,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "👑",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-045",
@@ -3679,7 +3723,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌸",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-046",
@@ -3700,7 +3745,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "⛩️",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-047",
@@ -3721,7 +3767,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏬",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-048",
@@ -3742,7 +3789,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🕹️",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-049",
@@ -3763,7 +3811,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "💡",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-050",
@@ -3784,7 +3833,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏖️",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-051",
@@ -3805,7 +3855,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🌉",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-052",
@@ -3826,7 +3877,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🐟",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-053",
@@ -3847,7 +3899,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🎢",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥¥¥"
   },
   {
     "id": "japon-054",
@@ -3868,7 +3921,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🎬",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-055",
@@ -3889,7 +3943,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌸",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-056",
@@ -3910,7 +3965,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🐱",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-057",
@@ -3931,7 +3987,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "💡",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-058",
@@ -3952,7 +4009,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🦸",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-059",
@@ -3973,7 +4031,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🎸",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-060",
@@ -3994,7 +4053,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🚄",
-    "priority": 13
+    "priority": 13,
+    "priceTier": "¥"
   },
   {
     "id": "japon-061",
@@ -4015,7 +4075,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🌳",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-062",
@@ -4036,7 +4097,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏯",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-063",
@@ -4057,7 +4119,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏘️",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-064",
@@ -4078,7 +4141,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏮",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥"
   },
   {
     "id": "japon-065",
@@ -4099,7 +4163,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍵",
-    "priority": 14
+    "priority": 14,
+    "priceTier": "¥"
   },
   {
     "id": "japon-066",
@@ -4120,7 +4185,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍵",
-    "priority": 15
+    "priority": 15,
+    "priceTier": "¥"
   },
   {
     "id": "japon-067",
@@ -4141,7 +4207,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "✨",
-    "priority": 16
+    "priority": 16,
+    "priceTier": "¥"
   },
   {
     "id": "japon-068",
@@ -4162,7 +4229,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🐟",
-    "priority": 9
+    "priority": 9,
+    "priceTier": "¥"
   },
   {
     "id": "japon-069",
@@ -4183,7 +4251,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🥷",
-    "priority": 10
+    "priority": 10,
+    "priceTier": "¥"
   },
   {
     "id": "japon-070",
@@ -4204,7 +4273,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🎨",
-    "priority": 17
+    "priority": 17,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-071",
@@ -4225,7 +4295,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🚄",
-    "priority": 18
+    "priority": 18,
+    "priceTier": "¥"
   },
   {
     "id": "japon-072",
@@ -4246,7 +4317,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🏔️",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-073",
@@ -4267,7 +4339,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "💧",
-    "priority": 19
+    "priority": 19,
+    "priceTier": "¥"
   },
   {
     "id": "japon-074",
@@ -4288,7 +4361,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍶",
-    "priority": 20
+    "priority": 20,
+    "priceTier": "¥"
   },
   {
     "id": "japon-075",
@@ -4309,7 +4383,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🐒",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-076",
@@ -4330,7 +4405,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛕",
-    "priority": 11
+    "priority": 11,
+    "priceTier": "¥"
   },
   {
     "id": "japon-077",
@@ -4351,7 +4427,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🚄",
-    "priority": 21
+    "priority": 21,
+    "priceTier": "¥"
   },
   {
     "id": "japon-078",
@@ -4372,7 +4449,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏘️",
-    "priority": 22
+    "priority": 22,
+    "priceTier": "¥"
   },
   {
     "id": "japon-079",
@@ -4393,7 +4471,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🏯",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-080",
@@ -4414,7 +4493,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "⛩️",
-    "priority": 23
+    "priority": 23,
+    "priceTier": "¥"
   },
   {
     "id": "japon-081",
@@ -4435,7 +4515,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏘️",
-    "priority": 24
+    "priority": 24,
+    "priceTier": "¥"
   },
   {
     "id": "japon-082",
@@ -4456,7 +4537,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🕰️",
-    "priority": 25
+    "priority": 25,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-083",
@@ -4477,7 +4559,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🏔️",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-084",
@@ -4498,7 +4581,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌾",
-    "priority": 12
+    "priority": 12,
+    "priceTier": "¥"
   },
   {
     "id": "japon-085",
@@ -4519,7 +4603,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛕",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-086",
@@ -4540,7 +4625,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "⛰️",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-087",
@@ -4561,7 +4647,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏘️",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-088",
@@ -4582,7 +4669,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌸",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-089",
@@ -4603,7 +4691,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌃",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-090",
@@ -4624,7 +4713,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🎏",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥"
   },
   {
     "id": "japon-091",
@@ -4645,7 +4735,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🛕",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-092",
@@ -4666,7 +4757,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "♨️",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-093",
@@ -4687,7 +4779,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏯",
-    "priority": 11
+    "priority": 11,
+    "priceTier": "¥"
   },
   {
     "id": "japon-094",
@@ -4708,7 +4801,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🗿",
-    "priority": 12
+    "priority": 12,
+    "priceTier": "¥"
   },
   {
     "id": "japon-095",
@@ -4729,7 +4823,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏝️",
-    "priority": 9
+    "priority": 9,
+    "priceTier": "¥"
   },
   {
     "id": "japon-096",
@@ -4750,7 +4845,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🥾",
-    "priority": 10
+    "priority": 10,
+    "priceTier": "¥"
   },
   {
     "id": "japon-097",
@@ -4771,7 +4867,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍺",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-098",
@@ -4792,7 +4889,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌃",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-099",
@@ -4813,7 +4911,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🌳",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-100",
@@ -4834,7 +4933,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🚶",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-101",
@@ -4855,7 +4955,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🗿",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-102",
@@ -4876,7 +4977,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🐋",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-103",
@@ -4897,7 +4999,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🌳",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥"
   },
   {
     "id": "japon-104",
@@ -4918,7 +5021,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏖️",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-105",
@@ -4939,7 +5043,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏯",
-    "priority": 9
+    "priority": 9,
+    "priceTier": "¥"
   },
   {
     "id": "japon-106",
@@ -4960,7 +5065,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🎡",
-    "priority": 10
+    "priority": 10,
+    "priceTier": "¥"
   },
   {
     "id": "japon-107",
@@ -4981,7 +5087,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🕳️",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-108",
@@ -5002,7 +5109,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🌴",
-    "priority": 11
+    "priority": 11,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-109",
@@ -5023,7 +5131,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏖️",
-    "priority": 12
+    "priority": 12,
+    "priceTier": "¥"
   },
   {
     "id": "japon-110",
@@ -5044,7 +5153,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌲",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-111",
@@ -5065,7 +5175,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🏯",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-112",
@@ -5086,7 +5197,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🐟",
-    "priority": 13
+    "priority": 13,
+    "priceTier": "¥"
   },
   {
     "id": "japon-113",
@@ -5107,7 +5219,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛍️",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-114",
@@ -5128,7 +5241,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏪",
-    "priority": 14
+    "priority": 14,
+    "priceTier": "¥"
   },
   {
     "id": "japon-115",
@@ -5149,7 +5263,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🥭",
-    "priority": 15
+    "priority": 15,
+    "priceTier": "¥"
   },
   {
     "id": "japon-116",
@@ -5170,7 +5285,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏖️",
-    "priority": 16
+    "priority": 16,
+    "priceTier": "¥"
   },
   {
     "id": "japon-117",
@@ -5191,7 +5307,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏝️",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-118",
@@ -5212,7 +5329,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🚌",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-119",
@@ -5233,7 +5351,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🗻",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-120",
@@ -5254,7 +5373,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🚡",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-121",
@@ -5275,7 +5395,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "⛩️",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-122",
@@ -5296,7 +5417,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍶",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-123",
@@ -5317,7 +5439,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🍜",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-124",
@@ -5338,7 +5461,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏺",
-    "priority": 9
+    "priority": 9,
+    "priceTier": "¥"
   },
   {
     "id": "japon-125",
@@ -5359,7 +5483,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "⛪",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-126",
@@ -5380,7 +5505,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "♨️",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-127",
@@ -5401,7 +5527,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "♨️",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-128",
@@ -5422,7 +5549,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏯",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-129",
@@ -5443,7 +5571,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌊",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-130",
@@ -5464,7 +5593,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌋",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-131",
@@ -5485,7 +5615,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌲",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥"
   },
   {
     "id": "japon-132",
@@ -5506,7 +5637,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "♨️",
-    "priority": 10
+    "priority": 10,
+    "priceTier": "¥"
   },
   {
     "id": "japon-133",
@@ -5527,7 +5659,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏙️",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-134",
@@ -5548,7 +5681,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🐙",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-135",
@@ -5569,7 +5703,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "⛩️",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-136",
@@ -5590,7 +5725,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🥞",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-137",
@@ -5611,7 +5747,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍢",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥"
   },
   {
     "id": "japon-138",
@@ -5632,7 +5769,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🏯",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-139",
@@ -5653,7 +5791,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🌃",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-140",
@@ -5674,7 +5813,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛍️",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-141",
@@ -5695,7 +5835,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛹",
-    "priority": 9
+    "priority": 9,
+    "priceTier": "¥"
   },
   {
     "id": "japon-142",
@@ -5716,7 +5857,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🐉",
-    "priority": 10
+    "priority": 10,
+    "priceTier": "¥"
   },
   {
     "id": "japon-143",
@@ -5737,7 +5879,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍜",
-    "priority": 11
+    "priority": 11,
+    "priceTier": "¥"
   },
   {
     "id": "japon-144",
@@ -5758,7 +5901,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛕",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-145",
@@ -5779,7 +5923,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛕",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-146",
@@ -5800,7 +5945,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛕",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-147",
@@ -5821,7 +5967,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🪦",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-148",
@@ -5842,7 +5989,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🍡",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-149",
@@ -5863,7 +6011,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛕",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥"
   },
   {
     "id": "japon-150",
@@ -5884,7 +6033,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "⛩️",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-151",
@@ -5905,7 +6055,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🚪",
-    "priority": 9
+    "priority": 9,
+    "priceTier": "¥"
   },
   {
     "id": "japon-152",
@@ -5926,7 +6077,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🛕",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-153",
@@ -5947,7 +6099,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "⛩️",
-    "priority": 10
+    "priority": 10,
+    "priceTier": "¥"
   },
   {
     "id": "japon-154",
@@ -5968,7 +6121,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛕",
-    "priority": 11
+    "priority": 11,
+    "priceTier": "¥"
   },
   {
     "id": "japon-155",
@@ -5989,7 +6143,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍜",
-    "priority": 21
+    "priority": 21,
+    "priceTier": "¥"
   },
   {
     "id": "japon-156",
@@ -6010,7 +6165,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍱",
-    "priority": 22
+    "priority": 22,
+    "priceTier": "¥"
   },
   {
     "id": "japon-157",
@@ -6031,7 +6187,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏞️",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-158",
@@ -6052,7 +6209,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🍜",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-159",
@@ -6073,7 +6231,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🛕",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-160",
@@ -6094,7 +6253,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🚶",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥"
   },
   {
     "id": "japon-161",
@@ -6115,7 +6275,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛕",
-    "priority": 23
+    "priority": 23,
+    "priceTier": "¥"
   },
   {
     "id": "japon-162",
@@ -6136,7 +6297,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛕",
-    "priority": 9
+    "priority": 9,
+    "priceTier": "¥"
   },
   {
     "id": "japon-163",
@@ -6157,7 +6319,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🍢",
-    "priority": 10
+    "priority": 10,
+    "priceTier": "¥"
   },
   {
     "id": "japon-164",
@@ -6178,7 +6341,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🐉",
-    "priority": 24
+    "priority": 24,
+    "priceTier": "¥"
   },
   {
     "id": "japon-165",
@@ -6199,7 +6363,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏮",
-    "priority": 11
+    "priority": 11,
+    "priceTier": "¥"
   },
   {
     "id": "japon-166",
@@ -6220,7 +6385,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🍵",
-    "priority": 25
+    "priority": 25,
+    "priceTier": "¥"
   },
   {
     "id": "japon-167",
@@ -6241,7 +6407,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛕",
-    "priority": 12
+    "priority": 12,
+    "priceTier": "¥"
   },
   {
     "id": "japon-168",
@@ -6262,7 +6429,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏺",
-    "priority": 26
+    "priority": 26,
+    "priceTier": "¥"
   },
   {
     "id": "japon-169",
@@ -6283,7 +6451,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🛕",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-170",
@@ -6304,7 +6473,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏯",
-    "priority": 27
+    "priority": 27,
+    "priceTier": "¥"
   },
   {
     "id": "japon-171",
@@ -6325,7 +6495,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "⛩️",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-172",
@@ -6346,7 +6517,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "⛩️",
-    "priority": 28
+    "priority": 28,
+    "priceTier": "¥"
   },
   {
     "id": "japon-173",
@@ -6367,7 +6539,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🧵",
-    "priority": 29
+    "priority": 29,
+    "priceTier": "¥"
   },
   {
     "id": "japon-174",
@@ -6388,7 +6561,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏛️",
-    "priority": 30
+    "priority": 30,
+    "priceTier": "¥"
   },
   {
     "id": "japon-175",
@@ -6409,7 +6583,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "👑",
-    "priority": 13
+    "priority": 13,
+    "priceTier": "¥"
   },
   {
     "id": "japon-176",
@@ -6430,7 +6605,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏯",
-    "priority": 14
+    "priority": 14,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-177",
@@ -6451,7 +6627,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛕",
-    "priority": 31
+    "priority": 31,
+    "priceTier": "¥"
   },
   {
     "id": "japon-178",
@@ -6472,7 +6649,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛕",
-    "priority": 15
+    "priority": 15,
+    "priceTier": "¥"
   },
   {
     "id": "japon-179",
@@ -6493,7 +6671,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🚣",
-    "priority": 16
+    "priority": 16,
+    "priceTier": "¥"
   },
   {
     "id": "japon-180",
@@ -6514,7 +6693,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🪦",
-    "priority": 32
+    "priority": 32,
+    "priceTier": "¥"
   },
   {
     "id": "japon-181",
@@ -6535,7 +6715,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛕",
-    "priority": 17
+    "priority": 17,
+    "priceTier": "¥"
   },
   {
     "id": "japon-182",
@@ -6556,7 +6737,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛕",
-    "priority": 33
+    "priority": 33,
+    "priceTier": "¥"
   },
   {
     "id": "japon-183",
@@ -6577,7 +6759,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🎋",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-184",
@@ -6598,7 +6781,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🐒",
-    "priority": 18
+    "priority": 18,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-185",
@@ -6619,7 +6803,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛶",
-    "priority": 34
+    "priority": 34,
+    "priceTier": "¥"
   },
   {
     "id": "japon-186",
@@ -6640,7 +6825,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌉",
-    "priority": 19
+    "priority": 19,
+    "priceTier": "¥"
   },
   {
     "id": "japon-187",
@@ -6661,7 +6847,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🎐",
-    "priority": 20
+    "priority": 20,
+    "priceTier": "¥"
   },
   {
     "id": "japon-188",
@@ -6682,7 +6869,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🛕",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-189",
@@ -6703,7 +6891,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🛕",
-    "priority": 35
+    "priority": 35,
+    "priceTier": "¥"
   },
   {
     "id": "japon-190",
@@ -6724,7 +6913,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🥩",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-191",
@@ -6745,7 +6935,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🏯",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-192",
@@ -6766,7 +6957,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🌿",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-193",
@@ -6787,7 +6979,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🏘️",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-194",
@@ -6808,7 +7001,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "👖",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-195",
@@ -6829,7 +7023,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🌳",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-196",
@@ -6850,7 +7045,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏯",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-197",
@@ -6871,7 +7067,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🕊️",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-198",
@@ -6892,7 +7089,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🥞",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-199",
@@ -6913,7 +7111,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🕊️",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-200",
@@ -6934,7 +7133,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "🏛️",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-201",
@@ -6955,7 +7155,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🏯",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-202",
@@ -6976,7 +7177,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 5,
     "emoji": "⛩️",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-203",
@@ -6997,7 +7199,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🦌",
-    "priority": 9
+    "priority": 9,
+    "priceTier": "¥"
   },
   {
     "id": "japon-204",
@@ -7018,7 +7221,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🛕",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-205",
@@ -7039,7 +7243,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🥾",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-206",
@@ -7060,7 +7265,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 3,
     "emoji": "🌳",
-    "priority": 10
+    "priority": 10,
+    "priceTier": "¥"
   },
   {
     "id": "japon-207",
@@ -7081,7 +7287,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🥩",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥¥"
   },
   {
     "id": "japon-208",
@@ -7102,7 +7309,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia (ITINERARIOS_TOKYO.pdf / VIAJES_JAPÓN.pdf)",
     "rating": 4,
     "emoji": "🎏",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-209",
@@ -7123,7 +7331,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 5,
     "emoji": "🧆",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-210",
@@ -7144,7 +7353,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 5,
     "emoji": "🍶",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-211",
@@ -7165,7 +7375,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 5,
     "emoji": "🍖",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-212",
@@ -7186,7 +7397,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 5,
     "emoji": "🍢",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-213",
@@ -7207,7 +7419,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🔥",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥"
   },
   {
     "id": "japon-214",
@@ -7228,7 +7441,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 5,
     "emoji": "🍵",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-215",
@@ -7249,7 +7463,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 5,
     "emoji": "🍷",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-216",
@@ -7270,7 +7485,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🥞",
-    "priority": 9
+    "priority": 9,
+    "priceTier": "¥"
   },
   {
     "id": "japon-217",
@@ -7291,7 +7507,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 5,
     "emoji": "🥩",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-218",
@@ -7312,7 +7529,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍳",
-    "priority": 10
+    "priority": 10,
+    "priceTier": "¥"
   },
   {
     "id": "japon-219",
@@ -7333,7 +7551,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🥩",
-    "priority": 11
+    "priority": 11,
+    "priceTier": "¥"
   },
   {
     "id": "japon-220",
@@ -7354,7 +7573,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍢",
-    "priority": 12
+    "priority": 12,
+    "priceTier": "¥"
   },
   {
     "id": "japon-221",
@@ -7375,7 +7595,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍝",
-    "priority": 13
+    "priority": 13,
+    "priceTier": "¥"
   },
   {
     "id": "japon-222",
@@ -7396,7 +7617,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 5,
     "emoji": "🍶",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-223",
@@ -7417,7 +7639,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍙",
-    "priority": 14
+    "priority": 14,
+    "priceTier": "¥"
   },
   {
     "id": "japon-224",
@@ -7438,7 +7661,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🐟",
-    "priority": 15
+    "priority": 15,
+    "priceTier": "¥"
   },
   {
     "id": "japon-225",
@@ -7459,7 +7683,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍢",
-    "priority": 16
+    "priority": 16,
+    "priceTier": "¥"
   },
   {
     "id": "japon-226",
@@ -7480,7 +7705,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍽️",
-    "priority": 17
+    "priority": 17,
+    "priceTier": "¥"
   },
   {
     "id": "japon-227",
@@ -7501,7 +7727,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍢",
-    "priority": 18
+    "priority": 18,
+    "priceTier": "¥"
   },
   {
     "id": "japon-228",
@@ -7522,7 +7749,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🥩",
-    "priority": 19
+    "priority": 19,
+    "priceTier": "¥"
   },
   {
     "id": "japon-229",
@@ -7543,7 +7771,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍚",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-230",
@@ -7564,7 +7793,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍷",
-    "priority": 20
+    "priority": 20,
+    "priceTier": "¥"
   },
   {
     "id": "japon-231",
@@ -7585,7 +7815,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🥩",
-    "priority": 21
+    "priority": 21,
+    "priceTier": "¥"
   },
   {
     "id": "japon-232",
@@ -7606,7 +7837,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍲",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-233",
@@ -7627,7 +7859,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 3,
     "emoji": "☕",
-    "priority": 28
+    "priority": 28,
+    "priceTier": "¥"
   },
   {
     "id": "japon-234",
@@ -7648,7 +7881,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🥐",
-    "priority": 22
+    "priority": 22,
+    "priceTier": "¥"
   },
   {
     "id": "japon-235",
@@ -7669,7 +7903,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍝",
-    "priority": 23
+    "priority": 23,
+    "priceTier": "¥"
   },
   {
     "id": "japon-236",
@@ -7690,7 +7925,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍱",
-    "priority": 24
+    "priority": 24,
+    "priceTier": "¥"
   },
   {
     "id": "japon-237",
@@ -7711,7 +7947,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍢",
-    "priority": 25
+    "priority": 25,
+    "priceTier": "¥"
   },
   {
     "id": "japon-238",
@@ -7732,7 +7969,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🥩",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-239",
@@ -7753,7 +7991,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 3,
     "emoji": "🏮",
-    "priority": 11
+    "priority": 11,
+    "priceTier": "¥"
   },
   {
     "id": "japon-240",
@@ -7774,7 +8013,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍜",
-    "priority": 26
+    "priority": 26,
+    "priceTier": "¥"
   },
   {
     "id": "japon-241",
@@ -7795,7 +8035,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "☕",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-242",
@@ -7816,7 +8057,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍡",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-243",
@@ -7837,7 +8079,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 5,
     "emoji": "☕",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-244",
@@ -7858,7 +8101,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 5,
     "emoji": "☕",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-245",
@@ -7879,7 +8123,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 4,
     "emoji": "☕",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-246",
@@ -7900,7 +8145,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 4,
     "emoji": "☕",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-247",
@@ -7921,7 +8167,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 5,
     "emoji": "☕",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-248",
@@ -7942,7 +8189,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 4,
     "emoji": "☕",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-249",
@@ -7963,7 +8211,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 5,
     "emoji": "🏮",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-250",
@@ -7984,7 +8233,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 4,
     "emoji": "🍶",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-251",
@@ -8005,7 +8255,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 5,
     "emoji": "🏺",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-252",
@@ -8026,7 +8277,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 4,
     "emoji": "🎨",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-253",
@@ -8047,7 +8299,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 4,
     "emoji": "🍜",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-254",
@@ -8068,7 +8321,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 4,
     "emoji": "🎍",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-255",
@@ -8089,7 +8343,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación web",
     "rating": 3,
     "emoji": "💃",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-256",
@@ -8110,7 +8365,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 3,
     "emoji": "🥟",
-    "priority": 29
+    "priority": 29,
+    "priceTier": "¥"
   },
   {
     "id": "japon-257",
@@ -8131,7 +8387,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 3,
     "emoji": "🍱",
-    "priority": 30
+    "priority": 30,
+    "priceTier": "¥"
   },
   {
     "id": "japon-258",
@@ -8152,7 +8409,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 2,
     "emoji": "🍜",
-    "priority": 34
+    "priority": 34,
+    "priceTier": "¥"
   },
   {
     "id": "japon-259",
@@ -8173,7 +8431,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 4,
     "emoji": "🍶",
-    "priority": 27
+    "priority": 27,
+    "priceTier": "¥"
   },
   {
     "id": "japon-260",
@@ -8194,7 +8453,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 3,
     "emoji": "🥟",
-    "priority": 31
+    "priority": 31,
+    "priceTier": "¥"
   },
   {
     "id": "japon-261",
@@ -8215,7 +8475,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 3,
     "emoji": "🍢",
-    "priority": 32
+    "priority": 32,
+    "priceTier": "¥"
   },
   {
     "id": "japon-262",
@@ -8236,7 +8497,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Recomendación de amiga — lista curada de Kagurazaka",
     "rating": 3,
     "emoji": "🍳",
-    "priority": 33
+    "priority": 33,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-263",
@@ -8257,7 +8519,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación — críticos y blogs gastronómicos",
     "rating": 5,
     "emoji": "🍣",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-264",
@@ -8278,7 +8541,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación — críticos y blogs gastronómicos",
     "rating": 5,
     "emoji": "🍣",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥¥¥"
   },
   {
     "id": "japon-265",
@@ -8299,7 +8563,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍣",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-266",
@@ -8320,7 +8585,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍣",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-267",
@@ -8341,7 +8607,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación — críticos y blogs gastronómicos",
     "rating": 5,
     "emoji": "🍜",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-268",
@@ -8362,7 +8629,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación — críticos y blogs gastronómicos",
     "rating": 5,
     "emoji": "🍜",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-269",
@@ -8383,7 +8651,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍜",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-270",
@@ -8404,7 +8673,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍜",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-271",
@@ -8425,7 +8695,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍤",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥"
   },
   {
     "id": "japon-272",
@@ -8446,7 +8717,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia",
     "rating": 5,
     "emoji": "🥾",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-273",
@@ -8467,7 +8739,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia",
     "rating": 4,
     "emoji": "🥾",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-274",
@@ -8488,7 +8761,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia",
     "rating": 4,
     "emoji": "🥾",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-275",
@@ -8509,7 +8783,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia",
     "rating": 4,
     "emoji": "🥾",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-276",
@@ -8530,7 +8805,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia",
     "rating": 4,
     "emoji": "🥾",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥"
   },
   {
     "id": "japon-277",
@@ -8551,7 +8827,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia",
     "rating": 5,
     "emoji": "♨️",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-278",
@@ -8572,7 +8849,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia",
     "rating": 4,
     "emoji": "♨️",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-279",
@@ -8593,7 +8871,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia",
     "rating": 5,
     "emoji": "♨️",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-280",
@@ -8614,7 +8893,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia",
     "rating": 4,
     "emoji": "♨️",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-281",
@@ -8635,7 +8915,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": null,
     "rating": null,
     "emoji": "📋",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-282",
@@ -8656,7 +8937,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje",
     "rating": 4,
     "emoji": "🍰",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-283",
@@ -8677,7 +8959,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje",
     "rating": 4,
     "emoji": "📚",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-284",
@@ -8698,7 +8981,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje",
     "rating": 4,
     "emoji": "🏮",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-285",
@@ -8719,7 +9003,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje",
     "rating": 4,
     "emoji": "🐱",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-286",
@@ -8740,7 +9025,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje",
     "rating": 5,
     "emoji": "🗼",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-287",
@@ -8761,7 +9047,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje",
     "rating": 4,
     "emoji": "🛕",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-288",
@@ -8782,7 +9069,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje",
     "rating": 3,
     "emoji": "🌳",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-289",
@@ -8803,7 +9091,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje",
     "rating": null,
     "emoji": "🛒",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥"
   },
   {
     "id": "japon-290",
@@ -8824,7 +9113,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje",
     "rating": 3,
     "emoji": "🎓",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-291",
@@ -8845,7 +9135,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — críticos y blogs gastronómicos",
     "rating": 3,
     "emoji": "🍣",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥¥¥"
   },
   {
     "id": "japon-292",
@@ -8866,7 +9157,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍣",
-    "priority": 5
+    "priority": 5,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-293",
@@ -8887,7 +9179,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍣",
-    "priority": 6
+    "priority": 6,
+    "priceTier": "¥¥¥"
   },
   {
     "id": "japon-294",
@@ -8908,7 +9201,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — críticos y blogs gastronómicos",
     "rating": 5,
     "emoji": "🍜",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-295",
@@ -8929,7 +9223,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍜",
-    "priority": 7
+    "priority": 7,
+    "priceTier": "¥"
   },
   {
     "id": "japon-296",
@@ -8950,7 +9245,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍜",
-    "priority": 8
+    "priority": 8,
+    "priceTier": "¥"
   },
   {
     "id": "japon-297",
@@ -8971,7 +9267,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍢",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-298",
@@ -8992,7 +9289,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🏮",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-299",
@@ -9013,7 +9311,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — críticos y blogs gastronómicos",
     "rating": 4,
     "emoji": "🍰",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥"
   },
   {
     "id": "japon-300",
@@ -9034,7 +9333,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — recomendaciones recurrentes de viajeros experimentados",
     "rating": 5,
     "emoji": "🌇",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-301",
@@ -9055,7 +9355,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — recomendaciones recurrentes de viajeros experimentados",
     "rating": 4,
     "emoji": "🏢",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-302",
@@ -9076,7 +9377,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — recomendaciones recurrentes de viajeros experimentados",
     "rating": 4,
     "emoji": "📸",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-303",
@@ -9097,7 +9399,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — recomendaciones recurrentes de viajeros experimentados",
     "rating": 4,
     "emoji": "👘",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-304",
@@ -9118,7 +9421,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — recomendaciones recurrentes de viajeros experimentados",
     "rating": 4,
     "emoji": "🍵",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-305",
@@ -9139,7 +9443,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — recomendaciones recurrentes de viajeros experimentados",
     "rating": 4,
     "emoji": "🎭",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-306",
@@ -9160,7 +9465,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — recomendaciones recurrentes de viajeros experimentados",
     "rating": 5,
     "emoji": "📸",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-307",
@@ -9181,7 +9487,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — recomendaciones recurrentes de viajeros experimentados",
     "rating": 5,
     "emoji": "🌸",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥"
   },
   {
     "id": "japon-308",
@@ -9202,7 +9509,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — recomendaciones recurrentes de viajeros experimentados",
     "rating": 5,
     "emoji": "📸",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥"
   },
   {
     "id": "japon-309",
@@ -9223,7 +9531,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — recomendaciones recurrentes de viajeros experimentados",
     "rating": 5,
     "emoji": "💡",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-310",
@@ -9244,7 +9553,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 5,
     "emoji": "🎿",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥¥"
   },
   {
     "id": "japon-311",
@@ -9265,7 +9575,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 5,
     "emoji": "🎿",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-312",
@@ -9286,7 +9597,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 4,
     "emoji": "⛷️",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-313",
@@ -9307,7 +9619,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 4,
     "emoji": "🎿",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-314",
@@ -9328,7 +9641,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 5,
     "emoji": "🤿",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-315",
@@ -9349,7 +9663,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 5,
     "emoji": "🐠",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥¥¥"
   },
   {
     "id": "japon-316",
@@ -9370,7 +9685,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 3,
     "emoji": "🤿",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-317",
@@ -9391,7 +9707,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 5,
     "emoji": "🌉",
-    "priority": 1
+    "priority": 1,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-318",
@@ -9412,7 +9729,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 5,
     "emoji": "🎨",
-    "priority": 2
+    "priority": 2,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-319",
@@ -9433,7 +9751,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 4,
     "emoji": "🏔️",
-    "priority": 3
+    "priority": 3,
+    "priceTier": "¥¥"
   },
   {
     "id": "japon-320",
@@ -9454,7 +9773,8 @@ export const JAPAN_ITEMS_DATA = [
     "source": "Investigación propia — cross-referencia de guías de viaje y bloggers especializados",
     "rating": 4,
     "emoji": "🦑",
-    "priority": 4
+    "priority": 4,
+    "priceTier": "¥¥"
   }
 ];
 
