@@ -28,7 +28,7 @@ export const TRIPS_DATA = [
     startDate: "2026-08-18",
     endDate: "2026-08-31",
     viewMode: "itinerary",
-    photoUrl: "https://images.unsplash.com/photo-1671965448417-0582cb361168?q=80&w=1600&auto=format&fit=crop"
+    photoUrl: "./assets/images/honeymoon-hero.jpg"
   },
   {
     id: "boda-mexico",
@@ -37,7 +37,7 @@ export const TRIPS_DATA = [
     startDate: "2026-07-30",
     endDate: "2026-08-13",
     viewMode: "itinerary",
-    photoUrl: "https://images.unsplash.com/photo-1655299417498-52f3a304c2a4?q=80&w=1600&auto=format&fit=crop"
+    photoUrl: "./assets/images/boda-hero.jpg"
   },
   {
     id: "japon",
@@ -841,12 +841,12 @@ export const TRIP_DATA = [
 export const CITY_INFO = {
   "Ciudad de México": { emoji: "🌆", color: "#C4793A", days: [1], photo: "https://images.unsplash.com/photo-1711025716267-e75c2a8598da?q=80&w=600&auto=format&fit=crop" },
   "Vancouver":         { emoji: "🏔️", color: "#4A7FA5", days: [2], photo: "https://images.unsplash.com/photo-1660143158587-bddffa026e06?q=80&w=600&auto=format&fit=crop" },
-  "Hong Kong":         { emoji: "🌃", color: "#D4860A", days: [3], photo: "https://images.unsplash.com/photo-1716706711056-510d49962eea?q=80&w=600&auto=format&fit=crop" },
+  "Hong Kong":         { emoji: "🌃", color: "#D4860A", days: [3], photo: "https://images.unsplash.com/photo-1569833172924-2324c41f2ec3?q=80&w=600&auto=format&fit=crop" },
   "Java":              { emoji: "🌋", color: "#B45309", days: [4, 5], photo: "https://images.unsplash.com/photo-1662114480912-05a338d79da3?q=80&w=600&auto=format&fit=crop" },
   "Bali":              { emoji: "🌴", color: "#2C6E49", days: [6, 7, 8, 12], photo: "https://images.unsplash.com/photo-1559628233-100c798642d4?q=80&w=600&auto=format&fit=crop" },
   "Komodo":            { emoji: "🐉", color: "#0E7490", days: [9, 10, 11], photo: "https://images.unsplash.com/photo-1700591698351-f8131b0f5d3c?q=80&w=600&auto=format&fit=crop" },
   "Singapur":          { emoji: "🦁", color: "#9333EA", days: [13], photo: "https://images.unsplash.com/photo-1628866686613-6cf852bed925?q=80&w=600&auto=format&fit=crop" },
-  "Tokio":             { emoji: "🗼", color: "#DC2626", days: [14], photo: "https://images.unsplash.com/photo-1493515322954-4fa727e97985?q=80&w=600&auto=format&fit=crop" }
+  "Tokio":             { emoji: "🗼", color: "#DC2626", days: [14], photo: "https://images.unsplash.com/photo-1762018824220-d4a9ebda2b28?q=80&w=600&auto=format&fit=crop" }
 };
 
 export const TYPE_LABELS = {
@@ -885,9 +885,9 @@ export const TOUR_CITY_MAP = {
 // ── Boda México — destination metadata ──────────────────────────
 export const BODA_CITY_INFO = {
   "Cancún":                   { emoji: "🏖️", color: "#0E7490", days: [1], photo: "https://images.unsplash.com/photo-1457537227909-08f41319e53c?q=80&w=600&auto=format&fit=crop" },
-  "Tulum":                    { emoji: "🌴", color: "#C4793A", days: [2, 3, 4, 5], photo: "https://images.unsplash.com/photo-1777268977436-b5d867a740b9?q=80&w=600&auto=format&fit=crop" },
+  "Tulum":                    { emoji: "🌴", color: "#C4793A", days: [2, 3, 4, 5], photo: "./assets/images/boda-hero.jpg" },
   "Tulum (Boda)":             { emoji: "💍", color: "#DB2777", days: [6, 7, 8, 9], photo: "https://images.unsplash.com/photo-1740880978174-db9dddf6c58c?q=80&w=600&auto=format&fit=crop" },
-  "Monterrey / Cd. Victoria": { emoji: "👨‍👩‍👧", color: "#2C6E49", days: [10, 11, 12, 13, 14], photo: "https://images.unsplash.com/photo-1776048613315-91bc48d24147?q=80&w=600&auto=format&fit=crop" },
+  "Monterrey / Cd. Victoria": { emoji: "👨‍👩‍👧", color: "#2C6E49", days: [10, 11, 12, 13, 14], photo: "https://images.unsplash.com/photo-1600466892203-d84aae0aa4c1?q=80&w=600&auto=format&fit=crop" },
   "Querétaro":                { emoji: "🏡", color: "#7B5EA7", days: [15], photo: "https://images.unsplash.com/photo-1636300958497-42e3df244288?q=80&w=600&auto=format&fit=crop" }
 };
 

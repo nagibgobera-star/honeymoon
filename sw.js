@@ -1,12 +1,18 @@
 // =============================================================
 //  sw.js — Service worker for offline support (index.html only)
 //
-//  Two caches:
+//  Three caches:
 //   - STATIC_CACHE: the app shell (HTML/CSS/JS + the Firebase SDK
-//     chunks index.html imports), precached on install.
+//     chunks index.html imports), precached on install, served
+//     network-first (freshness matters — see the no-store note below).
 //   - PDF_CACHE: uploaded ticket/voucher PDFs, cached lazily the
 //     first time each one is fetched (via the page's openPdf()
 //     helper, not via direct <a target="_blank"> navigation).
+//   - IMAGE_CACHE: hero/destination photos (Unsplash + local
+//     assets/images/*), served cache-first since a photo never
+//     changes once published — this is what stops them re-fetching
+//     on every tab switch and makes them resilient to a flaky
+//     connection after the first successful load.
 //
 //  Firestore's own data (activities/flights/accommodations/tours/
 //  dayNotes/japanItems) is NOT cached here — the Firestore SDK's
@@ -18,6 +24,7 @@
 
 const STATIC_CACHE = 'mi-viaje-static-v1';
 const PDF_CACHE = 'mi-viaje-pdfs-v1';
+const IMAGE_CACHE = 'mi-viaje-images-v1';
 
 const PRECACHE_URLS = [
   './',
@@ -28,6 +35,8 @@ const PRECACHE_URLS = [
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './assets/images/honeymoon-hero.jpg',
+  './assets/images/boda-hero.jpg',
   'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js',
   'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js'
 ];
@@ -45,7 +54,7 @@ self.addEventListener('activate', (event) => {
     caches.keys()
       .then((keys) => Promise.all(
         keys
-          .filter((key) => key !== STATIC_CACHE && key !== PDF_CACHE)
+          .filter((key) => key !== STATIC_CACHE && key !== PDF_CACHE && key !== IMAGE_CACHE)
           .map((key) => caches.delete(key))
       ))
       .then(() => self.clients.claim())
@@ -54,6 +63,22 @@ self.addEventListener('activate', (event) => {
 
 function isPdfRequest(url) {
   return url.includes('firebasestorage.googleapis.com');
+}
+
+function isImageRequest(url) {
+  return url.includes('images.unsplash.com') || url.includes('/assets/images/');
+}
+
+// Cache-first — once a photo has loaded successfully, it never needs the
+// network again, so switching tabs back and forth or losing connection
+// doesn't re-trigger a fetch or risk a broken-image icon.
+async function cacheFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+  const fresh = await fetch(request);
+  if (fresh && fresh.ok) cache.put(request, fresh.clone());
+  return fresh;
 }
 
 // Network-first, fall back to cache — always prefer fresh data when
@@ -93,6 +118,11 @@ self.addEventListener('fetch', (event) => {
 
   if (isPdfRequest(url)) {
     event.respondWith(networkFirst(request, PDF_CACHE));
+    return;
+  }
+
+  if (isImageRequest(url)) {
+    event.respondWith(cacheFirst(request, IMAGE_CACHE));
     return;
   }
 

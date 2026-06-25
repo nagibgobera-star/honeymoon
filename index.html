@@ -28,27 +28,17 @@
       📡 Sin conexión — mostrando datos guardados
     </div>
 
-    <!-- ── App Header ──────────────────────────────────────── -->
+    <!-- ── App Header ──────────────────────────────────────────
+         Compact on every viewport now — no eyebrow/dates/city-chips.
+         The trip hero photo below carries the visual weight instead. -->
     <header class="app-header">
       <div class="header-main-row">
         <div class="header-text-col">
-          <div class="header-eyebrow" id="headerEyebrow">💍 Honeymoon</div>
           <h1 class="header-title" id="headerTitle">Honeymoon <em>Indonesia</em></h1>
         </div>
         <button class="mobile-menu-trigger" id="mobileMenuTrigger" aria-label="Abrir menú" aria-expanded="false">
           <span class="mobile-menu-trigger-bars"></span>
         </button>
-      </div>
-      <p class="header-dates" id="headerDates" style="display:none"></p>
-      <div class="header-cities" id="headerCities">
-        <span>🌆 CDMX</span>
-        <span>🏔️ Vancouver</span>
-        <span>🌃 Hong Kong</span>
-        <span>🌋 Java</span>
-        <span>🌴 Bali</span>
-        <span>🐉 Komodo</span>
-        <span>🦁 Singapur</span>
-        <span>🗼 Tokio</span>
       </div>
     </header>
 
@@ -193,16 +183,11 @@
     updateOfflineBanner();
 
     // Belt-and-suspenders on top of the CSS media query: explicitly force
-    // the old desktop nav (full header detail, both pill-tab rows) hidden
-    // via inline styles on mobile widths, and the hamburger trigger shown,
-    // so there's no possible state where both navs render at once even if
-    // a stale CSS file is somehow served.
+    // the desktop pill-tab nav rows hidden on mobile widths and the
+    // hamburger trigger shown, so there's no possible state where both
+    // navs render at once even if a stale CSS file is somehow served.
     function enforceMobileNavLayout() {
       const isMobile = window.matchMedia('(max-width: 640px)').matches;
-      ['headerEyebrow', 'headerDates', 'headerCities'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.setProperty('display', isMobile ? 'none' : '', isMobile ? 'important' : '');
-      });
       document.querySelector('.trip-switcher')?.style.setProperty('display', isMobile ? 'none' : '', isMobile ? 'important' : '');
       document.querySelector('.dest-tabs')?.style.setProperty('display', isMobile ? 'none' : '', isMobile ? 'important' : '');
       document.getElementById('mobileMenuTrigger')?.style.setProperty('display', isMobile ? 'flex' : 'none', 'important');
@@ -345,6 +330,68 @@
     };
     let tokioSubView = 'resumen'; // "Tokio por Distrito" sub-tab: 'resumen' | 'mapa'
     let regionsSubView = 'lista'; // "Fuera de Tokio (Japón)" sub-tab: 'lista' | 'mapa'
+
+    // ── Single reactive header photo ────────────────────────────
+    // There is exactly ONE header photo element (#tripHero) on the page.
+    // What it shows is recomputed every time the view changes — trip,
+    // tab/destination/category, or (for Tokio por Distrito) the
+    // currently-expanded subcategory — instead of stacking a second,
+    // separate "destination photo" inside the page content.
+    let activeSubcatPhoto = null; // set/cleared when a subcat block expands/collapses
+
+    // Tokio por Distrito's subcategory names are the same Tokyo district
+    // names already carrying a `photo` in TOKYO_DISTRICT_SUMMARIES.
+    const subcatPhotoByName = {};
+    TOKYO_DISTRICT_SUMMARIES.forEach(d => { if (d.photo) subcatPhotoByName[d.name] = d.photo; });
+
+    // One representative photo per Japón category, shown when no more
+    // specific subcategory photo is active.
+    const JAPAN_CATEGORY_PHOTOS = {
+      'Tokio por Distrito': 'https://images.unsplash.com/photo-1532274804934-6572ef1581e9?q=80&w=1600&auto=format&fit=crop',
+      'Fuera de Tokio (Japón)': 'https://images.unsplash.com/photo-1774401486461-e0b0dbff15fc?q=80&w=1600&auto=format&fit=crop',
+      'Restaurantes y Comida': 'https://images.unsplash.com/photo-1591325418441-ff678baf78ef?q=80&w=1600&auto=format&fit=crop',
+      'Naturaleza': 'https://images.unsplash.com/photo-1573623034802-50c359f8cfd2?q=80&w=1600&auto=format&fit=crop',
+      'Hidden Gems': 'https://images.unsplash.com/photo-1705657309606-ed54eec830fd?q=80&w=1600&auto=format&fit=crop',
+      'Actividades y Experiencias': 'https://images.unsplash.com/photo-1765035058192-edd7ee3e0df0?q=80&w=1600&auto=format&fit=crop',
+      'Eventos Estacionales': 'https://images.unsplash.com/photo-1760445934203-8478d8927ce1?q=80&w=1600&auto=format&fit=crop'
+    };
+
+    function getActiveTabKey() {
+      return document.querySelector('.day-nav-city.active')?.dataset.tabKey
+        || document.querySelector('.mobile-menu-item-btn.active')?.dataset.tabKey
+        || currentTabKeys[0];
+    }
+
+    function resolveViewHeroPhoto() {
+      const trip = trips.find(t => t.id === selectedTripId);
+      if (!trip) return null;
+      const activeKey = getActiveTabKey();
+
+      if (isCategoriesTrip(selectedTripId)) {
+        if (activeSubcatPhoto) return activeSubcatPhoto;
+        return JAPAN_CATEGORY_PHOTOS[activeKey] || trip.photoUrl || null;
+      }
+
+      if (!activeKey || activeKey === 'overview') return trip.photoUrl || null;
+      const destinations = DESTINATIONS_BY_TRIP[selectedTripId] || {};
+      return destinations[activeKey]?.photo || trip.photoUrl || null;
+    }
+
+    function updateViewHero() {
+      const heroEl = document.getElementById('tripHero');
+      const heroImg = document.getElementById('tripHeroImg');
+      if (!heroEl || !heroImg) return;
+      const url = resolveViewHeroPhoto();
+      if (url) {
+        if (heroImg.getAttribute('src') !== url) {
+          heroImg.src = url;
+          heroImg.alt = getActiveTabKey() || '';
+        }
+        heroEl.style.display = '';
+      } else {
+        heroEl.style.display = 'none';
+      }
+    }
 
     // Japan-wide map regions — same simplified, non-cartographic illustrated
     // style as the Tokyo map. `target` is the subcategory each shape jumps
@@ -497,6 +544,8 @@
         const panel = document.getElementById('tabPanel-' + tabSlug(k));
         if (panel) panel.style.display = (k === key) ? 'block' : 'none';
       });
+      activeSubcatPhoto = null; // leaving whatever subcategory was expanded
+      updateViewHero();
       window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     }
 
@@ -627,10 +676,6 @@
     }
 
     function updateHeaderForTrip(trip) {
-      const eyebrowLabels = { honeymoon: '💍 Honeymoon', wedding: '💒 Boda', ideas: '🎌 Ideas' };
-      document.getElementById('headerEyebrow').textContent =
-        eyebrowLabels[trip.type] || ((TRIP_TYPE_ICONS[trip.type] || '🧳') + ' ' + trip.name);
-
       const titleEl = document.getElementById('headerTitle');
       if (trip.id === 'honeymoon-indonesia') {
         titleEl.innerHTML = 'Honeymoon <em>Indonesia</em>';
@@ -641,38 +686,7 @@
       }
 
       document.body.classList.toggle('trip-theme-japon', trip.id === 'japon');
-
-      const datesEl = document.getElementById('headerDates');
-      if (trip.startDate && trip.endDate) {
-        datesEl.textContent = formatDateRange(trip.startDate, trip.endDate);
-        datesEl.style.display = '';
-      } else {
-        datesEl.style.display = 'none';
-      }
-
-      document.getElementById('headerCities').style.display = trip.id === 'honeymoon-indonesia' ? '' : 'none';
-
-      const heroEl = document.getElementById('tripHero');
-      const heroImg = document.getElementById('tripHeroImg');
-      if (trip.photoUrl) {
-        heroImg.src = trip.photoUrl;
-        heroImg.alt = trip.name;
-        heroEl.style.display = '';
-      } else {
-        heroEl.style.display = 'none';
-      }
-    }
-
-    function formatDateRange(start, end) {
-      try {
-        const s = new Date(start + 'T00:00:00');
-        const e = new Date(end + 'T00:00:00');
-        const days = Math.round((e - s) / 86400000) + 1;
-        const fmt = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
-        return `${fmt(s)} – ${fmt(e)}, ${e.getFullYear()} · ${days} días`;
-      } catch {
-        return '';
-      }
+      updateViewHero(); // trip changed -> recompute which photo the single header image should show
     }
 
     // ── Firestore real-time listeners ────────────────────────
@@ -789,10 +803,6 @@
         if (!panel) return;
         panel.innerHTML = '';
 
-        if (destinations[cityName].photo) {
-          panel.appendChild(renderDestinationPhoto(destinations[cityName].photo, cityName));
-        }
-
         destinations[cityName].days.forEach(day => {
           if (!grouped[day]) return;
           panel.appendChild(renderDaySection(day, grouped[day], destinations, tripDayNotes));
@@ -805,6 +815,10 @@
     // ── Categories view (viewMode "categories", e.g. Japón) ──
     function renderCategoriesView() {
       const items = currentJapanItems.filter(i => i.tripId === selectedTripId);
+      // Subcat blocks always rebuild closed below, so any subcategory-level
+      // photo override from before this rebuild is stale — fall back to
+      // the category photo and let a fresh click re-apply it if needed.
+      activeSubcatPhoto = null;
       JAPAN_CATEGORIES.forEach(category => {
         const panel = document.getElementById('tabPanel-' + tabSlug(category));
         if (!panel) return;
@@ -863,6 +877,7 @@
         });
         subcatKeys.forEach(subcat => panel.appendChild(renderSubcatBlock(subcat, bySubcat[subcat])));
       });
+      updateViewHero();
     }
 
     // Lower priority number = shown first; items without a priority sort last (by title).
@@ -1171,6 +1186,11 @@
         const open = itemsWrap.style.display !== 'none';
         itemsWrap.style.display = open ? 'none' : 'flex';
         header.classList.toggle('open', !open);
+        // Switch the single header photo to this subcategory's photo while
+        // it's expanded (currently only Tokio por Distrito's district names
+        // have a matching photo); collapsing falls back to the category photo.
+        activeSubcatPhoto = (!open && subcatPhotoByName[subcat]) ? subcatPhotoByName[subcat] : null;
+        updateViewHero();
       });
 
       return block;
@@ -1252,18 +1272,6 @@
       panel.innerHTML = '<h2 class="overview-title">✈️ Vuelos</h2>' +
         '<div class="flight-list" id="flightsList"></div>';
       renderFlights(flights, document.getElementById('flightsList'));
-    }
-
-    // ── Destination/district hero photo (lazy-loaded) ───────────
-    function renderDestinationPhoto(photoUrl, label) {
-      const wrap = document.createElement('div');
-      wrap.className = 'dest-photo';
-      const img = document.createElement('img');
-      img.src = photoUrl;
-      img.alt = label;
-      img.loading = 'lazy';
-      wrap.appendChild(img);
-      return wrap;
     }
 
     // ── Accommodations / tours that belong to a given city tab ──
