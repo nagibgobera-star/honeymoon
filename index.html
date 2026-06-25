@@ -128,6 +128,18 @@
     </div>
   </div>
 
+  <!-- ── Map info bottom sheet ────────────────────────────────
+       Fixed to the viewport (NOT positioned relative to whatever
+       district/region was tapped) so it's always fully visible no
+       matter where on the map — or how far down the page — the user
+       tapped. -->
+  <div class="map-sheet-backdrop" id="mapSheetBackdrop"></div>
+  <div class="map-sheet" id="mapSheet" role="dialog" aria-modal="true" aria-label="Información del mapa">
+    <div class="map-sheet-handle"></div>
+    <button class="map-sheet-close" id="mapSheetClose" aria-label="Cerrar">✕</button>
+    <div id="mapSheetBody"></div>
+  </div>
+
   <!-- ── App (ES Module) ─────────────────────────────────── -->
   <script type="module">
     import firebaseConfig from './firebase-config.js';
@@ -170,6 +182,24 @@
     window.addEventListener('online', updateOfflineBanner);
     window.addEventListener('offline', updateOfflineBanner);
     updateOfflineBanner();
+
+    // Belt-and-suspenders on top of the CSS media query: explicitly force
+    // the old desktop nav (full header detail, both pill-tab rows) hidden
+    // via inline styles on mobile widths, and the hamburger trigger shown,
+    // so there's no possible state where both navs render at once even if
+    // a stale CSS file is somehow served.
+    function enforceMobileNavLayout() {
+      const isMobile = window.matchMedia('(max-width: 640px)').matches;
+      ['headerEyebrow', 'headerDates', 'headerCities'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.setProperty('display', isMobile ? 'none' : '', isMobile ? 'important' : '');
+      });
+      document.querySelector('.trip-switcher')?.style.setProperty('display', isMobile ? 'none' : '', isMobile ? 'important' : '');
+      document.querySelector('.dest-tabs')?.style.setProperty('display', isMobile ? 'none' : '', isMobile ? 'important' : '');
+      document.getElementById('mobileMenuTrigger')?.style.setProperty('display', isMobile ? 'flex' : 'none', 'important');
+    }
+    window.addEventListener('resize', enforceMobileNavLayout);
+    enforceMobileNavLayout();
 
     // Storage PDF links are intercepted (rather than navigated to
     // directly) so the fetch goes through the service worker, which
@@ -269,6 +299,9 @@
         document.getElementById('pdfViewerFrame').src = 'about:blank';
       }
     });
+
+    document.getElementById('mapSheetClose').addEventListener('click', dismissMapSheet);
+    document.getElementById('mapSheetBackdrop').addEventListener('click', dismissMapSheet);
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a[href*="firebasestorage.googleapis.com"]');
       if (!link) return;
@@ -827,10 +860,11 @@
         label.textContent = icon;
         group.appendChild(label);
         options.forEach(([key, text]) => {
+          const isActive = currentKey === key;
           const chip = document.createElement('button');
           chip.type = 'button';
-          chip.className = 'japan-filter-chip' + (currentKey === key ? ' is-active' : '');
-          chip.textContent = text;
+          chip.className = 'japan-filter-chip' + (isActive ? ' is-active' : '');
+          chip.textContent = (isActive ? '✓ ' : '') + text;
           chip.addEventListener('click', () => {
             if (currentKey === key) return;
             onPick(key);
@@ -872,71 +906,47 @@
 
     // Shared tap-to-callout behavior for the Tokyo/Japan illustrated maps —
     // tapping a shape shows a small popup anchored near it (emoji + name +
-    // teaser + "Ver más" button); tapping elsewhere on the map or document
-    // dismisses it. Used identically on desktop and mobile (no hover) so
-    // the interaction is consistent across input types.
-    // `rectsByName`: { name -> {x,y,w,h} } in the SVG's own viewBox units.
+    // teaser + "Ver más" button) as a FIXED bottom sheet over a backdrop —
+    // anchored to the viewport, never to the tapped shape's position. The
+    // map wrap can be much taller than the screen (tall scrollable SVG),
+    // so a sheet positioned relative to the shape could render far outside
+    // the visible viewport; fixed-to-viewport is the only placement that's
+    // guaranteed visible regardless of which shape was tapped or how far
+    // the page is scrolled.
+    // `rectsByName`: { name -> {x,y,w,h} } in the SVG's own viewBox units
+    // (kept for API compatibility; no longer used for positioning).
     // `getInfo(name)`: returns {emoji, title, teaser, badge?, noNav?} or null.
-    // `onVerMas(name)`: called when the callout's button is tapped.
+    // `onVerMas(name)`: called when the sheet's "Ver más" button is tapped.
     function attachMapCallouts(wrap, viewBoxW, viewBoxH, rectsByName, getInfo, onVerMas) {
-      wrap.style.position = 'relative';
-      let calloutEl = null;
-
-      function dismissCallout() {
-        if (calloutEl) { calloutEl.remove(); calloutEl = null; }
-      }
-
-      function showCallout(name) {
-        const rect = rectsByName[name];
+      function showSheet(name) {
         const info = getInfo(name);
-        if (!rect || !info) return;
-        dismissCallout();
-
-        const cx = rect.x + rect.w / 2;
-        const cxPct = (cx / viewBoxW) * 100;
-        // Flip below the shape instead of above when there isn't enough
-        // room above (near the top of the map) — otherwise the callout
-        // renders off-screen / behind the sub-tab bar above the map.
-        const flipBelow = rect.y / viewBoxH < 0.12;
-        const topPct = ((flipBelow ? rect.y + rect.h : rect.y) / viewBoxH) * 100;
-        // Three horizontal zones, since a fixed-width callout centered via
-        // -50% would overflow the wrap for shapes near either edge: anchor
-        // by left edge / right edge instead of centering in those zones.
-        // Set as inline transform/CSS-vars (not animation keyframes) so the
-        // pop-in animation below only touches opacity, never fights this.
-        const hZone = cxPct < 33 ? 'left' : cxPct > 67 ? 'right' : 'center';
-        const translateX = hZone === 'left' ? '0%' : hZone === 'right' ? '-100%' : '-50%';
-        const arrowLeft = hZone === 'left' ? '24px' : hZone === 'right' ? 'calc(100% - 24px)' : '50%';
-
-        calloutEl = document.createElement('div');
-        calloutEl.className = 'map-callout' + (flipBelow ? ' map-callout-below' : '');
-        calloutEl.style.left = cxPct + '%';
-        calloutEl.style.top = topPct + '%';
-        calloutEl.style.transform = `translate(${translateX}, ${flipBelow ? '0%' : '-100%'})`;
-        calloutEl.style.setProperty('--arrow-left', arrowLeft);
-        calloutEl.innerHTML =
-          `<div class="map-callout-title">${info.emoji} ${escHtml(info.title)}${info.badge ? ` <span class="map-callout-badge">${escHtml(info.badge)}</span>` : ''}</div>` +
-          `<div class="map-callout-teaser">${escHtml(info.teaser)}</div>` +
-          (info.noNav ? '' : `<button type="button" class="map-callout-btn">Ver más →</button>`);
-        calloutEl.addEventListener('click', (e) => e.stopPropagation());
-        const verMasBtn = calloutEl.querySelector('.map-callout-btn');
+        if (!info) return;
+        const backdrop = document.getElementById('mapSheetBackdrop');
+        const sheet = document.getElementById('mapSheet');
+        document.getElementById('mapSheetBody').innerHTML =
+          `<div class="map-sheet-title">${info.emoji} ${escHtml(info.title)}${info.badge ? ` <span class="map-callout-badge">${escHtml(info.badge)}</span>` : ''}</div>` +
+          `<div class="map-sheet-teaser">${escHtml(info.teaser)}</div>` +
+          (info.noNav ? '' : `<button type="button" class="map-sheet-btn" id="mapSheetVerMas">Ver más →</button>`);
+        const verMasBtn = document.getElementById('mapSheetVerMas');
         if (verMasBtn) {
-          verMasBtn.addEventListener('click', () => { dismissCallout(); onVerMas(name); });
+          verMasBtn.addEventListener('click', () => { dismissMapSheet(); onVerMas(name); });
         }
-        wrap.appendChild(calloutEl);
+        backdrop.classList.add('open');
+        sheet.classList.add('open');
       }
 
       wrap.querySelectorAll('.tokio-map-shape, .tokio-map-pin').forEach(shape => {
         const name = shape.dataset.subcat || shape.dataset.region || shape.dataset.pin;
-        shape.addEventListener('click', (e) => { e.stopPropagation(); showCallout(name); });
+        shape.addEventListener('click', (e) => { e.stopPropagation(); showSheet(name); });
         shape.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); showCallout(name); }
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); showSheet(name); }
         });
       });
+    }
 
-      // Tapping the map background (not a shape) or anywhere outside dismisses.
-      wrap.addEventListener('click', dismissCallout);
-      document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) dismissCallout(); });
+    function dismissMapSheet() {
+      document.getElementById('mapSheetBackdrop')?.classList.remove('open');
+      document.getElementById('mapSheet')?.classList.remove('open');
     }
 
     function renderDistrictMap(panel) {

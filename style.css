@@ -1533,9 +1533,10 @@ body {
 }
 
 .japan-filter-chip.is-active {
-  border-color: #F59E0B;
-  background: #FFFBEB;
-  color: #B45309;
+  border-color: var(--accent-dark);
+  background: var(--accent);
+  color: var(--white);
+  box-shadow: 0 1px 4px rgba(196, 121, 58, 0.45);
 }
 
 .district-summaries {
@@ -1697,103 +1698,114 @@ body {
   color: var(--ink-muted);
 }
 
-/* ── Map tap-to-callout (Tokyo map + Japan map) ───────────────
-   Horizontal anchor (left/center/right zone) and vertical flip
-   (above/below) are computed in JS per-tap and applied as an inline
-   `transform` + `--arrow-left` custom property, since they depend on
-   where the tapped shape sits on the map. The animation below only
-   touches opacity so it never fights that inline transform. */
-.map-callout {
-  position: absolute;
-  margin-top: -10px;
-  width: 220px;
-  max-width: 70vw;
+/* ── Map info bottom sheet (Tokyo map + Japan map) ────────────
+   Fixed to the VIEWPORT, never positioned relative to the tapped
+   shape or the (possibly very tall) scrollable map wrapper — that
+   relative-positioning approach is what caused the sheet to render
+   off-screen / overlapping content depending on which district was
+   tapped. A fixed bottom sheet is always fully visible regardless. */
+.map-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 25, 23, 0.55);
+  z-index: 400;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.map-sheet-backdrop.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.map-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 401;
+  max-height: 70vh;
+  overflow-y: auto;
   background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card-hover);
-  padding: var(--space-3);
-  z-index: 20;
-  animation: calloutPop 0.15s ease;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: var(--shadow-modal);
+  padding: var(--space-3) var(--space-5) calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
 }
 
-@keyframes calloutPop {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+.map-sheet.open {
+  transform: translateY(0);
 }
 
-.map-callout::after {
-  content: '';
+.map-sheet-handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border);
+  margin: 0 auto var(--space-3);
+}
+
+.map-sheet-close {
   position: absolute;
-  bottom: -8px;
-  left: var(--arrow-left, 50%);
-  transform: translateX(-50%);
-  border-width: 8px 8px 0;
-  border-style: solid;
-  border-color: var(--white) transparent transparent;
-  filter: drop-shadow(0 2px 1px rgba(28,25,23,0.08));
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  font-size: var(--text-base);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.map-callout-below {
-  margin-top: 10px;
-}
-
-.map-callout-below::after {
-  bottom: auto;
-  top: -8px;
-  border-width: 0 8px 8px;
-  border-color: transparent transparent var(--white);
-  filter: drop-shadow(0 -2px 1px rgba(28,25,23,0.08));
-}
-
-.map-callout-below { animation: calloutPopBelow 0.15s ease; }
-@keyframes calloutPopBelow {
-  from { opacity: 0; transform: translate(-50%, -5%) scale(0.95); }
-  to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
-}
-
-.map-callout-title {
+.map-sheet-title {
+  font-family: var(--font-display);
   font-weight: 700;
-  font-size: var(--text-sm);
-  margin-bottom: 4px;
+  font-size: var(--text-lg);
+  padding-right: 40px;
+  margin-bottom: var(--space-2);
 }
 
 .map-callout-badge {
   display: inline-block;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--ink-mid);
   background: var(--bg);
   border: 1px solid var(--border-light);
   border-radius: 999px;
-  padding: 1px 7px;
+  padding: 2px 8px;
   vertical-align: middle;
 }
 
-.map-callout-teaser {
-  font-size: var(--text-xs);
+.map-sheet-teaser {
+  font-size: var(--text-sm);
   color: var(--ink-mid);
-  line-height: 1.4;
-  margin-bottom: var(--space-2);
+  line-height: 1.5;
+  margin-bottom: var(--space-4);
 }
 
-.map-callout-btn {
+.map-sheet-btn {
   display: inline-flex;
   width: 100%;
   justify-content: center;
-  padding: 6px var(--space-3);
-  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
   background: var(--accent);
   border: none;
   color: var(--white);
   font-family: var(--font-body);
-  font-size: var(--text-xs);
+  font-size: var(--text-base);
   font-weight: 700;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  min-height: 48px;
 }
 
-.map-callout-btn:hover {
+.map-sheet-btn:hover {
   background: var(--accent-dark);
 }
 
@@ -1969,7 +1981,7 @@ body {
   .header-eyebrow,
   .header-dates,
   .header-cities {
-    display: none;
+    display: none !important;
   }
   .header-title {
     font-size: var(--text-lg);
@@ -1984,7 +1996,7 @@ body {
   }
   .trip-switcher,
   .dest-tabs {
-    display: none;
+    display: none !important;
   }
   .global-download-row {
     padding: var(--space-2) var(--space-3);

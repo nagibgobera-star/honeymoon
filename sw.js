@@ -58,10 +58,18 @@ function isPdfRequest(url) {
 
 // Network-first, fall back to cache — always prefer fresh data when
 // online, but never show a broken page when offline.
+//
+// `cache: 'no-store'` on the fetch is deliberate: GitHub Pages serves
+// app-shell files with `Cache-Control: max-age=600`, so a plain fetch()
+// can be silently satisfied from the browser's own HTTP cache for up to
+// 10 minutes — defeating "network-first" entirely and showing stale HTML/
+// CSS on a device that's actually online. Forcing no-store guarantees a
+// real round-trip every time, with the SW's own cache as the ONLY layer
+// that persists content for offline use.
 async function networkFirst(request, cacheName) {
   const cache = await caches.open(cacheName);
   try {
-    const fresh = await fetch(request);
+    const fresh = await fetch(new Request(request, { cache: 'no-store' }));
     if (fresh && fresh.ok) cache.put(request, fresh.clone());
     return fresh;
   } catch (err) {
