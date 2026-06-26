@@ -434,6 +434,7 @@
           heroImg.src = url;
           heroImg.alt = getActiveTabKey() || '';
         }
+        heroImg.style.objectPosition = url.includes('honeymoon-hero') ? 'center 65%' : '';
         heroEl.style.display = '';
       } else {
         heroEl.style.display = 'none';
@@ -546,10 +547,8 @@
 
     // Shared between the desktop tab bar and the mobile hierarchical menu.
     function labelForTabKey(tripId, key) {
-      if (isCategoriesTrip(tripId)) return (CATEGORY_ICONS[key] || '📌') + ' ' + key;
-      if (key === 'overview') return '📋 Resumen';
-      const destinations = DESTINATIONS_BY_TRIP[tripId] || {};
-      return destinations[key] ? destinations[key].emoji + ' ' + key : key;
+      if (key === 'overview') return 'Resumen';
+      return key;
     }
 
     // ── Build tab bar (re-run whenever the selected trip changes) ──
@@ -610,7 +609,7 @@
         const btn = document.createElement('button');
         btn.className = 'trip-switcher-btn' + (trip.id === selectedTripId ? ' active' : '');
         btn.dataset.tripId = trip.id;
-        btn.textContent = (TRIP_TYPE_ICONS[trip.type] || '🧳') + ' ' + trip.name;
+        btn.textContent = trip.name;
         btn.addEventListener('click', () => selectTrip(trip.id));
         nav.appendChild(btn);
       });
@@ -645,7 +644,7 @@
         tripBtn.type = 'button';
         tripBtn.className = 'mobile-menu-trip-btn' + (isSelected ? ' expanded' : '');
         tripBtn.innerHTML =
-          `<span>${TRIP_TYPE_ICONS[trip.type] || '🧳'} ${escHtml(trip.name)}</span>` +
+          `<span>${escHtml(trip.name)}</span>` +
           `<span class="mobile-menu-chevron">›</span>`;
 
         const sublist = document.createElement('div');

@@ -844,7 +844,7 @@ export const CITY_INFO = {
   "Hong Kong":         { emoji: "🌃", color: "#D4860A", days: [3], photo: "https://images.unsplash.com/photo-1569833172924-2324c41f2ec3?q=80&w=600&auto=format&fit=crop" },
   "Java":              { emoji: "🌋", color: "#B45309", days: [4, 5], photo: "https://images.unsplash.com/photo-1662114480912-05a338d79da3?q=80&w=600&auto=format&fit=crop" },
   "Bali":              { emoji: "🌴", color: "#2C6E49", days: [6, 7, 8, 12], photo: "https://images.unsplash.com/photo-1559628233-100c798642d4?q=80&w=600&auto=format&fit=crop" },
-  "Komodo":            { emoji: "🐉", color: "#0E7490", days: [9, 10, 11], photo: "https://images.unsplash.com/photo-1700591698351-f8131b0f5d3c?q=80&w=600&auto=format&fit=crop" },
+  "Komodo":            { emoji: "🐉", color: "#0E7490", days: [9, 10, 11], photo: "https://images.unsplash.com/photo-1533339577339-9007cb316e9c?q=80&w=600&auto=format&fit=crop" },
   "Singapur":          { emoji: "🦁", color: "#9333EA", days: [13], photo: "https://images.unsplash.com/photo-1628866686613-6cf852bed925?q=80&w=600&auto=format&fit=crop" },
   "Tokio":             { emoji: "🗼", color: "#DC2626", days: [14], photo: "https://images.unsplash.com/photo-1762018824220-d4a9ebda2b28?q=80&w=600&auto=format&fit=crop" }
 };
@@ -898,7 +898,7 @@ export const FLIGHT_CITY_MAP = {
 // ── Boda México — destination metadata ──────────────────────────
 export const BODA_CITY_INFO = {
   "Cancún":                   { emoji: "🏖️", color: "#0E7490", days: [1], photo: "https://images.unsplash.com/photo-1457537227909-08f41319e53c?q=80&w=600&auto=format&fit=crop" },
-  "Tulum":                    { emoji: "🌴", color: "#C4793A", days: [2, 3, 4, 5], photo: "./assets/images/boda-hero.jpg" },
+  "Tulum":                    { emoji: "🌴", color: "#C4793A", days: [2, 3, 4, 5], photo: "https://images.unsplash.com/photo-1664205543898-829ef8baa7ad?q=80&w=600&auto=format&fit=crop" },
   "Tulum (Boda)":             { emoji: "💍", color: "#DB2777", days: [6, 7, 8, 9], photo: "https://images.unsplash.com/photo-1740880978174-db9dddf6c58c?q=80&w=600&auto=format&fit=crop" },
   "Monterrey / Cd. Victoria": { emoji: "👨‍👩‍👧", color: "#2C6E49", days: [10, 11, 12, 13, 14], photo: "https://images.unsplash.com/photo-1600466892203-d84aae0aa4c1?q=80&w=600&auto=format&fit=crop" },
   "Querétaro":                { emoji: "🏡", color: "#7B5EA7", days: [15], photo: "https://images.unsplash.com/photo-1636300958497-42e3df244288?q=80&w=600&auto=format&fit=crop" }
@@ -1943,8 +1943,8 @@ export const BODA_TRIP_DATA = [
     "date": "31 julio, viernes",
     "city": "Cancún → Tulum",
     "time": "",
-    "title": "Traslado terrestre Cancún → Tulum — NO RESERVADO TODAVÍA (opciones: ADO, transfer privado, auto de alquiler)",
-    "description": "Pendiente de investigar y reservar. Opciones típicas: autobús ADO, transfer privado, o auto de alquiler.",
+    "title": "Traslado terrestre Cancún → Tulum",
+    "description": "Tres opciones: (1) ADO bus directo — $12-22 USD/persona, ~2-2.5h, sale de la terminal ADO en el centro de Cancún; (2) Transfer privado — $75-150 USD/van completa, ~1.5-2h, recogida en hotel, opción recomendada por comodidad; (3) Colectivo (combi) — $7-10 USD/persona, ~2h, más aventurero. Reservar transfer con anticipación en temporada alta.",
     "mapsUrl": null,
     "pdfUrl": null,
     "type": "transporte",
@@ -2223,8 +2223,8 @@ export const BODA_TRIP_DATA = [
     "date": "10 agosto, lunes",
     "city": "Monterrey / Cd. Victoria",
     "time": "",
-    "title": "Traslado Monterrey → Ciudad Victoria — NO RESERVADO TODAVÍA",
-    "description": "Viaje redondo pendiente de reservar transporte.",
+    "title": "Traslado terrestre Monterrey ↔ Ciudad Victoria",
+    "description": "Autobús ETN o Diamante — $24-35 USD/persona/trayecto, ~4h de viaje. Terminal de autobuses en Monterrey: Central de Autobuses (Av. Colón). Comprar boletos con anticipación en ETN.com.mx o Clickbus. Viaje redondo durante la estancia en Monterrey/Cd. Victoria. NO RESERVADO TODAVÍA.",
     "mapsUrl": null,
     "pdfUrl": null,
     "type": "transporte",
@@ -2455,21 +2455,21 @@ export const BODA_FLIGHTS_DATA = [
       "city": "Tulum",
       "country": "Mexico"
     },
-    "departureDate": null,
+    "departureDate": "2026-07-31",
     "departureTime": null,
-    "arrivalDate": null,
+    "arrivalDate": "2026-07-31",
     "arrivalTime": null,
-    "duration": null,
+    "duration": "2-2.5h (ADO) / 1.5-2h (transfer privado)",
     "airline": null,
     "flightNumber": null,
-    "notes": "NO RESERVADO TODAVÍA. Tentativamente el 31 de julio (tras la noche en Cancún). Opciones a investigar: autobús ADO, transfer privado, o auto de alquiler.",
+    "notes": "Opciones: (1) ADO bus directo — $12-22 USD/persona, sale terminal ADO Cancún centro; (2) Transfer privado — $75-150 USD/van, recogida en hotel, RECOMENDADO; (3) Colectivo combi — $7-10 USD/persona. NO RESERVADO TODAVÍA.",
     "status": "pending",
     "pdfUrl": null
   },
   {
     "id": "boda-flight-6",
     "tripId": "boda-mexico",
-    "segment": "Monterrey ↔ Ciudad Victoria (ida y vuelta, transporte terrestre)",
+    "segment": "Monterrey ↔ Ciudad Victoria (autobús ETN / Diamante)",
     "type": "ground-transport",
     "from": {
       "code": null,
@@ -2487,10 +2487,10 @@ export const BODA_FLIGHTS_DATA = [
     "departureTime": null,
     "arrivalDate": null,
     "arrivalTime": null,
-    "duration": null,
-    "airline": null,
+    "duration": "~4h cada trayecto",
+    "airline": "ETN / Diamante",
     "flightNumber": null,
-    "notes": "NO RESERVADO TODAVÍA. Viaje redondo durante la visita a Monterrey/Ciudad Victoria (8-13 agosto). Pendiente de definir transporte.",
+    "notes": "Autobús ETN o Diamante — $24-35 USD/persona. Terminal Monterrey: Central de Autobuses (Av. Colón). Reservar en ETN.com.mx o Clickbus. Viaje redondo ida 10 agosto, regreso 13 agosto aprox. NO RESERVADO TODAVÍA.",
     "status": "pending",
     "pdfUrl": null
   }
