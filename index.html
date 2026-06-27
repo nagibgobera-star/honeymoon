@@ -190,7 +190,8 @@
     import firebaseConfig from './firebase-config.js';
     import {
       TYPE_LABELS, DESTINATIONS_BY_TRIP, ACCOM_CITY_MAP_BY_TRIP, TOUR_CITY_MAP_BY_TRIP, FLIGHT_CITY_MAP_BY_TRIP,
-      JAPAN_CATEGORIES, JAPAN_SUBCATEGORY_ORDER, TOKYO_DISTRICT_SUMMARIES, JAPAN_SUBCATEGORY_NOTES
+      JAPAN_CATEGORIES, JAPAN_SUBCATEGORY_ORDER, TOKYO_DISTRICT_SUMMARIES, JAPAN_SUBCATEGORY_NOTES,
+      BARCELONA_CATEGORIES, BARCELONA_SUBCATEGORY_ORDER
     } from './data.js';
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import {
@@ -357,6 +358,7 @@
     let currentDayNotesRaw = [];
     let currentHoneymoonBlog = {}; // keyed by day number
     let currentJapanItems = [];
+    let currentBarcelonaItems = [];
     let trips = [];
     let selectedTripId = 'honeymoon-indonesia';
     let currentOpenId = null;
@@ -371,9 +373,9 @@
     };
     const PRICE_TIERS = {
       todos: () => true,
-      eco:   (p) => p === '¥',
-      medio: (p) => p === '¥¥',
-      caro:  (p) => p === '¥¥¥'
+      eco:   (p) => p != null && [...p].length === 1,
+      medio: (p) => p != null && [...p].length === 2,
+      caro:  (p) => p != null && [...p].length === 3
     };
     let tokioSubView = 'resumen'; // "Tokio por Distrito" sub-tab: 'resumen' | 'mapa'
     let regionsSubView = 'lista'; // "Fuera de Tokio (Japón)" sub-tab: 'lista' | 'mapa'
@@ -403,6 +405,30 @@
       'Eventos Estacionales': 'https://images.unsplash.com/photo-1760445934203-8478d8927ce1?q=80&w=1600&auto=format&fit=crop'
     };
 
+    const BARCELONA_CATEGORY_PHOTOS = {
+      'Barcelona por Barrio': 'https://images.unsplash.com/photo-1579127499243-5a4e2d01b786?q=80&w=1600&auto=format&fit=crop',
+      'Actividades y Experiencias': 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1600&auto=format&fit=crop',
+      'Eventos': 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=1600&auto=format&fit=crop'
+    };
+
+    // Per-trip config for the categories view (categories list, subcategory order, price symbol, photos)
+    const CATEGORIES_CONFIG = {
+      japon: {
+        categories: JAPAN_CATEGORIES,
+        subcategoryOrder: JAPAN_SUBCATEGORY_ORDER,
+        priceSymbol: '¥',
+        categoryPhotos: JAPAN_CATEGORY_PHOTOS,
+        items: () => currentJapanItems
+      },
+      barcelona: {
+        categories: BARCELONA_CATEGORIES,
+        subcategoryOrder: BARCELONA_SUBCATEGORY_ORDER,
+        priceSymbol: '€',
+        categoryPhotos: BARCELONA_CATEGORY_PHOTOS,
+        items: () => currentBarcelonaItems
+      }
+    };
+
     function getActiveTabKey() {
       return document.querySelector('.day-nav-city.active')?.dataset.tabKey
         || document.querySelector('.mobile-menu-item-btn.active')?.dataset.tabKey
@@ -416,7 +442,8 @@
 
       if (isCategoriesTrip(selectedTripId)) {
         if (activeSubcatPhoto) return activeSubcatPhoto;
-        return JAPAN_CATEGORY_PHOTOS[activeKey] || trip.photoUrl || null;
+        const cfg = CATEGORIES_CONFIG[selectedTripId];
+        return (cfg?.categoryPhotos[activeKey]) || trip.photoUrl || null;
       }
 
       if (!activeKey || activeKey === 'overview') return trip.photoUrl || null;
@@ -540,7 +567,10 @@
     // get a per-destination tab breakdown. Anything else (empty, or
     // categories-mode before "trips" has loaded) gets a single Resumen tab.
     function tabKeysForTrip(tripId) {
-      if (isCategoriesTrip(tripId)) return [...JAPAN_CATEGORIES];
+      if (isCategoriesTrip(tripId)) {
+        const cfg = CATEGORIES_CONFIG[tripId];
+        return cfg ? [...cfg.categories] : [...JAPAN_CATEGORIES];
+      }
       const destinations = DESTINATIONS_BY_TRIP[tripId];
       return destinations ? ['overview', ...Object.keys(destinations)] : ['overview'];
     }
@@ -596,7 +626,7 @@
 
     // ── Trip switcher (desktop tab bar) ────────────────────────
     const TRIP_TYPE_ICONS = { honeymoon: '💍', wedding: '💒', ideas: '🎌' };
-    const TRIP_ORDER = { 'honeymoon-indonesia': 0, 'boda-mexico': 1, 'japon': 2 };
+    const TRIP_ORDER = { 'honeymoon-indonesia': 0, 'boda-mexico': 1, 'japon': 2, 'barcelona': 3 };
 
     function sortedTrips() {
       return [...trips].sort((a, b) => (TRIP_ORDER[a.id] ?? 99) - (TRIP_ORDER[b.id] ?? 99));
@@ -710,6 +740,7 @@
       }
 
       document.body.classList.toggle('trip-theme-japon', trip.id === 'japon');
+      document.body.classList.toggle('trip-theme-barcelona', trip.id === 'barcelona');
       updateViewHero(); // trip changed -> recompute which photo the single header image should show
     }
 
@@ -780,6 +811,11 @@
       renderAll();
     }, (error) => console.error('Firestore error (japanItems):', error));
 
+    onSnapshot(collection(db, 'barcelonaItems'), (snapshot) => {
+      currentBarcelonaItems = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll();
+    }, (error) => console.error('Firestore error (barcelonaItems):', error));
+
     // ── City helper ─────────────────────────────────────────
     function getCityForDay(day, destinations) {
       for (const [name, info] of Object.entries(destinations)) {
@@ -842,26 +878,29 @@
       });
     }
 
-    // ── Categories view (viewMode "categories", e.g. Japón) ──
+    // ── Categories view (viewMode "categories", e.g. Japón / Barcelona) ──
     function renderCategoriesView() {
-      const items = currentJapanItems.filter(i => i.tripId === selectedTripId);
+      const cfg = CATEGORIES_CONFIG[selectedTripId];
+      if (!cfg) return;
+      const items = cfg.items().filter(i => i.tripId === selectedTripId);
       // Subcat blocks always rebuild closed below, so any subcategory-level
       // photo override from before this rebuild is stale — fall back to
       // the category photo and let a fresh click re-apply it if needed.
       activeSubcatPhoto = null;
-      JAPAN_CATEGORIES.forEach(category => {
+      cfg.categories.forEach(category => {
         const panel = document.getElementById('tabPanel-' + tabSlug(category));
         if (!panel) return;
         panel.innerHTML = '';
 
-        if (category === 'Tokio por Distrito') {
-          panel.appendChild(renderDistrictSubTabs());
-          panel.appendChild(tokioSubView === 'mapa' ? renderDistrictMap(panel) : renderDistrictSummaries());
-        }
-
-        if (category === 'Fuera de Tokio (Japón)') {
-          panel.appendChild(renderRegionsSubTabs());
-          if (regionsSubView === 'mapa') panel.appendChild(renderJapanMap(panel));
+        if (selectedTripId === 'japon') {
+          if (category === 'Tokio por Distrito') {
+            panel.appendChild(renderDistrictSubTabs());
+            panel.appendChild(tokioSubView === 'mapa' ? renderDistrictMap(panel) : renderDistrictSummaries());
+          }
+          if (category === 'Fuera de Tokio (Japón)') {
+            panel.appendChild(renderRegionsSubTabs());
+            if (regionsSubView === 'mapa') panel.appendChild(renderJapanMap(panel));
+          }
         }
 
         const allCatItems = items.filter(i => i.category === category);
@@ -870,7 +909,7 @@
           return;
         }
 
-        panel.appendChild(renderFilterBar(category));
+        panel.appendChild(renderFilterBar(category, cfg.priceSymbol));
 
         const filterState = filterStateByCategory[category] || { rating: 'todos', price: 'todos' };
         const catItems = allCatItems.filter(i =>
@@ -896,7 +935,7 @@
           panel.appendChild(wrap);
         }
 
-        const order = JAPAN_SUBCATEGORY_ORDER[category];
+        const order = cfg.subcategoryOrder[category];
         const subcatKeys = Object.keys(bySubcat).sort((a, b) => {
           if (!order) return a.localeCompare(b);
           const ia = order.indexOf(a), ib = order.indexOf(b);
@@ -919,8 +958,9 @@
       });
     }
 
-    function renderFilterBar(category) {
+    function renderFilterBar(category, priceSymbol = '¥') {
       const state = filterStateByCategory[category] ||= { rating: 'todos', price: 'todos' };
+      const p1 = priceSymbol, p2 = priceSymbol.repeat(2), p3 = priceSymbol.repeat(3);
       const bar = document.createElement('div');
       bar.className = 'japan-filter-bar';
 
@@ -952,7 +992,7 @@
       ], state.rating, (key) => { state.rating = key; }));
 
       bar.appendChild(chipGroup('💰', [
-        ['todos', 'Todos'], ['eco', '¥ Económico'], ['medio', '¥¥ Medio'], ['caro', '¥¥¥ Caro']
+        ['todos', 'Todos'], ['eco', `${p1} Económico`], ['medio', `${p2} Medio`], ['caro', `${p3} Caro`]
       ], state.price, (key) => { state.price = key; }));
 
       return bar;
@@ -1276,15 +1316,17 @@
       toggleBtn.innerHTML = item.done ? '↩' : '✓ Visto';
       toggleBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        toggleJapanItemDone(item.id);
+        toggleCategoryItemDone(item.id, item.tripId);
       });
       metaEl.appendChild(toggleBtn);
 
       return card;
     }
 
-    async function toggleJapanItemDone(id) {
-      const item = currentJapanItems.find(i => i.id === id);
+    async function toggleCategoryItemDone(id, tripId) {
+      const collectionName = tripId === 'barcelona' ? 'barcelonaItems' : 'japanItems';
+      const allItems = tripId === 'barcelona' ? currentBarcelonaItems : currentJapanItems;
+      const item = allItems.find(i => i.id === id);
       if (!item) return;
       const newDone = !item.done;
       item.done = newDone;
@@ -1300,9 +1342,9 @@
       }
 
       try {
-        await updateDoc(doc(db, 'japanItems', id), { done: newDone });
+        await updateDoc(doc(db, collectionName, id), { done: newDone });
       } catch (err) {
-        console.error('Error updating japanItem done state:', err);
+        console.error(`Error updating ${collectionName} done state:`, err);
         item.done = !newDone;
         if (cardEl) cardEl.classList.toggle('is-done', !newDone);
       }

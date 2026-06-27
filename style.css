@@ -27,6 +27,11 @@
   --sage-light:   #EAEDE6;
   --sage-dark:    #6B7A60;
 
+  /* Marina — maritime blue, swapped in for Barcelona via body.trip-theme-barcelona */
+  --marina:       #3A7DA8;
+  --marina-light: #D6EAF5;
+  --marina-dark:  #2A5F82;
+
   /* Status colors, recolored to fit the palette (used by .status-pill) */
   --status-confirmed:      #6B7A60;
   --status-confirmed-bg:   #EAEDE6;
@@ -93,6 +98,12 @@ body.trip-theme-japon {
   --accent:       var(--sage);
   --accent-light: var(--sage-light);
   --accent-dark:  var(--sage-dark);
+}
+
+body.trip-theme-barcelona {
+  --accent:       var(--marina);
+  --accent-light: var(--marina-light);
+  --accent-dark:  var(--marina-dark);
 }
 
 /* ── Reset ────────────────────────────────────────────────── */

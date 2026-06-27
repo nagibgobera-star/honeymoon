@@ -60,6 +60,14 @@ service cloud.firestore {
       allow delete: if request.auth != null;
     }
 
+    match /barcelonaItems/{itemId} {
+      allow read: if true;
+      allow create: if request.auth != null && isValidCategoryItem(request.resource.data);
+      allow update: if (request.auth != null && isValidCategoryItem(request.resource.data))
+                    || isOnlyToggleDone();
+      allow delete: if request.auth != null;
+    }
+
     match /honeymoonBlog/{day} {
       allow read: if true;
       allow create, update: if request.auth != null && isValidHoneymoonBlog(request.resource.data);
@@ -152,6 +160,23 @@ service cloud.firestore {
              (data.priority == null || data.priority is int) &&
              (data.emoji == null || (data.emoji is string && data.emoji.size() <= 10)) &&
              (data.priceTier == null || data.priceTier in ['¥', '¥¥', '¥¥¥']);
+    }
+
+    function isValidCategoryItem(data) {
+      return data.category is string && data.category.size() <= 100 &&
+             (data.subcategory == null || data.subcategory is string) &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 300 &&
+             data.description is string && data.description.size() <= 5000 &&
+             data.done is bool &&
+             (data.location == null || data.location is string) &&
+             (data.mapsUrl == null || (data.mapsUrl is string && data.mapsUrl.size() <= 500)) &&
+             (data.tiktokUrl == null || (data.tiktokUrl is string && data.tiktokUrl.size() <= 500)) &&
+             (data.pdfUrl == null || (data.pdfUrl is string && data.pdfUrl.size() <= 500)) &&
+             (data.source == null || data.source is string) &&
+             (data.rating == null || (data.rating is int && data.rating >= 1 && data.rating <= 5)) &&
+             (data.priority == null || (data.priority is string && data.priority.size() <= 20)) &&
+             (data.emoji == null || (data.emoji is string && data.emoji.size() <= 10)) &&
+             (data.priceTier == null || data.priceTier.size() <= 6);
     }
 
     // "Día en fotos" — admin writes the 4 prompts and the photo list as
