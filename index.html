@@ -105,22 +105,27 @@
   </div>
 
   <!-- ── PDF viewer overlay ──────────────────────────────────
-       Renders fetched PDFs inline via an iframe instead of a new
-       browser tab — modern Chrome blocks navigating a separate
-       tab/window to a blob: URL created in another context, so a
-       same-document iframe is the reliable way to show a fetched
-       PDF (and it works the same whether served fresh or from the
-       service worker's offline cache). -->
+       Desktop (≥640px): iframe inline viewer + download button.
+       Mobile (<640px): direct-link buttons so iOS Safari can handle
+       the PDF natively — iframes don't render PDFs on iOS. -->
   <div class="modal-overlay" id="pdfViewerOverlay" role="dialog" aria-modal="true" aria-label="Documento PDF">
     <div class="modal-card pdf-viewer-card">
       <div class="modal-header">
         <div class="modal-title-area">
           <h2 class="modal-title">📄 Documento</h2>
         </div>
+        <a class="pdf-header-download" id="pdfHeaderDownload" href="#" download rel="noopener noreferrer">⬇️ Descargar</a>
         <button class="modal-close-btn" id="pdfViewerClose" aria-label="Cerrar">✕</button>
       </div>
+      <!-- Desktop only: iframe viewer -->
       <div class="pdf-viewer-body">
         <iframe id="pdfViewerFrame" title="Documento PDF"></iframe>
+      </div>
+      <!-- Mobile only: direct action buttons (iOS Safari renders PDFs natively) -->
+      <div class="pdf-mobile-actions">
+        <p class="pdf-mobile-hint">iOS Safari no puede mostrar PDFs en ventanas embebidas. Ábrelo en una nueva pestaña para verlo completo.</p>
+        <a class="btn pdf-btn-open" id="pdfMobileView" href="#" target="_blank" rel="noopener noreferrer">📄 Ver documento completo</a>
+        <a class="btn pdf-btn-download" id="pdfMobileDownload" href="#" download rel="noopener noreferrer">⬇️ Descargar</a>
       </div>
     </div>
   </div>
@@ -259,16 +264,30 @@
 
     async function openPdf(url) {
       const pdfOverlay = document.getElementById('pdfViewerOverlay');
-      const pdfFrame = document.getElementById('pdfViewerFrame');
-      try {
-        const resp = await cachePdf(url);
-        const blob = await resp.blob();
-        if (activePdfBlobUrl) URL.revokeObjectURL(activePdfBlobUrl);
-        activePdfBlobUrl = URL.createObjectURL(blob);
-        pdfFrame.src = activePdfBlobUrl;
+
+      if (window.innerWidth < 640) {
+        // Mobile: set direct links and show the button overlay immediately.
+        // Fire-and-forget cache warming so repeated opens are fast offline.
+        document.getElementById('pdfMobileView').href = url;
+        document.getElementById('pdfMobileDownload').href = url;
+        document.getElementById('pdfHeaderDownload').href = url;
         pdfOverlay.classList.add('open');
-      } catch (err) {
-        alert('No se pudo abrir el documento. Si no tienes conexión, ábrelo primero con internet para guardarlo sin conexión.');
+        cachePdf(url).catch(() => {});
+      } else {
+        // Desktop: fetch → blob → iframe (same-document blob prevents new-tab
+        // cross-origin restrictions; blob URL also populates the download link).
+        const pdfFrame = document.getElementById('pdfViewerFrame');
+        try {
+          const resp = await cachePdf(url);
+          const blob = await resp.blob();
+          if (activePdfBlobUrl) URL.revokeObjectURL(activePdfBlobUrl);
+          activePdfBlobUrl = URL.createObjectURL(blob);
+          pdfFrame.src = activePdfBlobUrl;
+          document.getElementById('pdfHeaderDownload').href = activePdfBlobUrl;
+          pdfOverlay.classList.add('open');
+        } catch (err) {
+          alert('No se pudo abrir el documento. Si no tienes conexión, ábrelo primero con internet para guardarlo sin conexión.');
+        }
       }
     }
 
@@ -346,6 +365,8 @@
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a[href*="firebasestorage.googleapis.com"]');
       if (!link) return;
+      // Let the mobile action buttons inside the overlay work natively.
+      if (link.closest('#pdfViewerOverlay')) return;
       e.preventDefault();
       openPdf(link.href);
     });

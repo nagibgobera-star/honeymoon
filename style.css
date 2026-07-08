@@ -1940,6 +1940,100 @@ body {
   display: block;
 }
 
+/* Desktop download button in the PDF modal header */
+.pdf-header-download {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-4);
+  height: 44px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--ink-mid);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.pdf-header-download:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--white);
+}
+
+/* Mobile action buttons section (hidden on desktop) */
+.pdf-mobile-actions {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  align-items: stretch;
+}
+
+.pdf-mobile-hint {
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.pdf-btn-open,
+.pdf-btn-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  font-weight: 700;
+  text-decoration: none;
+  min-height: 56px;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+}
+.pdf-btn-open:active,
+.pdf-btn-download:active { opacity: 0.75; }
+
+.pdf-btn-open {
+  background: var(--accent);
+  color: var(--white);
+}
+.pdf-btn-download {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  color: var(--ink-mid);
+}
+
+/* ── Mobile: show action buttons, hide iframe ── */
+@media (max-width: 639px) {
+  .pdf-viewer-card {
+    height: auto;
+    max-height: 85vh;
+  }
+  .pdf-viewer-body {
+    display: none;
+  }
+  .pdf-mobile-actions {
+    display: flex;
+  }
+  /* Hide desktop download button (mobile has its own) */
+  .pdf-header-download {
+    display: none;
+  }
+}
+
+/* ── Desktop: hide mobile actions ── */
+@media (min-width: 640px) {
+  .pdf-mobile-actions {
+    display: none;
+  }
+}
+
 /* ── Mobile hierarchical menu (hamburger) ────────────────────── */
 .mobile-menu-overlay {
   position: fixed;
