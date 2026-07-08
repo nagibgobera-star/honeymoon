@@ -2482,3 +2482,64 @@ body {
     font-size: var(--text-xl);
   }
 }
+
+/* ── Day scrubber (mobile only) ─────────────────────────────── */
+.day-scrubber {
+  display: none; /* hidden on desktop; .visible + media query shows it on mobile */
+}
+
+@media (max-width: 639px) {
+  /* Push page content up so the scrubber doesn't overlap the last day */
+  body {
+    padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .day-scrubber {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(44px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 190;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-1);
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+  .day-scrubber::-webkit-scrollbar { display: none; }
+
+  .day-scrubber.visible {
+    display: flex;
+  }
+
+  .day-scrubber-btn {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--ink-mid);
+    font-size: 12px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .day-scrubber-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--white);
+  }
+}

@@ -135,6 +135,12 @@
        district/region was tapped) so it's always fully visible no
        matter where on the map — or how far down the page — the user
        tapped. -->
+  <!-- ── Day scrubber (mobile only) ──────────────────────────
+       Fixed bottom bar showing day numbers for the active city tab.
+       Tapping a number scrolls to that day section; IntersectionObserver
+       keeps the active dot in sync with the scroll position. -->
+  <div class="day-scrubber" id="dayScrubber" aria-label="Saltar a día"></div>
+
   <div class="map-sheet-backdrop" id="mapSheetBackdrop"></div>
   <div class="map-sheet" id="mapSheet" role="dialog" aria-modal="true" aria-label="Información del mapa">
     <div class="map-sheet-handle"></div>
@@ -643,11 +649,67 @@
       activeSubcatPhoto = null; // leaving whatever subcategory was expanded
       updateViewHero();
       window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+      // Defer scrubber update so the panel content is in the DOM first.
+      setTimeout(() => updateDayScrubber(key), 0);
+    }
+
+    // ── Day scrubber ─────────────────────────────────────────────
+    let _scrubberObserver = null;
+
+    function updateDayScrubber(tabKey) {
+      const scrubber = document.getElementById('dayScrubber');
+      if (!scrubber) return;
+
+      if (_scrubberObserver) { _scrubberObserver.disconnect(); _scrubberObserver = null; }
+
+      const destinations = DESTINATIONS_BY_TRIP[selectedTripId] || {};
+      const cityInfo = destinations[tabKey];
+
+      if (!cityInfo || isCategoriesTrip(selectedTripId) || !cityInfo.days || cityInfo.days.length <= 1) {
+        scrubber.classList.remove('visible');
+        return;
+      }
+
+      scrubber.innerHTML = cityInfo.days.map(d =>
+        `<button class="day-scrubber-btn" data-day="${d}" aria-label="Día ${d}">${d}</button>`
+      ).join('');
+
+      scrubber.classList.add('visible');
+
+      scrubber.querySelectorAll('.day-scrubber-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sec = document.getElementById('day-' + btn.dataset.day);
+          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      const panel = document.getElementById('tabPanel-' + tabSlug(tabKey));
+      if (!panel) return;
+
+      // Mark the first day active immediately, then track scroll.
+      const firstBtn = scrubber.querySelector('.day-scrubber-btn');
+      if (firstBtn) firstBtn.classList.add('active');
+
+      _scrubberObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const day = entry.target.dataset.day;
+            scrubber.querySelectorAll('.day-scrubber-btn').forEach(b =>
+              b.classList.toggle('active', b.dataset.day === day)
+            );
+            // Scroll the active button into view inside the scrubber strip.
+            scrubber.querySelector(`.day-scrubber-btn[data-day="${day}"]`)
+              ?.scrollIntoView({ block: 'nearest', inline: 'center' });
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -50% 0px' });
+
+      panel.querySelectorAll('.day-section[data-day]').forEach(s => _scrubberObserver.observe(s));
     }
 
     // ── Trip switcher (desktop tab bar) ────────────────────────
     const TRIP_TYPE_ICONS = { honeymoon: '💍', wedding: '💒', ideas: '🎌' };
-    const TRIP_ORDER = { 'honeymoon-indonesia': 0, 'boda-mexico': 1, 'japon': 2, 'barcelona': 3 };
+    const TRIP_ORDER = { 'boda-mexico': 0, 'honeymoon-indonesia': 1, 'japon': 2, 'barcelona': 3 };
 
     function sortedTrips() {
       return [...trips].sort((a, b) => (TRIP_ORDER[a.id] ?? 99) - (TRIP_ORDER[b.id] ?? 99));
@@ -1552,6 +1614,16 @@
       return wrap;
     }
 
+    // Infers a more specific label for transport activities based on title
+    // keywords so the type badge shows ✈️/🚗/🚢 rather than "Transporte".
+    function transportLabel(title) {
+      const t = (title || '').toLowerCase();
+      if (/vuelo|flight|boarding|\b[a-z]{2}\d{3,5}\b/.test(t)) return '✈️ Vuelo';
+      if (/ferry|barco|liveaboard/.test(t))                     return '🚢 Ferry';
+      if (/traslado|transfer|shuttle|taxi|pickup|terrestre|regreso|tren\b|bus\b|train\b/.test(t)) return '🚗 Traslado';
+      return TYPE_LABELS.transporte;
+    }
+
     // Returns the PDF from the related accommodation / tour / flight for
     // an activity that doesn't have its own pdfUrl. Matches by name
     // similarity rather than city alone — a missing link is better than
@@ -1682,7 +1754,7 @@
           `<div class="card-body">` +
             `<div class="card-title">${escHtml(act.title)}</div>` +
             `<div class="card-meta">` +
-              `<span class="type-badge badge-${act.type}">${TYPE_LABELS[act.type] || act.type}</span>` +
+              `<span class="type-badge badge-${act.type}">${act.type === 'transporte' ? transportLabel(act.title) : (TYPE_LABELS[act.type] || act.type)}</span>` +
               (act.isSuggestion ? `<span class="suggestion-badge">💡 Sugerencia</span>` : '') +
             `</div>` +
           `</div>` +
@@ -1724,7 +1796,7 @@
       currentOpenId = id;
 
       document.getElementById('modalTypeBadge').innerHTML =
-        `<span class="type-badge badge-${act.type}">${TYPE_LABELS[act.type] || act.type}</span>` +
+        `<span class="type-badge badge-${act.type}">${act.type === 'transporte' ? transportLabel(act.title) : (TYPE_LABELS[act.type] || act.type)}</span>` +
         (act.isSuggestion ? `<span class="suggestion-badge">💡 Sugerencia</span>` : '');
       document.getElementById('modalTitle').textContent = act.title;
 
