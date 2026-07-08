@@ -22,7 +22,7 @@
 //  would be fragile and redundant.
 // =============================================================
 
-const STATIC_CACHE = 'mi-viaje-static-v1';
+const STATIC_CACHE = 'mi-viaje-static-v2';
 const PDF_CACHE = 'mi-viaje-pdfs-v1';
 const IMAGE_CACHE = 'mi-viaje-images-v1';
 
