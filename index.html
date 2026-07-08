@@ -1405,11 +1405,11 @@
         const info = destinations[destName];
         const rows = [
           ...flights.filter(f => flightDestMap[f.id] === destName)
-            .map(f => ({ icon: '✈️', name: `${f.from?.city || ''} → ${f.to?.city || ''}`, status: f.status, statusNote: f.statusNote })),
+            .map(f => ({ icon: '✈️', name: `${f.from?.city || ''} → ${f.to?.city || ''}`, status: f.status, statusNote: f.statusNote, pdfUrl: f.pdfUrl || null })),
           ...accommodations.filter(a => accomDestMap[a.id] === destName)
-            .map(a => ({ icon: '🏨', name: a.name, status: a.status, statusNote: a.statusNote })),
+            .map(a => ({ icon: '🏨', name: a.name, status: a.status, statusNote: a.statusNote, pdfUrl: a.pdfUrl || null })),
           ...tours.filter(t => tourDestMap[t.id] === destName)
-            .map(t => ({ icon: '🗺️', name: t.name, status: t.status, statusNote: t.statusNote }))
+            .map(t => ({ icon: '🗺️', name: t.name, status: t.status, statusNote: t.statusNote, pdfUrl: t.pdfUrl || null }))
         ];
         if (!rows.length) return '';
 
@@ -1421,7 +1421,10 @@
                 `<div class="status-summary-row">` +
                   `<div class="status-summary-row-main">` +
                     `<span class="status-summary-name">${r.icon} ${escHtml(r.name)}</span>` +
-                    `<span class="status-pill ${statusPillClass(r.status)}">${escHtml(statusLabel(r.status))}</span>` +
+                    `<div class="status-summary-row-right">` +
+                      (r.pdfUrl ? `<a class="status-summary-pdf" href="${escHtml(r.pdfUrl)}">📎</a>` : '') +
+                      `<span class="status-pill ${statusPillClass(r.status)}">${escHtml(statusLabel(r.status))}</span>` +
+                    `</div>` +
                   `</div>` +
                   (r.statusNote ? `<div class="status-summary-note">${escHtml(r.statusNote)}</div>` : '') +
                 `</div>`
@@ -1549,6 +1552,37 @@
       return wrap;
     }
 
+    // Returns the PDF from the related accommodation / tour / flight for
+    // an activity that doesn't have its own pdfUrl, so the user can open
+    // a booking confirmation directly from the timeline row.
+    function findContextPdf(act) {
+      const destinations = DESTINATIONS_BY_TRIP[selectedTripId] || {};
+      const cityEntry = Object.entries(destinations).find(([, info]) => info.days.includes(act.day));
+      const cityName = cityEntry?.[0];
+      if (!cityName) return null;
+
+      const accomMap = ACCOM_CITY_MAP_BY_TRIP[selectedTripId] || {};
+      const tourMap  = TOUR_CITY_MAP_BY_TRIP[selectedTripId]  || {};
+      const flightMap = FLIGHT_CITY_MAP_BY_TRIP[selectedTripId] || {};
+
+      if (act.type === 'hotel') {
+        const ids = Object.entries(accomMap).filter(([, c]) => c === cityName).map(([id]) => id);
+        const match = currentAccommodations.find(a => ids.includes(a.id) && a.pdfUrl);
+        if (match) return { pdfUrl: match.pdfUrl, label: 'Ver confirmación' };
+      }
+      if (act.type === 'tour') {
+        const ids = Object.entries(tourMap).filter(([, c]) => c === cityName).map(([id]) => id);
+        const match = currentTours.find(t => ids.includes(t.id) && t.pdfUrl);
+        if (match) return { pdfUrl: match.pdfUrl, label: 'Ver confirmación' };
+      }
+      if (act.type === 'transporte') {
+        const ids = Object.entries(flightMap).filter(([, c]) => c === cityName).map(([id]) => id);
+        const match = currentFlights.find(f => ids.includes(f.id) && f.pdfUrl);
+        if (match) return { pdfUrl: match.pdfUrl, label: 'Ver boleto' };
+      }
+      return null;
+    }
+
     // ── Render a single activity card ────────────────────────
     function renderCard(act) {
       const card = document.createElement('div');
@@ -1580,6 +1614,24 @@
           `</div>` +
           `<div class="card-icons">${mapsIcon}${pdfIcon}${contactIcon}${doneIcon}<span class="card-arrow">›</span></div>` +
         `</div>`;
+
+      // Inline context-PDF chip: only shown when the activity has no direct
+      // pdfUrl of its own and a related booking document can be inferred.
+      if (!act.pdfUrl) {
+        const ctx = findContextPdf(act);
+        if (ctx) {
+          const chip = document.createElement('a');
+          chip.className = 'card-pdf-chip';
+          chip.href = ctx.pdfUrl;
+          chip.textContent = `📎 ${ctx.label}`;
+          chip.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            openPdf(ctx.pdfUrl);
+          });
+          card.querySelector('.card-body').appendChild(chip);
+        }
+      }
 
       card.addEventListener('click', () => openModal(act.id));
       card.addEventListener('keydown', (e) => {
