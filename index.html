@@ -1553,33 +1553,107 @@
     }
 
     // Returns the PDF from the related accommodation / tour / flight for
-    // an activity that doesn't have its own pdfUrl, so the user can open
-    // a booking confirmation directly from the timeline row.
+    // an activity that doesn't have its own pdfUrl. Matches by name
+    // similarity rather than city alone — a missing link is better than
+    // a wrong one, so we only return when exactly ONE candidate matches.
     function findContextPdf(act) {
+      // Generic travel/hospitality words that are too common to use as
+      // discriminators. Proper nouns (hotel names, operator names) are kept.
+      const GENERIC = new Set([
+        'arrive','arrival','arrived','check','checkin','checkout',
+        'hotel','resort','villa','stay','night','sleep','guesthouse',
+        'hostel','lodge','cottage','retreat','boutique',
+        'private','guide','local','official',
+        'from','into','take','ride','drive','driver',
+        'head','board','depart','departure',
+        'transfer','shuttle','transport','pickup','dropoff',
+        'tour','trip','visit','excursion',
+        'your','back','time','will','have','this','with','that',
+        'they','make','were','been','what','each','some',
+        'just','also','more','than','then','when','most',
+        'over','well','good','look','boat','show','give',
+        'same','such','even','long','find','need','down',
+        'home','know','tell','very','much','only','like',
+        'them','come','next','book','bags','pack','walk',
+        'road','meet','port','city','town','area','park',
+        'near','east','west','north','south',
+        'java','bali','asia','indo','indonesia',
+      ]);
+
+      // Splits a string into lowercase tokens ≥4 chars, excluding generic words.
+      function tokens(str) {
+        return (str || '').toLowerCase()
+          .split(/[\s\-–—\/()&+,.:;!?'"]+/)
+          .filter(w => w.length >= 4 && !GENERIC.has(w));
+      }
+
+      // Returns true if any token from `toks` appears as a substring in `text`.
+      function anyIn(toks, text) {
+        const lower = (text || '').toLowerCase();
+        return toks.some(t => lower.includes(t));
+      }
+
+      // Bidirectional: title tokens appear in candidate text, OR candidate
+      // tokens appear in activity title. Requires at least one title token
+      // after filtering (otherwise any empty-title activity would match all).
+      function nameMatches(actTitle, candidateText) {
+        const aToks = tokens(actTitle);
+        const cToks = tokens(candidateText);
+        if (!aToks.length) return false;
+        return anyIn(aToks, candidateText) || anyIn(cToks, actTitle);
+      }
+
       const destinations = DESTINATIONS_BY_TRIP[selectedTripId] || {};
       const cityEntry = Object.entries(destinations).find(([, info]) => info.days.includes(act.day));
       const cityName = cityEntry?.[0];
-      if (!cityName) return null;
 
-      const accomMap = ACCOM_CITY_MAP_BY_TRIP[selectedTripId] || {};
-      const tourMap  = TOUR_CITY_MAP_BY_TRIP[selectedTripId]  || {};
+      const accomMap  = ACCOM_CITY_MAP_BY_TRIP[selectedTripId]  || {};
+      const tourMap   = TOUR_CITY_MAP_BY_TRIP[selectedTripId]   || {};
       const flightMap = FLIGHT_CITY_MAP_BY_TRIP[selectedTripId] || {};
 
       if (act.type === 'hotel') {
-        const ids = Object.entries(accomMap).filter(([, c]) => c === cityName).map(([id]) => id);
-        const match = currentAccommodations.find(a => ids.includes(a.id) && a.pdfUrl);
-        if (match) return { pdfUrl: match.pdfUrl, label: 'Ver confirmación' };
+        const cityIds = cityName
+          ? new Set(Object.entries(accomMap).filter(([, c]) => c === cityName).map(([id]) => id))
+          : null;
+        const pool = currentAccommodations.filter(a =>
+          a.pdfUrl && a.tripId === selectedTripId && (!cityIds || cityIds.has(a.id))
+        );
+        const hits = pool.filter(a => nameMatches(act.title, a.name));
+        if (hits.length === 1) return { pdfUrl: hits[0].pdfUrl, label: 'Ver confirmación' };
       }
+
       if (act.type === 'tour') {
-        const ids = Object.entries(tourMap).filter(([, c]) => c === cityName).map(([id]) => id);
-        const match = currentTours.find(t => ids.includes(t.id) && t.pdfUrl);
-        if (match) return { pdfUrl: match.pdfUrl, label: 'Ver confirmación' };
+        const cityIds = cityName
+          ? new Set(Object.entries(tourMap).filter(([, c]) => c === cityName).map(([id]) => id))
+          : null;
+        const pool = currentTours.filter(t =>
+          t.pdfUrl && t.tripId === selectedTripId && (!cityIds || cityIds.has(t.id))
+        );
+        // Match against both tour name and operator name (e.g. "East Java Paradise")
+        const hits = pool.filter(t =>
+          nameMatches(act.title, t.name) || (t.operator && nameMatches(act.title, t.operator))
+        );
+        if (hits.length === 1) return { pdfUrl: hits[0].pdfUrl, label: 'Ver confirmación' };
       }
+
       if (act.type === 'transporte') {
-        const ids = Object.entries(flightMap).filter(([, c]) => c === cityName).map(([id]) => id);
-        const match = currentFlights.find(f => ids.includes(f.id) && f.pdfUrl);
-        if (match) return { pdfUrl: match.pdfUrl, label: 'Ver boleto' };
+        const cityIds = cityName
+          ? new Set(Object.entries(flightMap).filter(([, c]) => c === cityName).map(([id]) => id))
+          : null;
+        const pool = currentFlights.filter(f =>
+          f.pdfUrl && f.tripId === selectedTripId && (!cityIds || cityIds.has(f.id))
+        );
+        // Match on route cities, IATA codes, airline name, or flight number
+        const hits = pool.filter(f => {
+          const searchable = [
+            f.from?.city, f.to?.city, f.from?.code, f.to?.code,
+            f.airline, f.flightNumber,
+          ].filter(Boolean).join(' ');
+          return nameMatches(act.title, searchable);
+        });
+        if (hits.length === 1) return { pdfUrl: hits[0].pdfUrl, label: 'Ver boleto' };
       }
+
       return null;
     }
 
