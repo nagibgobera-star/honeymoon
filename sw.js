@@ -22,7 +22,7 @@
 //  would be fragile and redundant.
 // =============================================================
 
-const STATIC_CACHE = 'mi-viaje-static-v3';
+const STATIC_CACHE = 'mi-viaje-static-v4';
 const PDF_CACHE = 'mi-viaje-pdfs-v1';
 const IMAGE_CACHE = 'mi-viaje-images-v1';
 
@@ -37,6 +37,9 @@ const PRECACHE_URLS = [
   './icons/icon-512.png',
   './assets/images/honeymoon-hero.jpg',
   './assets/images/boda-hero.jpg',
+  './assets/images/landing-hero.jpg',
+  './assets/images/landing-secondary-1.jpg',
+  './assets/images/landing-secondary-2.jpg',
   'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js',
   'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js'
 ];

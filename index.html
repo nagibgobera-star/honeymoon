@@ -17,7 +17,32 @@
   <meta name="apple-mobile-web-app-title" content="Mi Viaje" />
   <meta name="mobile-web-app-capable" content="yes" />
 </head>
-<body>
+<body class="on-landing">
+
+  <!-- ── Landing page — default entry view ────────────────────
+       Full-screen hero + secondary photos. Hidden once user
+       navigates to a trip; home icon returns to it. -->
+  <div id="landingPage" class="landing-page">
+    <button class="landing-menu-trigger" id="landingMenuTrigger" aria-label="Abrir menú">☰</button>
+
+    <div class="landing-hero">
+      <img src="./assets/images/landing-hero.jpg" alt="Nagib y Mariana" class="landing-hero-img" />
+      <div class="landing-hero-overlay"></div>
+      <div class="landing-hero-text">
+        <div class="landing-label">NAGIB &amp; MARIANA</div>
+        <h1 class="landing-title">Our Life Together</h1>
+        <div class="landing-divider"></div>
+        <p class="landing-quote">"Where you go, I will go; where you stay, I will stay."</p>
+        <p class="landing-verse">— Ruth 1:16</p>
+        <button class="landing-enter-btn" id="landingEnterBtn">Nuestros Viajes &rsaquo;</button>
+      </div>
+    </div>
+
+    <div class="landing-secondary">
+      <img src="./assets/images/landing-secondary-1.jpg" alt="" class="landing-secondary-img" />
+      <img src="./assets/images/landing-secondary-2.jpg" alt="" class="landing-secondary-img" />
+    </div>
+  </div>
 
   <!-- ── Sticky top stack: banner + header + nav, as ONE sticky
        unit so they don't fight each other for position:sticky top:0 ── -->
@@ -33,6 +58,7 @@
          The trip hero photo below carries the visual weight instead. -->
     <header class="app-header">
       <div class="header-main-row">
+        <button class="header-home-btn" id="headerHomeBtn" aria-label="Volver al inicio">⌂</button>
         <div class="header-text-col">
           <h1 class="header-title" id="headerTitle">Honeymoon <em>Indonesia</em></h1>
         </div>
@@ -781,6 +807,7 @@
     }
 
     function selectTrip(tripId) {
+      hideLanding();
       if (tripId === selectedTripId) return;
       selectedTripId = tripId;
       document.querySelectorAll('.trip-switcher-btn').forEach(b =>
@@ -822,6 +849,7 @@
           itemBtn.dataset.tabKey = key;
           itemBtn.textContent = labelForTabKey(trip.id, key);
           itemBtn.addEventListener('click', () => {
+            hideLanding();
             if (trip.id !== selectedTripId) selectTrip(trip.id);
             setActiveTab(key);
             closeMobileMenu();
@@ -862,6 +890,29 @@
     document.getElementById('mobileMenuOverlay').addEventListener('click', (e) => {
       if (e.target.id === 'mobileMenuOverlay') closeMobileMenu();
     });
+
+    // ── Landing page ─────────────────────────────────────────
+    let showingLanding = true;
+
+    function showLanding() {
+      showingLanding = true;
+      document.body.classList.add('on-landing');
+      window.scrollTo(0, 0);
+    }
+
+    function hideLanding() {
+      if (!showingLanding) return;
+      showingLanding = false;
+      document.body.classList.remove('on-landing');
+    }
+
+    document.getElementById('landingEnterBtn').addEventListener('click', () => {
+      hideLanding();
+    });
+
+    document.getElementById('landingMenuTrigger').addEventListener('click', openMobileMenu);
+
+    document.getElementById('headerHomeBtn').addEventListener('click', showLanding);
 
     function updateHeaderForTrip(trip) {
       const titleEl = document.getElementById('headerTitle');

@@ -35,7 +35,7 @@ export const TRIPS_DATA = [
     name: "Boda",
     type: "wedding",
     startDate: "2026-07-30",
-    endDate: "2026-08-13",
+    endDate: "2026-08-17",
     viewMode: "itinerary",
     photoUrl: "./assets/images/boda-hero.jpg"
   },
@@ -918,9 +918,14 @@ export const BODA_CITY_INFO = {
   "Cancún":                   { emoji: "🏖️", color: "#0E7490", days: [1], photo: "https://images.unsplash.com/photo-1457537227909-08f41319e53c?q=80&w=600&auto=format&fit=crop" },
   "Tulum":                    { emoji: "🌴", color: "#C4793A", days: [2, 3, 4, 5], photo: "https://images.unsplash.com/photo-1664205543898-829ef8baa7ad?q=80&w=600&auto=format&fit=crop" },
   "Tulum (Boda)":             { emoji: "💍", color: "#DB2777", days: [6, 7, 8, 9], photo: "https://images.unsplash.com/photo-1740880978174-db9dddf6c58c?q=80&w=600&auto=format&fit=crop" },
-  "Monterrey":               { emoji: "👨‍👩‍👧", color: "#2C6E49", days: [10, 11], photo: "https://images.unsplash.com/photo-1600466892203-d84aae0aa4c1?q=80&w=600&auto=format&fit=crop" },
-  "Ciudad Victoria":         { emoji: "🏡", color: "#2C6E49", days: [12, 13, 14], photo: "https://images.unsplash.com/photo-1600466892203-d84aae0aa4c1?q=80&w=600&auto=format&fit=crop" },
-  "Querétaro":                { emoji: "🏡", color: "#7B5EA7", days: [15], photo: "https://images.unsplash.com/photo-1636300958497-42e3df244288?q=80&w=600&auto=format&fit=crop" }
+  "Monterrey":               { emoji: "👨‍👩‍👧", color: "#2C6E49", days: [10], photo: "https://images.unsplash.com/photo-1600466892203-d84aae0aa4c1?q=80&w=600&auto=format&fit=crop" },
+  "Ciudad Victoria":         { emoji: "🏡", color: "#2C6E49", days: [11, 12, 13, 14], photo: "https://images.unsplash.com/photo-1600466892203-d84aae0aa4c1?q=80&w=600&auto=format&fit=crop" },
+  "Querétaro":                { emoji: "🏡", color: "#7B5EA7", days: [15, 16, 17, 18, 19], photo: "https://images.unsplash.com/photo-1636300958497-42e3df244288?q=80&w=600&auto=format&fit=crop" }
+};
+
+export const BODA_FLIGHT_CITY_MAP = {
+  "boda-flight-3": "Monterrey",
+  "boda-flight-4": "Querétaro"
 };
 
 export const BODA_ACCOM_CITY_MAP = {
@@ -968,7 +973,7 @@ export const TOUR_CITY_MAP_BY_TRIP = {
 };
 export const FLIGHT_CITY_MAP_BY_TRIP = {
   "honeymoon-indonesia": FLIGHT_CITY_MAP,
-  "boda-mexico": {},
+  "boda-mexico": BODA_FLIGHT_CITY_MAP,
   "viajes": VIAJES_FLIGHT_CITY_MAP
 };
 
@@ -2234,15 +2239,35 @@ export const BODA_TRIP_DATA = [
     }
   },
   {
+    "id": "boda-d10-3",
+    "tripId": "boda-mexico",
+    "day": 10,
+    "order": 3,
+    "done": false,
+    "date": "8 agosto, sábado",
+    "city": "Tulum → Monterrey",
+    "time": "",
+    "title": "Traslado terrestre MTY → Cd. Victoria (pendiente, ~4h)",
+    "description": "Traslado en auto desde el Aeropuerto de Monterrey hasta Ciudad Victoria — aprox. 4 horas. Pendiente de reservar.",
+    "mapsUrl": null,
+    "pdfUrl": null,
+    "type": "transporte",
+    "isSuggestion": false,
+    "contacto": {
+      "contactName": null,
+      "contactPhone": null
+    }
+  },
+  {
     "id": "boda-d11-0",
     "tripId": "boda-mexico",
     "day": 11,
     "order": 0,
     "done": false,
     "date": "9 agosto, domingo",
-    "city": "Monterrey",
+    "city": "Ciudad Victoria",
     "time": "",
-    "title": "Tiempo en casa de la familia de Mariana",
+    "title": "Día en familia en Casa de la mamá de Mar",
     "description": "",
     "mapsUrl": null,
     "pdfUrl": null,
@@ -2262,7 +2287,7 @@ export const BODA_TRIP_DATA = [
     "date": "10 agosto, lunes",
     "city": "Ciudad Victoria",
     "time": "",
-    "title": "Día en casa de la mamá de Mar — Cd. Victoria",
+    "title": "Día en familia en Casa de la mamá de Mar",
     "description": "",
     "mapsUrl": null,
     "pdfUrl": null,
@@ -2282,7 +2307,7 @@ export const BODA_TRIP_DATA = [
     "date": "11 agosto, martes",
     "city": "Ciudad Victoria",
     "time": "",
-    "title": "Día en Ciudad Victoria con la familia",
+    "title": "Día en familia en Casa de la mamá de Mar",
     "description": "",
     "mapsUrl": null,
     "pdfUrl": null,
@@ -2302,7 +2327,7 @@ export const BODA_TRIP_DATA = [
     "date": "12 agosto, miércoles",
     "city": "Ciudad Victoria",
     "time": "",
-    "title": "Último día con la familia en Cd. Victoria",
+    "title": "Día en familia en Casa de la mamá de Mar",
     "description": "",
     "mapsUrl": null,
     "pdfUrl": null,
@@ -2314,13 +2339,33 @@ export const BODA_TRIP_DATA = [
     }
   },
   {
-    "id": "boda-d15-0",
+    "id": "boda-d15-ground",
     "tripId": "boda-mexico",
     "day": 15,
     "order": 0,
     "done": false,
     "date": "13 agosto, jueves",
-    "city": "Monterrey → Querétaro",
+    "city": "Ciudad Victoria → Querétaro",
+    "time": "",
+    "title": "Traslado terrestre Cd. Victoria → Aeropuerto MTY (pendiente, ~4h)",
+    "description": "Salida de Cd. Victoria hacia el Aeropuerto Internacional de Monterrey — aprox. 4 horas. Pendiente de reservar. Necesario llegar con tiempo antes del vuelo VB4208 a las 21:15.",
+    "mapsUrl": null,
+    "pdfUrl": null,
+    "type": "transporte",
+    "isSuggestion": false,
+    "contacto": {
+      "contactName": null,
+      "contactPhone": null
+    }
+  },
+  {
+    "id": "boda-d15-0",
+    "tripId": "boda-mexico",
+    "day": 15,
+    "order": 1,
+    "done": false,
+    "date": "13 agosto, jueves",
+    "city": "Ciudad Victoria → Querétaro",
     "time": "21:15",
     "title": "Vuelo Monterrey → Querétaro (VB4208)",
     "description": "",
@@ -2337,16 +2382,96 @@ export const BODA_TRIP_DATA = [
     "id": "boda-d15-1",
     "tripId": "boda-mexico",
     "day": 15,
-    "order": 1,
+    "order": 2,
     "done": false,
     "date": "13 agosto, jueves",
-    "city": "Monterrey → Querétaro",
+    "city": "Ciudad Victoria → Querétaro",
     "time": "22:30",
     "title": "Llegada a casa de los papás de Nagib en Querétaro",
     "description": "",
     "mapsUrl": null,
     "pdfUrl": null,
     "type": "hotel",
+    "isSuggestion": false,
+    "contacto": {
+      "contactName": null,
+      "contactPhone": null
+    }
+  },
+  {
+    "id": "boda-d16-0",
+    "tripId": "boda-mexico",
+    "day": 16,
+    "order": 0,
+    "done": false,
+    "date": "14 agosto, viernes",
+    "city": "Querétaro",
+    "time": "",
+    "title": "Día en familia en casa de los papás de Nagib",
+    "description": "",
+    "mapsUrl": null,
+    "pdfUrl": null,
+    "type": "libre",
+    "isSuggestion": false,
+    "contacto": {
+      "contactName": null,
+      "contactPhone": null
+    }
+  },
+  {
+    "id": "boda-d17-0",
+    "tripId": "boda-mexico",
+    "day": 17,
+    "order": 0,
+    "done": false,
+    "date": "15 agosto, sábado",
+    "city": "Querétaro",
+    "time": "",
+    "title": "Día en familia en casa de los papás de Nagib",
+    "description": "",
+    "mapsUrl": null,
+    "pdfUrl": null,
+    "type": "libre",
+    "isSuggestion": false,
+    "contacto": {
+      "contactName": null,
+      "contactPhone": null
+    }
+  },
+  {
+    "id": "boda-d18-0",
+    "tripId": "boda-mexico",
+    "day": 18,
+    "order": 0,
+    "done": false,
+    "date": "16 agosto, domingo",
+    "city": "Querétaro",
+    "time": "",
+    "title": "Día en familia en casa de los papás de Nagib",
+    "description": "",
+    "mapsUrl": null,
+    "pdfUrl": null,
+    "type": "libre",
+    "isSuggestion": false,
+    "contacto": {
+      "contactName": null,
+      "contactPhone": null
+    }
+  },
+  {
+    "id": "boda-d19-0",
+    "tripId": "boda-mexico",
+    "day": 19,
+    "order": 0,
+    "done": false,
+    "date": "17 agosto, lunes",
+    "city": "Querétaro",
+    "time": "",
+    "title": "Último día en Querétaro con la familia",
+    "description": "",
+    "mapsUrl": null,
+    "pdfUrl": null,
+    "type": "libre",
     "isSuggestion": false,
     "contacto": {
       "contactName": null,

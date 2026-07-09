@@ -35,7 +35,7 @@ export const SEED_SETS = {
 // Fields that are runtime/admin-managed state, not seed "content" — an
 // update-content pass must never overwrite these even if the seed object
 // carries its own default value for them.
-const RUNTIME_FIELDS = ['pdfUrl', 'done'];
+const RUNTIME_FIELDS = ['pdfUrl', 'done', 'status', 'statusNote'];
 
 /**
  * Escribe todos los documentos de un set en su colección de Firestore.
