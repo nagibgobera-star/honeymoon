@@ -56,6 +56,15 @@ export const TRIPS_DATA = [
     endDate: null,
     viewMode: "categories",
     photoUrl: "https://images.unsplash.com/photo-1579127499243-5a4e2d01b786?q=80&w=1600&auto=format&fit=crop"
+  },
+  {
+    id: "viajes",
+    name: "Viajes",
+    type: "wedding",
+    startDate: "2026-11-24",
+    endDate: "2026-12-01",
+    viewMode: "itinerary",
+    photoUrl: "https://images.unsplash.com/photo-1552074284-5e88ef1aef18?q=80&w=1600&auto=format&fit=crop"
   }
 ];
 
@@ -909,7 +918,8 @@ export const BODA_CITY_INFO = {
   "Cancún":                   { emoji: "🏖️", color: "#0E7490", days: [1], photo: "https://images.unsplash.com/photo-1457537227909-08f41319e53c?q=80&w=600&auto=format&fit=crop" },
   "Tulum":                    { emoji: "🌴", color: "#C4793A", days: [2, 3, 4, 5], photo: "https://images.unsplash.com/photo-1664205543898-829ef8baa7ad?q=80&w=600&auto=format&fit=crop" },
   "Tulum (Boda)":             { emoji: "💍", color: "#DB2777", days: [6, 7, 8, 9], photo: "https://images.unsplash.com/photo-1740880978174-db9dddf6c58c?q=80&w=600&auto=format&fit=crop" },
-  "Monterrey / Cd. Victoria": { emoji: "👨‍👩‍👧", color: "#2C6E49", days: [10, 11, 12, 13, 14], photo: "https://images.unsplash.com/photo-1600466892203-d84aae0aa4c1?q=80&w=600&auto=format&fit=crop" },
+  "Monterrey":               { emoji: "👨‍👩‍👧", color: "#2C6E49", days: [10, 11], photo: "https://images.unsplash.com/photo-1600466892203-d84aae0aa4c1?q=80&w=600&auto=format&fit=crop" },
+  "Ciudad Victoria":         { emoji: "🏡", color: "#2C6E49", days: [12, 13, 14], photo: "https://images.unsplash.com/photo-1600466892203-d84aae0aa4c1?q=80&w=600&auto=format&fit=crop" },
   "Querétaro":                { emoji: "🏡", color: "#7B5EA7", days: [15], photo: "https://images.unsplash.com/photo-1636300958497-42e3df244288?q=80&w=600&auto=format&fit=crop" }
 };
 
@@ -917,8 +927,24 @@ export const BODA_ACCOM_CITY_MAP = {
   "boda-accom-1": "Cancún",
   "boda-accom-2": "Tulum",
   "boda-accom-3": "Tulum (Boda)",
-  "boda-accom-4": "Monterrey / Cd. Victoria",
+  "boda-accom-4": "Monterrey",
   "boda-accom-5": "Querétaro"
+};
+
+// ── Viajes — Cancún Boda Yamile ─────────────────────────────────
+export const VIAJES_CITY_INFO = {
+  "Tokio → Cancún": { emoji: "✈️", color: "#0E7490", days: [1], photo: null },
+  "Riviera Maya":   { emoji: "🌊", color: "#C4860A", days: [2, 3, 4, 5, 6, 7, 8], photo: "https://images.unsplash.com/photo-1552074284-5e88ef1aef18?q=80&w=600&auto=format&fit=crop" }
+};
+export const VIAJES_ACCOM_CITY_MAP = {
+  "viajes-accom-1": "Riviera Maya"
+};
+export const VIAJES_TOUR_CITY_MAP = {};
+export const VIAJES_FLIGHT_CITY_MAP = {
+  "viajes-flight-1": "Tokio → Cancún",
+  "viajes-flight-2": "Tokio → Cancún",
+  "viajes-flight-3": "Riviera Maya",
+  "viajes-flight-4": "Riviera Maya"
 };
 
 // ── Per-trip lookups — index.html uses these instead of hardcoding
@@ -927,19 +953,23 @@ export const BODA_ACCOM_CITY_MAP = {
 // single Resumen tab with no destination breakdown.
 export const DESTINATIONS_BY_TRIP = {
   "honeymoon-indonesia": CITY_INFO,
-  "boda-mexico": BODA_CITY_INFO
+  "boda-mexico": BODA_CITY_INFO,
+  "viajes": VIAJES_CITY_INFO
 };
 export const ACCOM_CITY_MAP_BY_TRIP = {
   "honeymoon-indonesia": ACCOM_CITY_MAP,
-  "boda-mexico": BODA_ACCOM_CITY_MAP
+  "boda-mexico": BODA_ACCOM_CITY_MAP,
+  "viajes": VIAJES_ACCOM_CITY_MAP
 };
 export const TOUR_CITY_MAP_BY_TRIP = {
   "honeymoon-indonesia": TOUR_CITY_MAP,
-  "boda-mexico": {}
+  "boda-mexico": {},
+  "viajes": VIAJES_TOUR_CITY_MAP
 };
 export const FLIGHT_CITY_MAP_BY_TRIP = {
   "honeymoon-indonesia": FLIGHT_CITY_MAP,
-  "boda-mexico": {}
+  "boda-mexico": {},
+  "viajes": VIAJES_FLIGHT_CITY_MAP
 };
 
 export const FLIGHTS_DATA = [
@@ -2210,7 +2240,7 @@ export const BODA_TRIP_DATA = [
     "order": 0,
     "done": false,
     "date": "9 agosto, domingo",
-    "city": "Monterrey / Cd. Victoria",
+    "city": "Monterrey",
     "time": "",
     "title": "Tiempo en casa de la familia de Mariana",
     "description": "",
@@ -2230,13 +2260,13 @@ export const BODA_TRIP_DATA = [
     "order": 0,
     "done": false,
     "date": "10 agosto, lunes",
-    "city": "Monterrey / Cd. Victoria",
+    "city": "Ciudad Victoria",
     "time": "",
-    "title": "Traslado terrestre Monterrey ↔ Ciudad Victoria",
-    "description": "Autobús ETN o Diamante — $24-35 USD/persona/trayecto, ~4h de viaje. Terminal de autobuses en Monterrey: Central de Autobuses (Av. Colón). Comprar boletos con anticipación en ETN.com.mx o Clickbus. Viaje redondo durante la estancia en Monterrey/Cd. Victoria. NO RESERVADO TODAVÍA.",
+    "title": "Día en casa de la mamá de Mar — Cd. Victoria",
+    "description": "",
     "mapsUrl": null,
     "pdfUrl": null,
-    "type": "transporte",
+    "type": "libre",
     "isSuggestion": false,
     "contacto": {
       "contactName": null,
@@ -2250,7 +2280,7 @@ export const BODA_TRIP_DATA = [
     "order": 0,
     "done": false,
     "date": "11 agosto, martes",
-    "city": "Monterrey / Cd. Victoria",
+    "city": "Ciudad Victoria",
     "time": "",
     "title": "Día en Ciudad Victoria con la familia",
     "description": "",
@@ -2270,13 +2300,13 @@ export const BODA_TRIP_DATA = [
     "order": 0,
     "done": false,
     "date": "12 agosto, miércoles",
-    "city": "Monterrey / Cd. Victoria",
+    "city": "Ciudad Victoria",
     "time": "",
-    "title": "Regreso a Monterrey — NO RESERVADO TODAVÍA",
+    "title": "Último día con la familia en Cd. Victoria",
     "description": "",
     "mapsUrl": null,
     "pdfUrl": null,
-    "type": "transporte",
+    "type": "libre",
     "isSuggestion": false,
     "contacto": {
       "contactName": null,
@@ -10240,4 +10270,171 @@ export const BARCELONA_ITEMS_DATA = [
   { id: "bcn-155", tripId: "barcelona", category: "Eventos", subcategory: "Enero-Junio 2027", title: "Primavera Sound", description: "Principios junio 2027. El festival de música más internacional de Barcelona. Headliners de primera línea mundial.", rating: 5, priceTier: "€€€", emoji: "🎶", done: false, priority: "alta", location: "Parc del Fòrum / Montjuïc", mapsUrl: null, tiktokUrl: null, contacto: null, pdfUrl: null, source: null },
   { id: "bcn-156", tripId: "barcelona", category: "Eventos", subcategory: "Enero-Junio 2027", title: "Sónar Festival", description: "Mediados junio 2027. Festival de música electrónica y arte digital. Referente mundial del género.", rating: 4, priceTier: "€€€", emoji: "🎛️", done: false, priority: "media", location: "Fira de Barcelona", mapsUrl: null, tiktokUrl: null, contacto: null, pdfUrl: null, source: null },
   { id: "bcn-157", tripId: "barcelona", category: "Eventos", subcategory: "Enero-Junio 2027", title: "Sant Joan — Nit del Foc", description: "23-24 junio 2027. La noche más mágica del año: hogueras en las playas, fuegos artificiales, crema de Sant Joan. Noche en blanco con toda la ciudad en la calle.", rating: 5, priceTier: "€", emoji: "🔥", done: false, priority: "alta", location: "Toda Barcelona", mapsUrl: null, tiktokUrl: null, contacto: null, pdfUrl: null, source: null }
+];
+
+// ── Viajes — Cancún Boda Yamile (Nov 24 – Dec 1, 2026) ──────────
+export const VIAJES_TRIP_DATA = [
+  {
+    "id": "viajes-d1-0", "tripId": "viajes", "day": 1, "order": 0, "done": false,
+    "date": "24 noviembre, martes", "city": "Tokio → Cancún", "time": "17:40",
+    "title": "Vuelo Tokio → Toronto (AC2)",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "transporte",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  },
+  {
+    "id": "viajes-d1-1", "tripId": "viajes", "day": 1, "order": 1, "done": false,
+    "date": "24 noviembre, martes", "city": "Tokio → Cancún", "time": "20:00",
+    "title": "Vuelo Toronto → Cancún (AC1814)",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "transporte",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  },
+  {
+    "id": "viajes-d2-0", "tripId": "viajes", "day": 2, "order": 0, "done": false,
+    "date": "25 noviembre, miércoles", "city": "Riviera Maya", "time": "17:00",
+    "title": "Llegada y check-in — Grand Mayan at Vidanta",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "hotel",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  },
+  {
+    "id": "viajes-d3-0", "tripId": "viajes", "day": 3, "order": 0, "done": false,
+    "date": "26 noviembre, jueves", "city": "Riviera Maya", "time": "",
+    "title": "Festividades de boda — reunión familiar",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "boda",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  },
+  {
+    "id": "viajes-d4-0", "tripId": "viajes", "day": 4, "order": 0, "done": false,
+    "date": "27 noviembre, viernes", "city": "Riviera Maya", "time": "",
+    "title": "Festividades de boda",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "boda",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  },
+  {
+    "id": "viajes-d5-0", "tripId": "viajes", "day": 5, "order": 0, "done": false,
+    "date": "28 noviembre, sábado", "city": "Riviera Maya", "time": "",
+    "title": "💍 Ceremonia de boda de Yamile",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "boda",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  },
+  {
+    "id": "viajes-d6-0", "tripId": "viajes", "day": 6, "order": 0, "done": false,
+    "date": "29 noviembre, domingo", "city": "Riviera Maya", "time": "",
+    "title": "Festejo post-boda — tiempo libre en resort",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "libre",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  },
+  {
+    "id": "viajes-d7-0", "tripId": "viajes", "day": 7, "order": 0, "done": false,
+    "date": "30 noviembre, lunes", "city": "Riviera Maya", "time": "",
+    "title": "Último día en Grand Mayan — resort",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "descanso",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  },
+  {
+    "id": "viajes-d8-0", "tripId": "viajes", "day": 8, "order": 0, "done": false,
+    "date": "1 diciembre, martes", "city": "Riviera Maya", "time": "10:00",
+    "title": "Checkout — Grand Mayan at Vidanta",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "hotel",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  },
+  {
+    "id": "viajes-d8-1", "tripId": "viajes", "day": 8, "order": 1, "done": false,
+    "date": "1 diciembre, martes", "city": "Cancún → Tokio", "time": "13:30",
+    "title": "Vuelo Cancún → Vancouver (AC2129)",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "transporte",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  },
+  {
+    "id": "viajes-d8-2", "tripId": "viajes", "day": 8, "order": 2, "done": false,
+    "date": "1 diciembre, martes", "city": "Cancún → Tokio", "time": "18:10",
+    "title": "Vuelo Vancouver → Tokio (AC3)",
+    "description": "", "mapsUrl": null, "pdfUrl": null, "type": "transporte",
+    "isSuggestion": false, "contacto": { "contactName": null, "contactPhone": null }
+  }
+];
+
+export const VIAJES_FLIGHTS_DATA = [
+  {
+    "id": "viajes-flight-1", "tripId": "viajes",
+    "segment": "Tokio → Toronto",
+    "type": "international",
+    "from": { "code": "HND", "name": "Aeropuerto Internacional de Tokio-Haneda", "city": "Tokio", "country": "Japan" },
+    "to":   { "code": "YYZ", "name": "Aeropuerto Internacional Pearson", "city": "Toronto", "country": "Canada" },
+    "departureDate": "2026-11-24", "departureTime": "17:40",
+    "arrivalDate":   "2026-11-24", "arrivalTime":   "14:20",
+    "duration": "12h 40m",
+    "airline": "Air Canada", "flightNumber": "AC2",
+    "confirmationCode": "B4JAPJ",
+    "status": "confirmed", "pdfUrl": null
+  },
+  {
+    "id": "viajes-flight-2", "tripId": "viajes",
+    "segment": "Toronto → Cancún",
+    "type": "international",
+    "from": { "code": "YYZ", "name": "Aeropuerto Internacional Pearson", "city": "Toronto", "country": "Canada" },
+    "to":   { "code": "CUN", "name": "Aeropuerto Internacional de Cancún", "city": "Cancún", "country": "Mexico" },
+    "departureDate": "2026-11-24", "departureTime": "20:00",
+    "arrivalDate":   "2026-11-24", "arrivalTime":   "23:55",
+    "duration": "5h 55m",
+    "airline": "Air Canada", "flightNumber": "AC1814",
+    "confirmationCode": "B4JAPJ",
+    "status": "confirmed", "pdfUrl": null
+  },
+  {
+    "id": "viajes-flight-3", "tripId": "viajes",
+    "segment": "Cancún → Vancouver",
+    "type": "international",
+    "from": { "code": "CUN", "name": "Aeropuerto Internacional de Cancún", "city": "Cancún", "country": "Mexico" },
+    "to":   { "code": "YVR", "name": "Aeropuerto Internacional de Vancouver", "city": "Vancouver", "country": "Canada" },
+    "departureDate": "2026-12-01", "departureTime": "13:30",
+    "arrivalDate":   "2026-12-01", "arrivalTime":   "16:20",
+    "duration": "5h 50m",
+    "airline": "Air Canada", "flightNumber": "AC2129",
+    "confirmationCode": "B4JAPJ",
+    "status": "confirmed", "pdfUrl": null
+  },
+  {
+    "id": "viajes-flight-4", "tripId": "viajes",
+    "segment": "Vancouver → Tokio",
+    "type": "international",
+    "from": { "code": "YVR", "name": "Aeropuerto Internacional de Vancouver", "city": "Vancouver", "country": "Canada" },
+    "to":   { "code": "NRT", "name": "Aeropuerto Internacional de Tokio-Narita", "city": "Tokio", "country": "Japan" },
+    "departureDate": "2026-12-01", "departureTime": "18:10",
+    "arrivalDate":   "2026-12-02", "arrivalTime":   "21:30",
+    "duration": "10h 20m",
+    "airline": "Air Canada", "flightNumber": "AC3",
+    "confirmationCode": "B4JAPJ",
+    "status": "confirmed", "pdfUrl": null
+  }
+];
+
+export const VIAJES_ACCOMMODATIONS_DATA = [
+  {
+    "id": "viajes-accom-1", "tripId": "viajes",
+    "name": "Grand Mayan at Vidanta",
+    "type": "resort",
+    "address": "Blvd. Kukulcan km 25, Zona Hotelera, Cancún, Q.ROO",
+    "region": "Riviera Maya",
+    "province": "Quintana Roo",
+    "country": "Mexico",
+    "checkInDate": "2026-11-25",
+    "checkOutDate": "2026-12-01",
+    "bookingId": "RCI #00034",
+    "note": "Boda de Yamile. Resort fee pendiente: $525–980 USD (pagar antes 25 oct 2026). Incluye yoga, internet, albercas.",
+    "status": "partial",
+    "statusNote": "Reservado — resort fee pendiente ($525–980 USD, vence oct 25)",
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Grand+Mayan+at+Vidanta+Cancun",
+    "pdfUrl": null
+  }
+];
+
+export const VIAJES_DAY_NOTES_DATA = [
+  {
+    "id": "viajes-note-d1",
+    "tripId": "viajes",
+    "day": 1,
+    "summary": "Día de viaje: Tokio → Toronto → Cancún (Air Canada, booking B4JAPJ)",
+    "recommendations": "Día de viaje largo. Llegar al aeropuerto HND con 3h de anticipación para vuelo internacional. En YYZ tendrán ~4h de escala — pasar inmigración canadiense, recoger y recheck de equipaje al ser self-transfer. Llevar ropa cómoda y artículos de entretenimiento para el vuelo.",
+    "criticalNote": "⚠️ Resort fee Grand Mayan pendiente: $525–980 USD — pagar antes del 25 oct 2026. Reservar traslado privado CUN ↔ Grand Mayan con anticipación (~30 min del aeropuerto)."
+  }
 ];

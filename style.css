@@ -32,6 +32,11 @@
   --marina-light: #D6EAF5;
   --marina-dark:  #2A5F82;
 
+  /* Viajes — amber gold, swapped in for the Viajes trip */
+  --viajes:       #C4860A;
+  --viajes-light: #FEF3DC;
+  --viajes-dark:  #9A6A08;
+
   /* Status colors, recolored to fit the palette (used by .status-pill) */
   --status-confirmed:      #6B7A60;
   --status-confirmed-bg:   #EAEDE6;
@@ -104,6 +109,12 @@ body.trip-theme-barcelona {
   --accent:       var(--marina);
   --accent-light: var(--marina-light);
   --accent-dark:  var(--marina-dark);
+}
+
+body.trip-theme-viajes {
+  --accent:       var(--viajes);
+  --accent-light: var(--viajes-light);
+  --accent-dark:  var(--viajes-dark);
 }
 
 /* ── Reset ────────────────────────────────────────────────── */
@@ -2542,4 +2553,50 @@ body {
     border-color: var(--accent);
     color: var(--white);
   }
+
+  /* Days that belong to a different city tab — dimmer, indicates tab switch on tap */
+  .day-scrubber-btn.other-city {
+    opacity: 0.4;
+    border-style: dashed;
+  }
+  .day-scrubber-btn.other-city:active { opacity: 0.7; }
+}
+
+/* ── Floating destination navigation arrows ─────────────────── */
+.dest-nav-arrow {
+  display: none; /* shown via .visible */
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 150;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid var(--border);
+  color: var(--ink-mid);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+.dest-nav-arrow.visible { display: flex; }
+.dest-nav-arrow:hover {
+  background: var(--accent-light);
+  color: var(--accent-dark);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+}
+.dest-nav-left  { left: 6px; }
+.dest-nav-right { right: 6px; }
+
+@media (max-width: 639px) {
+  .dest-nav-arrow { width: 38px; height: 38px; font-size: 22px; }
+  .dest-nav-left  { left: 3px; }
+  .dest-nav-right { right: 3px; }
 }

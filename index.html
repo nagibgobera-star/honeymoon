@@ -141,6 +141,10 @@
        keeps the active dot in sync with the scroll position. -->
   <div class="day-scrubber" id="dayScrubber" aria-label="Saltar a día"></div>
 
+  <!-- Floating destination navigation arrows (itinerary trips only) -->
+  <button id="destNavLeft"  class="dest-nav-arrow dest-nav-left"  aria-label="Destino anterior">‹</button>
+  <button id="destNavRight" class="dest-nav-arrow dest-nav-right" aria-label="Destino siguiente">›</button>
+
   <div class="map-sheet-backdrop" id="mapSheetBackdrop"></div>
   <div class="map-sheet" id="mapSheet" role="dialog" aria-modal="true" aria-label="Información del mapa">
     <div class="map-sheet-handle"></div>
@@ -649,11 +653,12 @@
       activeSubcatPhoto = null; // leaving whatever subcategory was expanded
       updateViewHero();
       window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+      updateDestNavArrows();
       // Defer scrubber update so the panel content is in the DOM first.
       setTimeout(() => updateDayScrubber(key), 0);
     }
 
-    // ── Day scrubber ─────────────────────────────────────────────
+    // ── Day scrubber (global — shows all trip days, cross-tab) ───
     let _scrubberObserver = null;
 
     function updateDayScrubber(tabKey) {
@@ -662,42 +667,61 @@
 
       if (_scrubberObserver) { _scrubberObserver.disconnect(); _scrubberObserver = null; }
 
-      const destinations = DESTINATIONS_BY_TRIP[selectedTripId] || {};
-      const cityInfo = destinations[tabKey];
-
-      if (!cityInfo || isCategoriesTrip(selectedTripId) || !cityInfo.days || cityInfo.days.length <= 1) {
+      if (isCategoriesTrip(selectedTripId)) {
         scrubber.classList.remove('visible');
         return;
       }
 
-      scrubber.innerHTML = cityInfo.days.map(d =>
-        `<button class="day-scrubber-btn" data-day="${d}" aria-label="Día ${d}">${d}</button>`
+      const destinations = DESTINATIONS_BY_TRIP[selectedTripId] || {};
+      // Collect all days from every city, sorted
+      const allDays = [];
+      Object.entries(destinations).forEach(([cityKey, info]) => {
+        (info.days || []).forEach(d => allDays.push({ day: d, cityKey }));
+      });
+      allDays.sort((a, b) => a.day - b.day);
+
+      if (allDays.length <= 1) {
+        scrubber.classList.remove('visible');
+        return;
+      }
+
+      scrubber.innerHTML = allDays.map(({ day, cityKey }) =>
+        `<button class="day-scrubber-btn${cityKey === tabKey ? '' : ' other-city'}" ` +
+        `data-day="${day}" data-city-key="${cityKey}" aria-label="Día ${day}">${day}</button>`
       ).join('');
 
       scrubber.classList.add('visible');
 
       scrubber.querySelectorAll('.day-scrubber-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const sec = document.getElementById('day-' + btn.dataset.day);
-          if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const targetCity = btn.dataset.cityKey;
+          if (targetCity !== getActiveTabKey()) {
+            setActiveTab(targetCity);
+            setTimeout(() => {
+              const sec = document.getElementById('day-' + btn.dataset.day);
+              if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 120);
+          } else {
+            const sec = document.getElementById('day-' + btn.dataset.day);
+            if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         });
       });
 
       const panel = document.getElementById('tabPanel-' + tabSlug(tabKey));
       if (!panel) return;
 
-      // Mark the first day active immediately, then track scroll.
-      const firstBtn = scrubber.querySelector('.day-scrubber-btn');
-      if (firstBtn) firstBtn.classList.add('active');
+      // Mark the first day of the active city active initially, then track scroll.
+      const firstInCity = scrubber.querySelector(`.day-scrubber-btn[data-city-key="${tabKey}"]`);
+      if (firstInCity) firstInCity.classList.add('active');
 
       _scrubberObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            const day = entry.target.dataset.day;
+            const day = String(entry.target.dataset.day);
             scrubber.querySelectorAll('.day-scrubber-btn').forEach(b =>
-              b.classList.toggle('active', b.dataset.day === day)
+              b.classList.toggle('active', String(b.dataset.day) === day)
             );
-            // Scroll the active button into view inside the scrubber strip.
             scrubber.querySelector(`.day-scrubber-btn[data-day="${day}"]`)
               ?.scrollIntoView({ block: 'nearest', inline: 'center' });
           }
@@ -707,9 +731,36 @@
       panel.querySelectorAll('.day-section[data-day]').forEach(s => _scrubberObserver.observe(s));
     }
 
+    // ── Floating destination navigation arrows ───────────────────
+    function updateDestNavArrows() {
+      const leftBtn  = document.getElementById('destNavLeft');
+      const rightBtn = document.getElementById('destNavRight');
+      if (!leftBtn || !rightBtn) return;
+
+      if (isCategoriesTrip(selectedTripId)) {
+        leftBtn.classList.remove('visible');
+        rightBtn.classList.remove('visible');
+        return;
+      }
+
+      const activeKey = getActiveTabKey();
+      const idx = currentTabKeys.indexOf(activeKey);
+      leftBtn.classList.toggle('visible', idx > 0);
+      rightBtn.classList.toggle('visible', idx >= 0 && idx < currentTabKeys.length - 1);
+    }
+
+    document.getElementById('destNavLeft').addEventListener('click', () => {
+      const idx = currentTabKeys.indexOf(getActiveTabKey());
+      if (idx > 0) setActiveTab(currentTabKeys[idx - 1]);
+    });
+    document.getElementById('destNavRight').addEventListener('click', () => {
+      const idx = currentTabKeys.indexOf(getActiveTabKey());
+      if (idx >= 0 && idx < currentTabKeys.length - 1) setActiveTab(currentTabKeys[idx + 1]);
+    });
+
     // ── Trip switcher (desktop tab bar) ────────────────────────
     const TRIP_TYPE_ICONS = { honeymoon: '💍', wedding: '💒', ideas: '🎌' };
-    const TRIP_ORDER = { 'boda-mexico': 0, 'honeymoon-indonesia': 1, 'japon': 2, 'barcelona': 3 };
+    const TRIP_ORDER = { 'boda-mexico': 0, 'honeymoon-indonesia': 1, 'japon': 2, 'barcelona': 3, 'viajes': 4 };
 
     function sortedTrips() {
       return [...trips].sort((a, b) => (TRIP_ORDER[a.id] ?? 99) - (TRIP_ORDER[b.id] ?? 99));
@@ -824,6 +875,7 @@
 
       document.body.classList.toggle('trip-theme-japon', trip.id === 'japon');
       document.body.classList.toggle('trip-theme-barcelona', trip.id === 'barcelona');
+      document.body.classList.toggle('trip-theme-viajes', trip.id === 'viajes');
       updateViewHero(); // trip changed -> recompute which photo the single header image should show
     }
 
@@ -1445,12 +1497,12 @@
         renderFlights(flights, document.getElementById('flightsList'));
       }
 
-      if (selectedTripId === 'honeymoon-indonesia') {
+      if (selectedTripId === 'honeymoon-indonesia' || selectedTripId === 'viajes') {
         panel.appendChild(renderStatusSummary(flights, accommodations || [], tours || []));
       }
     }
 
-    // ── Honeymoon-only: scannable per-destination reservation checklist ──
+    // ── Itinerary trips: scannable per-destination reservation checklist ──
     // Name + status pill only (full detail is one tap away in each
     // destination's own tab) — flights attributed by arrival city,
     // accommodations/tours by their existing city maps.
