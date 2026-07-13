@@ -736,64 +736,64 @@ export const TRIP_DATA = [
   // ── DÍA 12 ─ 29 agosto, sábado — KOMODO → BALI (ULUWATU) ───────
   {
     id: "d12-0", tripId: "honeymoon-indonesia", day: 12, order: 0, done: false,
-    date: "29 agosto, sábado", city: "Komodo → Bali (Uluwatu)", time: "Mañana",
+    date: "29 agosto, sábado", city: "Komodo → Bali (Kuta)", time: "Mañana",
     title: "Kelor Island short trek + beach",
     description: "", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Kelor%20Island%2C%20Komodo%20National%20Park%2C%20Indonesia", pdfUrl: null, type: "aventura",
     contacto: { contactName: null, contactPhone: null }
   },
   {
     id: "d12-1", tripId: "honeymoon-indonesia", day: 12, order: 1, done: false,
-    date: "29 agosto, sábado", city: "Komodo → Bali (Uluwatu)", time: "Mañana",
+    date: "29 agosto, sábado", city: "Komodo → Bali (Kuta)", time: "Mañana",
     title: "Manjarite Island snorkel",
     description: "", mapsUrl: null, pdfUrl: null, type: "aventura",
     contacto: { contactName: null, contactPhone: null }
   },
   {
     id: "d12-2", tripId: "honeymoon-indonesia", day: 12, order: 2, done: false,
-    date: "29 agosto, sábado", city: "Komodo → Bali (Uluwatu)", time: "12:00-13:00",
+    date: "29 agosto, sábado", city: "Komodo → Bali (Kuta)", time: "12:00-13:00",
     title: "Return to Labuan Bajo (disembark)",
     description: "", mapsUrl: null, pdfUrl: null, type: "transporte",
     contacto: { contactName: null, contactPhone: null }
   },
   {
     id: "d12-3", tripId: "honeymoon-indonesia", day: 12, order: 3, done: false,
-    date: "29 agosto, sábado", city: "Komodo → Bali (Uluwatu)", time: "13:00",
+    date: "29 agosto, sábado", city: "Komodo → Bali (Kuta)", time: "13:00",
     title: "Quick lunch / transfer to airport",
     description: "", mapsUrl: null, pdfUrl: null, type: "comida",
     contacto: { contactName: null, contactPhone: null }
   },
   {
     id: "d12-4", tripId: "honeymoon-indonesia", day: 12, order: 4, done: false,
-    date: "29 agosto, sábado", city: "Komodo → Bali (Uluwatu)", time: "15:30",
+    date: "29 agosto, sábado", city: "Komodo → Bali (Kuta)", time: "15:30",
     title: "Check-in LBJ Airport",
     description: "", mapsUrl: null, pdfUrl: null, type: "transporte",
     contacto: { contactName: null, contactPhone: null }
   },
   {
     id: "d12-5", tripId: "honeymoon-indonesia", day: 12, order: 5, done: false,
-    date: "29 agosto, sábado", city: "Komodo → Bali (Uluwatu)", time: "17:25",
+    date: "29 agosto, sábado", city: "Komodo → Bali (Kuta)", time: "17:25",
     title: "Flight LBJ → DPS (AirAsia QZ649)",
     description: "", mapsUrl: null, pdfUrl: null, type: "transporte",
     contacto: { contactName: null, contactPhone: null }
   },
   {
     id: "d12-6", tripId: "honeymoon-indonesia", day: 12, order: 6, done: false,
-    date: "29 agosto, sábado", city: "Komodo → Bali (Uluwatu)", time: "18:35",
+    date: "29 agosto, sábado", city: "Komodo → Bali (Kuta)", time: "18:35",
     title: "Arrive DPS",
     description: "", mapsUrl: null, pdfUrl: null, type: "transporte",
     contacto: { contactName: null, contactPhone: null }
   },
   {
     id: "d12-7", tripId: "honeymoon-indonesia", day: 12, order: 7, done: false,
-    date: "29 agosto, sábado", city: "Komodo → Bali (Uluwatu)", time: "19:30",
-    title: "Check-in Uluwatu hotel",
-    description: "", mapsUrl: null, pdfUrl: null, type: "hotel",
+    date: "29 agosto, sábado", city: "Komodo → Bali (Kuta)", time: "19:00-20:00",
+    title: "Check-in Amnaya Resort Kuta",
+    description: "Ventana de llegada aprobada: 19:00–20:00. Check-in desde las 15:00. Parking incluido.", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Amnaya+Resort+Kuta+Jl+Kartika+Plaza+Bali", pdfUrl: null, type: "hotel",
     contacto: { contactName: null, contactPhone: null }
   },
   {
     id: "d12-8", tripId: "honeymoon-indonesia", day: 12, order: 8, done: false,
-    date: "29 agosto, sábado", city: "Komodo → Bali (Uluwatu)", time: "20:30",
-    title: "Cliff sunset dinner (Single Fin / El Kabron / Sundara)",
+    date: "29 agosto, sábado", city: "Komodo → Bali (Kuta)", time: "20:30",
+    title: "Dinner in Kuta area (última noche en Bali)",
     description: "", mapsUrl: null, pdfUrl: null, type: "comida",
     contacto: { contactName: null, contactPhone: null }
   },
@@ -817,7 +817,7 @@ export const TRIP_DATA = [
   {
     id: "d13-2", tripId: "honeymoon-indonesia", day: 13, order: 2, done: false,
     date: "30 agosto, domingo", city: "Bali → Tokyo (via Singapore)", time: "10:00",
-    title: "Drive to DPS (30-40 min)",
+    title: "Drive to DPS (15-20 min from Kuta)",
     description: "", mapsUrl: null, pdfUrl: null, type: "transporte",
     contacto: { contactName: null, contactPhone: null }
   },
@@ -861,8 +861,9 @@ export const CITY_INFO = {
   "Vancouver":         { emoji: "🏔️", color: "#4A7FA5", days: [2], photo: "https://images.unsplash.com/photo-1660143158587-bddffa026e06?q=80&w=600&auto=format&fit=crop" },
   "Hong Kong":         { emoji: "🌃", color: "#D4860A", days: [3], photo: "https://images.unsplash.com/photo-1569833172924-2324c41f2ec3?q=80&w=600&auto=format&fit=crop" },
   "Java":              { emoji: "🌋", color: "#B45309", days: [4, 5], photo: "https://images.unsplash.com/photo-1662114480912-05a338d79da3?q=80&w=600&auto=format&fit=crop" },
-  "Bali":              { emoji: "🌴", color: "#2C6E49", days: [6, 7, 8, 12], photo: "https://images.unsplash.com/photo-1559628233-100c798642d4?q=80&w=600&auto=format&fit=crop" },
+  "Bali":              { emoji: "🌴", color: "#2C6E49", days: [6, 7, 8], photo: "https://images.unsplash.com/photo-1559628233-100c798642d4?q=80&w=600&auto=format&fit=crop" },
   "Komodo":            { emoji: "🐉", color: "#0E7490", days: [9, 10, 11], photo: "https://images.unsplash.com/photo-1533339577339-9007cb316e9c?q=80&w=600&auto=format&fit=crop" },
+  "Bali - Kuta":       { emoji: "🌅", color: "#C17F59", days: [12], photo: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=600&auto=format&fit=crop" },
   "Singapur":          { emoji: "🦁", color: "#9333EA", days: [13], photo: "https://images.unsplash.com/photo-1628866686613-6cf852bed925?q=80&w=600&auto=format&fit=crop" },
   "Tokio":             { emoji: "🗼", color: "#DC2626", days: [14], photo: "https://images.unsplash.com/photo-1762018824220-d4a9ebda2b28?q=80&w=600&auto=format&fit=crop" }
 };
@@ -889,7 +890,7 @@ export const ACCOM_CITY_MAP = {
   "accom-2": "Java",
   "accom-3": "Java",
   "accom-4": "Bali",
-  "accom-7": "Bali",
+  "accom-7": "Bali - Kuta",
   "accom-5": "Komodo",
   "accom-6": "Komodo"
 };
@@ -908,7 +909,7 @@ export const FLIGHT_CITY_MAP = {
   "flight-1b": "Hong Kong",
   "flight-1c": "Java",
   "flight-2": "Komodo",
-  "flight-3": "Bali",
+  "flight-3": "Bali - Kuta",
   "flight-4a": "Singapur",
   "flight-4b": "Tokio"
 };
@@ -1417,27 +1418,28 @@ export const ACCOMMODATIONS_DATA = [
     "nightNumber": 10,
     "checkInDate": "2026-08-29",
     "checkOutDate": "2026-08-30",
-    "name": "TBD — Uluwatu/Jimbaran cliff hotel",
-    "region": "Uluwatu / Jimbaran",
+    "totalNights": 1,
+    "name": "Amnaya Resort Kuta",
+    "type": "resort",
+    "address": "Jl. Kartika Plaza, Gang Puspa Ayu No. 99, 80361 Kuta, Indonesia",
+    "phone": "+62 895 4296 66000",
+    "region": "Kuta",
     "province": "Bali",
     "country": "Indonesia",
-    "topOptions": [
-      {
-        "name": "Renaissance Bali Uluwatu Resort & Spa",
-        "brand": "Marriott",
-        "estimatedCost": "$200-280/night",
-        "reasonForChoice": "Marriott status applies (upgrade + breakfast). Roosterfish Beach Club for cliff dinner."
-      },
-      {
-        "name": "Cliff villa Airbnb in Uluwatu/Pecatu",
-        "estimatedCost": "$130-180/night",
-        "reasonForChoice": "Private infinity pool with cliff view, more intimate"
-      }
-    ],
-    "status": "pending",
-    "dependsOn": "Flight change decision for Aug 29 (if morning flight, full Bali day; if 17:25 PM, only evening)",
+    "room": "Deluxe Double or Twin Room",
+    "guests": "Nagib Gobera, 2 adults, 1 night",
+    "mealPlan": "Breakfast included",
+    "bookingId": "6124064092",
+    "pinCode": "7969",
+    "status": "confirmed",
+    "statusNote": "Reservado en Booking.com. Check-in aprobado 19:00–20:00. Cancelación gratuita hasta 7 ago 2026.",
+    "bookedVia": "Booking.com",
+    "cost": 80,
+    "costCurrency": "EUR",
+    "cancellationPolicy": "Free until Aug 7 2026, non-refundable after",
+    "notes": "Parking incluido. Non-smoking. Balcón. Muy cerca del aeropuerto DPS — ideal para salida 11:20am del día siguiente. Check-out antes de las 12:00.",
     "pdfUrl": null,
-    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Uluwatu%2C%20Bali%2C%20Indonesia"
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Amnaya+Resort+Kuta+Jl+Kartika+Plaza+Gang+Puspa+Ayu+No+99+Kuta+Bali"
   }
 ];
 export const TOURS_DATA = [
@@ -1871,9 +1873,9 @@ export const DAY_NOTES_DATA = [
     "id": "day-12",
     "tripId": "honeymoon-indonesia",
     "day": 12,
-    "summary": "Desembarque + vuelo a Bali + cena de atardecer en Uluwatu",
-    "recommendations": "Confirmar con la tripulación la hora exacta de desembarque la noche anterior. Llevar ropa más formal para la cena de atardecer en Uluwatu.",
-    "criticalNote": ""
+    "summary": "Desembarque en Labuan Bajo + vuelo LBJ→DPS + última noche en Bali (Kuta)",
+    "recommendations": "Confirmar con la tripulación la hora exacta de desembarque la noche anterior. Hotel Amnaya Resort Kuta está muy cerca del aeropuerto — ideal para la salida temprana del día siguiente.",
+    "criticalNote": "Última noche en Bali — hotel cerca del aeropuerto, ideal para salida temprana mañana. Check-out antes de las 12:00 para llegar al aeropuerto a tiempo. Desayuno incluido. Vuelo DPS→SIN sale 11:20am."
   },
   {
     "id": "day-13",
